@@ -10,6 +10,7 @@ import {
   MaxLength,
 } from 'class-validator';
 import { AppointmentStatus } from '@prisma/client';
+import { IsBusinessHours } from '../../../decorators/is-business-hours.decorator';
 
 export class CreateAppointmentDto {
   @IsDateString(
@@ -17,6 +18,11 @@ export class CreateAppointmentDto {
     { message: 'startsAt deve ser uma data válida no formato ISO 8601' },
   )
   @IsNotEmpty({ message: 'startsAt é obrigatório' })
+  @IsBusinessHours({
+    startHour: 8,
+    endHour: 18,
+    workingDays: [1, 2, 3, 4, 5, 6], // Segunda a Sábado
+  })
   startsAt: string;
 
   @IsDateString(

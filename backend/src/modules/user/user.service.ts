@@ -5,10 +5,10 @@ import {
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { PrismaService } from '../prisma/prisma.service';
+import { PrismaService } from '../../prisma/prisma.service';
 import { User } from './entities/user.entity';
-import { PaginatedResult } from '../common/interfaces/paginated-result.interface';
-import { PaginationDto } from '../common/dto/pagination.dto';
+import { PaginatedResult } from '../../common/interfaces/paginated-result.interface';
+import { PaginationDto } from '../../common/dto/pagination.dto';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()

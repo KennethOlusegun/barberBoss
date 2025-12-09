@@ -1,5 +1,5 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
-import { UserFromJwt } from '../auth/models/UserFromJwt';
+import { UserFromJwt } from '../modules/auth/models/UserFromJwt';
 
 /**
  * Decorator para obter o usuário autenticado da requisição

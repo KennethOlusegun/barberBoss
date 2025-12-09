@@ -16,7 +16,7 @@ import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { PaginationDto } from '../common/dto/pagination.dto';
+import { PaginationDto } from '../../common/dto/pagination.dto';
 
 @ApiTags('users')
 @Controller('users')

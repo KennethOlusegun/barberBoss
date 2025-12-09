@@ -8,9 +8,9 @@ import {
 } from '@nestjs/swagger';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
-import { Public } from '../decorators/public.decorator';
+import { Public } from '../../decorators/public.decorator';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import { CurrentUser } from '../decorators/current-user.decorator';
+import { CurrentUser } from '../../decorators/current-user.decorator';
 import type { UserFromJwt } from './models/UserFromJwt';
 
 @ApiTags('🔐 Autenticação - Portal Gerencial')

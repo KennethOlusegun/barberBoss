@@ -6,14 +6,71 @@ import {
 } from '@nestjs/common';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { UpdateAppointmentDto } from './dto/update-appointment.dto';
-import { PrismaService } from '../prisma/prisma.service';
+import { PrismaService } from '../../prisma/prisma.service';
+import { SettingsService } from '../settings/settings.service';
 import { Appointment } from './entities/appointment.entity';
-import { PaginatedResult } from '../common/interfaces/paginated-result.interface';
-import { PaginationDto } from '../common/dto/pagination.dto';
+import { PaginatedResult } from '../../common/interfaces/paginated-result.interface';
+import { PaginationDto } from '../../common/dto/pagination.dto';
 
 @Injectable()
 export class AppointmentService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly settingsService: SettingsService,
+  ) {}
+
+  /**
+   * Valida se uma data está dentro do horário comercial
+   * @param date Data a ser validada
+   * @param label Label para mensagem de erro (ex: 'início', 'término')
+   */
+  private async validateBusinessHours(
+    date: Date,
+    label: string = 'agendamento',
+  ): Promise<void> {
+    const settings = await this.settingsService.get();
+    const day = date.getDay();
+
+    // Verifica se é um dia útil
+    if (!settings.workingDays.includes(day)) {
+      const dayName = this.settingsService.getDayName(day);
+      const workingDaysNames = settings.workingDays
+        .map((d) => this.settingsService.getDayName(d))
+        .join(', ');
+
+      throw new BadRequestException(
+        `O horário de ${label} (${dayName}) não é um dia útil. Horário comercial: ${workingDaysNames}`,
+      );
+    }
+
+    // Verifica se está dentro do horário comercial
+    if (!this.settingsService.isWithinBusinessHours(date)) {
+      const timeStr = date.toLocaleTimeString('pt-BR', {
+        hour: '2-digit',
+        minute: '2-digit',
+      });
+      throw new BadRequestException(
+        `O horário de ${label} (${timeStr}) está fora do horário comercial (${settings.openTime} - ${settings.closeTime})`,
+      );
+    }
+
+    // Validar antecedência mínima
+    const now = new Date();
+    const minAdvanceMs = settings.minAdvanceHours * 60 * 60 * 1000;
+    if (date.getTime() - now.getTime() < minAdvanceMs) {
+      throw new BadRequestException(
+        `O agendamento deve ser feito com pelo menos ${settings.minAdvanceHours} hora(s) de antecedência`,
+      );
+    }
+
+    // Validar antecedência máxima
+    const maxAdvanceMs = settings.maxAdvanceDays * 24 * 60 * 60 * 1000;
+    if (date.getTime() - now.getTime() > maxAdvanceMs) {
+      throw new BadRequestException(
+        `O agendamento não pode ser feito com mais de ${settings.maxAdvanceDays} dias de antecedência`,
+      );
+    }
+  }
 
   async create(
     createAppointmentDto: CreateAppointmentDto,
@@ -48,6 +105,10 @@ export class AppointmentService {
         'A data de início deve ser anterior à data de término',
       );
     }
+
+    // Validar horário comercial para startsAt e endsAt
+    await this.validateBusinessHours(startsAt, 'início');
+    await this.validateBusinessHours(endsAt, 'término');
 
     // Verificar se o usuário existe (se fornecido)
     if (createAppointmentDto.userId) {
@@ -222,6 +283,10 @@ export class AppointmentService {
           'A data de início deve ser anterior à data de término',
         );
       }
+
+      // Validar horário comercial para startsAt e endsAt
+      await this.validateBusinessHours(startsAt, 'início');
+      await this.validateBusinessHours(endsAt, 'término');
 
       // Verificar conflitos (excluindo o próprio agendamento)
       // REGRA: O agendamento mais antigo tem preferência

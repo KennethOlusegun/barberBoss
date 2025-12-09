@@ -1,9 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateServiceDto } from './dto/create-service.dto';
 import { UpdateServiceDto } from './dto/update-service.dto';
-import { PrismaService } from '../prisma/prisma.service';
-import { PaginatedResult } from '../common/interfaces/paginated-result.interface';
-import { PaginationDto } from '../common/dto/pagination.dto';
+import { PrismaService } from '../../prisma/prisma.service';
+import { PaginatedResult } from '../../common/interfaces/paginated-result.interface';
+import { PaginationDto } from '../../common/dto/pagination.dto';
 
 @Injectable()
 export class ServiceService {

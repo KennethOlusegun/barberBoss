@@ -77,3 +77,32 @@ model Appointment {
   // Índices para deixar a busca de conflito rápida
   @@index([startsAt, endsAt]) 
 }
+
+model Settings {
+  id                String   @id @default(uuid())
+  businessName      String   @default("Barber Boss")
+  
+  // Horário comercial
+  openTime          String   @default("08:00") // Formato HH:mm
+  closeTime         String   @default("18:00") // Formato HH:mm
+  
+  // Dias de funcionamento (0=Domingo, 6=Sábado)
+  workingDays       Int[]    @default([1, 2, 3, 4, 5, 6]) // Segunda a Sábado
+  
+  // Intervalo entre agendamentos (em minutos)
+  slotIntervalMin   Int      @default(15)
+  
+  // Configurações de agendamento
+  maxAdvanceDays    Int      @default(30)  // Quantos dias no futuro pode agendar
+  minAdvanceHours   Int      @default(2)   // Mínimo de horas de antecedência
+  
+  // Notificações (para futuro)
+  enableReminders   Boolean  @default(false)
+  reminderHoursBefore Int    @default(24)
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  // Garantir apenas uma linha de configuração
+  @@map("settings")
+}
