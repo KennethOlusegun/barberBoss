@@ -1,23 +1,27 @@
-import { 
-  Injectable, 
-  NotFoundException, 
+import {
+  Injectable,
+  NotFoundException,
   BadRequestException,
-  ConflictException 
+  ConflictException,
 } from '@nestjs/common';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { UpdateAppointmentDto } from './dto/update-appointment.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { Appointment } from './entities/appointment.entity';
+import { PaginatedResult } from '../common/interfaces/paginated-result.interface';
+import { PaginationDto } from '../common/dto/pagination.dto';
 
 @Injectable()
 export class AppointmentService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(createAppointmentDto: CreateAppointmentDto): Promise<Appointment> {
+  async create(
+    createAppointmentDto: CreateAppointmentDto,
+  ): Promise<Appointment> {
     // Validar que pelo menos userId ou clientName foi fornecido
     if (!createAppointmentDto.userId && !createAppointmentDto.clientName) {
       throw new BadRequestException(
-        'É necessário fornecer userId ou clientName'
+        'É necessário fornecer userId ou clientName',
       );
     }
 
@@ -28,20 +32,20 @@ export class AppointmentService {
 
     if (!service) {
       throw new NotFoundException(
-        `Serviço com ID ${createAppointmentDto.serviceId} não encontrado`
+        `Serviço com ID ${createAppointmentDto.serviceId} não encontrado`,
       );
     }
 
     // Calcular endsAt automaticamente baseado na duração do serviço
     const startsAt = new Date(createAppointmentDto.startsAt);
-    const endsAt = createAppointmentDto.endsAt 
+    const endsAt = createAppointmentDto.endsAt
       ? new Date(createAppointmentDto.endsAt)
       : new Date(startsAt.getTime() + service.durationMin * 60000); // Adiciona duração em milissegundos
-    
+
     // Validar que startsAt é antes de endsAt
     if (startsAt >= endsAt) {
       throw new BadRequestException(
-        'A data de início deve ser anterior à data de término'
+        'A data de início deve ser anterior à data de término',
       );
     }
 
@@ -53,7 +57,7 @@ export class AppointmentService {
 
       if (!user) {
         throw new NotFoundException(
-          `Usuário com ID ${createAppointmentDto.userId} não encontrado`
+          `Usuário com ID ${createAppointmentDto.userId} não encontrado`,
         );
       }
     }
@@ -73,17 +77,11 @@ export class AppointmentService {
           },
           {
             // Novo agendamento termina durante um existente
-            AND: [
-              { startsAt: { lt: endsAt } },
-              { endsAt: { gte: endsAt } },
-            ],
+            AND: [{ startsAt: { lt: endsAt } }, { endsAt: { gte: endsAt } }],
           },
           {
             // Novo agendamento engloba um existente
-            AND: [
-              { startsAt: { gte: startsAt } },
-              { endsAt: { lte: endsAt } },
-            ],
+            AND: [{ startsAt: { gte: startsAt } }, { endsAt: { lte: endsAt } }],
           },
         ],
         status: {
@@ -102,11 +100,12 @@ export class AppointmentService {
     if (conflicts.length > 0) {
       // Retorna o agendamento mais antigo que está causando o conflito
       const conflict = conflicts[0];
-      const conflictClient = conflict.user?.name || conflict.clientName || 'Outro cliente';
+      const conflictClient =
+        conflict.user?.name || conflict.clientName || 'Outro cliente';
       const conflictTime = `${conflict.startsAt.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })} - ${conflict.endsAt.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`;
-      
+
       throw new ConflictException(
-        `Este horário não está disponível. ${conflictClient} já tem um agendamento de ${conflict.service.name} das ${conflictTime}`
+        `Este horário não está disponível. ${conflictClient} já tem um agendamento de ${conflict.service.name} das ${conflictTime}`,
       );
     }
 
@@ -128,18 +127,32 @@ export class AppointmentService {
     return new Appointment(appointment);
   }
 
-  async findAll(): Promise<Appointment[]> {
-    const appointments = await this.prisma.appointment.findMany({
-      include: {
-        user: true,
-        service: true,
-      },
-      orderBy: {
-        startsAt: 'asc',
-      },
-    });
+  async findAll(
+    paginationDto?: PaginationDto,
+  ): Promise<PaginatedResult<Appointment>> {
+    const page = paginationDto?.page || 1;
+    const limit = paginationDto?.limit || 10;
+    const skip = (page - 1) * limit;
 
-    return appointments.map(appointment => new Appointment(appointment));
+    const [appointments, total] = await Promise.all([
+      this.prisma.appointment.findMany({
+        skip,
+        take: limit,
+        include: {
+          user: true,
+          service: true,
+        },
+        orderBy: {
+          startsAt: 'asc',
+        },
+      }),
+      this.prisma.appointment.count(),
+    ]);
+
+    const appointmentEntities = appointments.map(
+      (appointment) => new Appointment(appointment),
+    );
+    return new PaginatedResult(appointmentEntities, total, page, limit);
   }
 
   async findOne(id: string): Promise<Appointment> {
@@ -165,7 +178,11 @@ export class AppointmentService {
     await this.findOne(id); // Verifica se existe
 
     // Se estiver atualizando datas ou serviço, validar e recalcular
-    if (updateAppointmentDto.startsAt || updateAppointmentDto.endsAt || updateAppointmentDto.serviceId) {
+    if (
+      updateAppointmentDto.startsAt ||
+      updateAppointmentDto.endsAt ||
+      updateAppointmentDto.serviceId
+    ) {
       const current = await this.prisma.appointment.findUnique({
         where: { id },
         include: { service: true },
@@ -173,14 +190,17 @@ export class AppointmentService {
 
       // Se o serviço foi alterado, buscar o novo serviço
       let service = current!.service;
-      if (updateAppointmentDto.serviceId && updateAppointmentDto.serviceId !== current!.serviceId) {
+      if (
+        updateAppointmentDto.serviceId &&
+        updateAppointmentDto.serviceId !== current!.serviceId
+      ) {
         const newService = await this.prisma.service.findUnique({
           where: { id: updateAppointmentDto.serviceId },
         });
-        
+
         if (!newService) {
           throw new NotFoundException(
-            `Serviço com ID ${updateAppointmentDto.serviceId} não encontrado`
+            `Serviço com ID ${updateAppointmentDto.serviceId} não encontrado`,
           );
         }
         service = newService;
@@ -189,7 +209,7 @@ export class AppointmentService {
       const startsAt = updateAppointmentDto.startsAt
         ? new Date(updateAppointmentDto.startsAt)
         : current!.startsAt;
-      
+
       // Recalcular endsAt se startsAt foi alterado e endsAt não foi fornecido
       const endsAt = updateAppointmentDto.endsAt
         ? new Date(updateAppointmentDto.endsAt)
@@ -199,7 +219,7 @@ export class AppointmentService {
 
       if (startsAt >= endsAt) {
         throw new BadRequestException(
-          'A data de início deve ser anterior à data de término'
+          'A data de início deve ser anterior à data de término',
         );
       }
 
@@ -217,10 +237,7 @@ export class AppointmentService {
               ],
             },
             {
-              AND: [
-                { startsAt: { lt: endsAt } },
-                { endsAt: { gte: endsAt } },
-              ],
+              AND: [{ startsAt: { lt: endsAt } }, { endsAt: { gte: endsAt } }],
             },
             {
               AND: [
@@ -245,11 +262,12 @@ export class AppointmentService {
       if (conflicts.length > 0) {
         // Retorna o agendamento mais antigo que está causando o conflito
         const conflict = conflicts[0];
-        const conflictClient = conflict.user?.name || conflict.clientName || 'Outro cliente';
+        const conflictClient =
+          conflict.user?.name || conflict.clientName || 'Outro cliente';
         const conflictTime = `${conflict.startsAt.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })} - ${conflict.endsAt.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`;
-        
+
         throw new ConflictException(
-          `Este horário não está disponível. ${conflictClient} já tem um agendamento de ${conflict.service.name} das ${conflictTime}`
+          `Este horário não está disponível. ${conflictClient} já tem um agendamento de ${conflict.service.name} das ${conflictTime}`,
         );
       }
 
@@ -319,59 +337,115 @@ export class AppointmentService {
 
   // Métodos auxiliares úteis
 
-  async findByDate(date: Date): Promise<Appointment[]> {
+  async findByDate(
+    date: Date,
+    paginationDto?: PaginationDto,
+  ): Promise<PaginatedResult<Appointment>> {
+    const page = paginationDto?.page || 1;
+    const limit = paginationDto?.limit || 10;
+    const skip = (page - 1) * limit;
+
     const startOfDay = new Date(date);
     startOfDay.setHours(0, 0, 0, 0);
 
     const endOfDay = new Date(date);
     endOfDay.setHours(23, 59, 59, 999);
 
-    const appointments = await this.prisma.appointment.findMany({
-      where: {
-        startsAt: {
-          gte: startOfDay,
-          lte: endOfDay,
+    const [appointments, total] = await Promise.all([
+      this.prisma.appointment.findMany({
+        skip,
+        take: limit,
+        where: {
+          startsAt: {
+            gte: startOfDay,
+            lte: endOfDay,
+          },
         },
-      },
-      include: {
-        user: true,
-        service: true,
-      },
-      orderBy: {
-        startsAt: 'asc',
-      },
-    });
+        include: {
+          user: true,
+          service: true,
+        },
+        orderBy: {
+          startsAt: 'asc',
+        },
+      }),
+      this.prisma.appointment.count({
+        where: {
+          startsAt: {
+            gte: startOfDay,
+            lte: endOfDay,
+          },
+        },
+      }),
+    ]);
 
-    return appointments.map(appointment => new Appointment(appointment));
+    const appointmentEntities = appointments.map(
+      (appointment) => new Appointment(appointment),
+    );
+    return new PaginatedResult(appointmentEntities, total, page, limit);
   }
 
-  async findByUser(userId: string): Promise<Appointment[]> {
-    const appointments = await this.prisma.appointment.findMany({
-      where: { userId },
-      include: {
-        user: true,
-        service: true,
-      },
-      orderBy: {
-        startsAt: 'desc',
-      },
-    });
+  async findByUser(
+    userId: string,
+    paginationDto?: PaginationDto,
+  ): Promise<PaginatedResult<Appointment>> {
+    const page = paginationDto?.page || 1;
+    const limit = paginationDto?.limit || 10;
+    const skip = (page - 1) * limit;
 
-    return appointments.map(appointment => new Appointment(appointment));
+    const [appointments, total] = await Promise.all([
+      this.prisma.appointment.findMany({
+        skip,
+        take: limit,
+        where: { userId },
+        include: {
+          user: true,
+          service: true,
+        },
+        orderBy: {
+          startsAt: 'desc',
+        },
+      }),
+      this.prisma.appointment.count({
+        where: { userId },
+      }),
+    ]);
+
+    const appointmentEntities = appointments.map(
+      (appointment) => new Appointment(appointment),
+    );
+    return new PaginatedResult(appointmentEntities, total, page, limit);
   }
 
-  async findByStatus(status: string): Promise<Appointment[]> {
-    const appointments = await this.prisma.appointment.findMany({
-      where: { status: status as any },
-      include: {
-        user: true,
-        service: true,
-      },
-      orderBy: {
-        startsAt: 'asc',
-      },
-    });
+  async findByStatus(
+    status: string,
+    paginationDto?: PaginationDto,
+  ): Promise<PaginatedResult<Appointment>> {
+    const page = paginationDto?.page || 1;
+    const limit = paginationDto?.limit || 10;
+    const skip = (page - 1) * limit;
 
-    return appointments.map(appointment => new Appointment(appointment));
+    const [appointments, total] = await Promise.all([
+      this.prisma.appointment.findMany({
+        skip,
+        take: limit,
+        where: { status: status as any },
+        include: {
+          user: true,
+          service: true,
+        },
+        orderBy: {
+          startsAt: 'asc',
+        },
+      }),
+      this.prisma.appointment.count({
+        where: { status: status as any },
+      }),
+    ]);
+
+    const appointmentEntities = appointments.map(
+      (appointment) => new Appointment(appointment),
+    );
+    return new PaginatedResult(appointmentEntities, total, page, limit);
   }
 }

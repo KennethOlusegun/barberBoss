@@ -21,6 +21,7 @@ import {
 import { AppointmentService } from './appointment.service';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { UpdateAppointmentDto } from './dto/update-appointment.dto';
+import { PaginationDto } from '../common/dto/pagination.dto';
 
 @ApiTags('appointments')
 @Controller('appointments')
@@ -37,7 +38,9 @@ export class AppointmentController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'Listar agendamentos com filtros opcionais' })
+  @ApiOperation({
+    summary: 'Listar agendamentos com filtros opcionais e paginação',
+  })
   @ApiQuery({
     name: 'date',
     required: false,
@@ -53,6 +56,18 @@ export class AppointmentController {
     required: false,
     description: 'Filtrar por status',
   })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    description: 'Número da página (padrão: 1)',
+    type: Number,
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    description: 'Itens por página (padrão: 10, máx: 100)',
+    type: Number,
+  })
   @ApiResponse({
     status: 200,
     description: 'Lista de agendamentos retornada com sucesso',
@@ -61,24 +76,25 @@ export class AppointmentController {
     @Query('date') date?: string,
     @Query('userId') userId?: string,
     @Query('status') status?: string,
+    @Query() paginationDto?: PaginationDto,
   ) {
     // Se fornecida uma data específica, buscar por data
     if (date) {
-      return this.appointmentService.findByDate(new Date(date));
+      return this.appointmentService.findByDate(new Date(date), paginationDto);
     }
 
     // Se fornecido um userId, buscar por usuário
     if (userId) {
-      return this.appointmentService.findByUser(userId);
+      return this.appointmentService.findByUser(userId, paginationDto);
     }
 
     // Se fornecido um status, buscar por status
     if (status) {
-      return this.appointmentService.findByStatus(status);
+      return this.appointmentService.findByStatus(status, paginationDto);
     }
 
     // Caso contrário, retornar todos
-    return this.appointmentService.findAll();
+    return this.appointmentService.findAll(paginationDto);
   }
 
   @Get(':id')

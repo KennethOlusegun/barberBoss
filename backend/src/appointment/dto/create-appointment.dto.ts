@@ -1,26 +1,35 @@
-import { 
-  IsString, 
-  IsDateString, 
-  IsOptional, 
-  IsUUID, 
-  IsEnum, 
+import {
+  IsString,
+  IsDateString,
+  IsOptional,
+  IsUUID,
+  IsEnum,
   IsNotEmpty,
   ValidateIf,
   MinLength,
-  MaxLength
+  MaxLength,
 } from 'class-validator';
 import { AppointmentStatus } from '@prisma/client';
 
 export class CreateAppointmentDto {
-  @IsDateString({}, { message: 'startsAt deve ser uma data válida no formato ISO 8601' })
+  @IsDateString(
+    {},
+    { message: 'startsAt deve ser uma data válida no formato ISO 8601' },
+  )
   @IsNotEmpty({ message: 'startsAt é obrigatório' })
   startsAt: string;
 
-  @IsDateString({}, { message: 'endsAt deve ser uma data válida no formato ISO 8601' })
+  @IsDateString(
+    {},
+    { message: 'endsAt deve ser uma data válida no formato ISO 8601' },
+  )
   @IsOptional() // Agora é opcional - será calculado automaticamente se não fornecido
   endsAt?: string;
 
-  @IsEnum(AppointmentStatus, { message: 'status deve ser um valor válido: PENDING, CONFIRMED, CANCELED, COMPLETED, NO_SHOW' })
+  @IsEnum(AppointmentStatus, {
+    message:
+      'status deve ser um valor válido: PENDING, CONFIRMED, CANCELED, COMPLETED, NO_SHOW',
+  })
   @IsOptional()
   status?: AppointmentStatus;
 

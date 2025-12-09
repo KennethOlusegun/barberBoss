@@ -7,6 +7,8 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { User } from './entities/user.entity';
+import { PaginatedResult } from '../common/interfaces/paginated-result.interface';
+import { PaginationDto } from '../common/dto/pagination.dto';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -36,12 +38,22 @@ export class UserService {
     return new User(user);
   }
 
-  async findAll(): Promise<User[]> {
-    const users = await this.prisma.user.findMany({
-      orderBy: { createdAt: 'desc' },
-    });
+  async findAll(paginationDto?: PaginationDto): Promise<PaginatedResult<User>> {
+    const page = paginationDto?.page || 1;
+    const limit = paginationDto?.limit || 10;
+    const skip = (page - 1) * limit;
 
-    return users.map((user) => new User(user));
+    const [users, total] = await Promise.all([
+      this.prisma.user.findMany({
+        skip,
+        take: limit,
+        orderBy: { createdAt: 'desc' },
+      }),
+      this.prisma.user.count(),
+    ]);
+
+    const userEntities = users.map((user) => new User(user));
+    return new PaginatedResult(userEntities, total, page, limit);
   }
 
   async findOne(id: string): Promise<User> {
