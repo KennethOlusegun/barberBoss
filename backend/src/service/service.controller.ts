@@ -1,13 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, HttpStatus } from '@nestjs/common';
 import { ServiceService } from './service.service';
 import { CreateServiceDto } from './dto/create-service.dto';
 import { UpdateServiceDto } from './dto/update-service.dto';
 
-@Controller('service')
+@Controller('services')
 export class ServiceController {
   constructor(private readonly serviceService: ServiceService) {}
 
   @Post()
+  @HttpCode(HttpStatus.CREATED)
   create(@Body() createServiceDto: CreateServiceDto) {
     return this.serviceService.create(createServiceDto);
   }
@@ -19,16 +20,17 @@ export class ServiceController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.serviceService.findOne(+id);
+    return this.serviceService.findOne(id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateServiceDto: UpdateServiceDto) {
-    return this.serviceService.update(+id, updateServiceDto);
+    return this.serviceService.update(id, updateServiceDto);
   }
 
   @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param('id') id: string) {
-    return this.serviceService.remove(+id);
+    return this.serviceService.remove(id);
   }
 }
