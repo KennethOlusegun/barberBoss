@@ -15,6 +15,9 @@ export class ServiceService {
 
   async findAll() {
     return await this.prisma.service.findMany({
+      where: {
+        active: true,
+      },
       orderBy: {
         name: 'asc',
       },
@@ -23,7 +26,10 @@ export class ServiceService {
 
   async findOne(id: string) {
     const service = await this.prisma.service.findUnique({
-      where: { id },
+      where: { 
+        id,
+        active: true,
+      },
     });
 
     if (!service) {
@@ -34,7 +40,7 @@ export class ServiceService {
   }
 
   async update(id: string, updateServiceDto: UpdateServiceDto) {
-    await this.findOne(id); // Verifica se existe
+    await this.findOne(id); // Verifica se existe e está ativo
 
     return await this.prisma.service.update({
       where: { id },
@@ -43,10 +49,12 @@ export class ServiceService {
   }
 
   async remove(id: string) {
-    await this.findOne(id); // Verifica se existe
+    await this.findOne(id); // Verifica se existe e está ativo
 
-    return await this.prisma.service.delete({
+    // Soft delete: marca como inativo ao invés de deletar
+    return await this.prisma.service.update({
       where: { id },
+      data: { active: false },
     });
   }
 }
