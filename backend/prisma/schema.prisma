@@ -9,7 +9,8 @@ generator client {
 
 // 2. Enums (Para evitar "magic strings" no código)
 enum Role {
-  ADMIN   // O Barbeiro
+  ADMIN   // O Administrador do Sistema
+  BARBER  // O Barbeiro 
   CLIENT  // O Cliente final (futuro)
 }
 

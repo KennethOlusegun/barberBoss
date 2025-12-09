@@ -5,10 +5,10 @@ export class User {
   id: string;
   name: string;
   email: string;
-  
+
   @Exclude()
   password: string;
-  
+
   phone: string | null;
   role: Role;
   createdAt: Date;

@@ -26,7 +26,7 @@ export class ServiceService {
 
   async findOne(id: string) {
     const service = await this.prisma.service.findUnique({
-      where: { 
+      where: {
         id,
         active: true,
       },

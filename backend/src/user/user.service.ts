@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ConflictException,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from '../prisma/prisma.service';
@@ -37,7 +41,7 @@ export class UserService {
       orderBy: { createdAt: 'desc' },
     });
 
-    return users.map(user => new User(user));
+    return users.map((user) => new User(user));
   }
 
   async findOne(id: string): Promise<User> {

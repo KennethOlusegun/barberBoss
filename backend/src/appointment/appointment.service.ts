@@ -21,16 +21,6 @@ export class AppointmentService {
       );
     }
 
-    // Validar que startsAt é antes de endsAt
-    const startsAt = new Date(createAppointmentDto.startsAt);
-    const endsAt = new Date(createAppointmentDto.endsAt);
-    
-    if (startsAt >= endsAt) {
-      throw new BadRequestException(
-        'A data de início deve ser anterior à data de término'
-      );
-    }
-
     // Verificar se o serviço existe
     const service = await this.prisma.service.findUnique({
       where: { id: createAppointmentDto.serviceId },
@@ -39,6 +29,19 @@ export class AppointmentService {
     if (!service) {
       throw new NotFoundException(
         `Serviço com ID ${createAppointmentDto.serviceId} não encontrado`
+      );
+    }
+
+    // Calcular endsAt automaticamente baseado na duração do serviço
+    const startsAt = new Date(createAppointmentDto.startsAt);
+    const endsAt = createAppointmentDto.endsAt 
+      ? new Date(createAppointmentDto.endsAt)
+      : new Date(startsAt.getTime() + service.durationMin * 60000); // Adiciona duração em milissegundos
+    
+    // Validar que startsAt é antes de endsAt
+    if (startsAt >= endsAt) {
+      throw new BadRequestException(
+        'A data de início deve ser anterior à data de término'
       );
     }
 
@@ -161,18 +164,38 @@ export class AppointmentService {
   ): Promise<Appointment> {
     await this.findOne(id); // Verifica se existe
 
-    // Se estiver atualizando datas, validar
-    if (updateAppointmentDto.startsAt || updateAppointmentDto.endsAt) {
+    // Se estiver atualizando datas ou serviço, validar e recalcular
+    if (updateAppointmentDto.startsAt || updateAppointmentDto.endsAt || updateAppointmentDto.serviceId) {
       const current = await this.prisma.appointment.findUnique({
         where: { id },
+        include: { service: true },
       });
+
+      // Se o serviço foi alterado, buscar o novo serviço
+      let service = current!.service;
+      if (updateAppointmentDto.serviceId && updateAppointmentDto.serviceId !== current!.serviceId) {
+        const newService = await this.prisma.service.findUnique({
+          where: { id: updateAppointmentDto.serviceId },
+        });
+        
+        if (!newService) {
+          throw new NotFoundException(
+            `Serviço com ID ${updateAppointmentDto.serviceId} não encontrado`
+          );
+        }
+        service = newService;
+      }
 
       const startsAt = updateAppointmentDto.startsAt
         ? new Date(updateAppointmentDto.startsAt)
         : current!.startsAt;
+      
+      // Recalcular endsAt se startsAt foi alterado e endsAt não foi fornecido
       const endsAt = updateAppointmentDto.endsAt
         ? new Date(updateAppointmentDto.endsAt)
-        : current!.endsAt;
+        : updateAppointmentDto.startsAt
+          ? new Date(startsAt.getTime() + service.durationMin * 60000)
+          : current!.endsAt;
 
       if (startsAt >= endsAt) {
         throw new BadRequestException(
@@ -229,17 +252,39 @@ export class AppointmentService {
           `Este horário não está disponível. ${conflictClient} já tem um agendamento de ${conflict.service.name} das ${conflictTime}`
         );
       }
+
+      // Atualizar com as datas calculadas
+      const appointment = await this.prisma.appointment.update({
+        where: { id },
+        data: {
+          startsAt,
+          endsAt,
+          ...(updateAppointmentDto.status && {
+            status: updateAppointmentDto.status,
+          }),
+          ...(updateAppointmentDto.userId !== undefined && {
+            userId: updateAppointmentDto.userId,
+          }),
+          ...(updateAppointmentDto.clientName !== undefined && {
+            clientName: updateAppointmentDto.clientName,
+          }),
+          ...(updateAppointmentDto.serviceId && {
+            serviceId: updateAppointmentDto.serviceId,
+          }),
+        },
+        include: {
+          user: true,
+          service: true,
+        },
+      });
+
+      return new Appointment(appointment);
     }
 
+    // Se não estiver atualizando datas, apenas atualizar outros campos
     const appointment = await this.prisma.appointment.update({
       where: { id },
       data: {
-        ...(updateAppointmentDto.startsAt && {
-          startsAt: new Date(updateAppointmentDto.startsAt),
-        }),
-        ...(updateAppointmentDto.endsAt && {
-          endsAt: new Date(updateAppointmentDto.endsAt),
-        }),
         ...(updateAppointmentDto.status && {
           status: updateAppointmentDto.status,
         }),

@@ -73,7 +73,9 @@ describe('AppointmentController', () => {
       const date = '2024-12-10';
       const mockAppointments = [{ id: 'appointment-1' }];
 
-      jest.spyOn(service, 'findByDate').mockResolvedValue(mockAppointments as any);
+      jest
+        .spyOn(service, 'findByDate')
+        .mockResolvedValue(mockAppointments as any);
 
       const result = await controller.findAll(date);
 
@@ -85,7 +87,9 @@ describe('AppointmentController', () => {
       const userId = 'user-id';
       const mockAppointments = [{ id: 'appointment-1' }];
 
-      jest.spyOn(service, 'findByUser').mockResolvedValue(mockAppointments as any);
+      jest
+        .spyOn(service, 'findByUser')
+        .mockResolvedValue(mockAppointments as any);
 
       const result = await controller.findAll(undefined, userId);
 
@@ -97,7 +101,9 @@ describe('AppointmentController', () => {
       const status = 'CONFIRMED';
       const mockAppointments = [{ id: 'appointment-1' }];
 
-      jest.spyOn(service, 'findByStatus').mockResolvedValue(mockAppointments as any);
+      jest
+        .spyOn(service, 'findByStatus')
+        .mockResolvedValue(mockAppointments as any);
 
       const result = await controller.findAll(undefined, undefined, status);
 

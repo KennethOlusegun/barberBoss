@@ -1,4 +1,7 @@
-import { Appointment as PrismaAppointment, AppointmentStatus } from '@prisma/client';
+import {
+  Appointment as PrismaAppointment,
+  AppointmentStatus,
+} from '@prisma/client';
 import { Exclude } from 'class-transformer';
 
 export class Appointment implements PrismaAppointment {
