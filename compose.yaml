@@ -1,0 +1,60 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: barberboss-postgres
+    environment:
+      POSTGRES_DB: barberboss
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d barberboss"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - barberboss-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: production
+    container_name: barberboss-backend
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://admin:admin123@postgres:5432/barberboss
+      PORT: 3000
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - barberboss-network
+    restart: unless-stopped
+
+  mobile:
+    build:
+      context: ./mobile
+      dockerfile: Dockerfile
+      target: production
+    container_name: barberboss-mobile
+    ports:
+      - "8100:80"
+    depends_on:
+      - backend
+    networks:
+      - barberboss-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  barberboss-network:
+    driver: bridge
