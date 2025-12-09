@@ -1,0 +1,78 @@
+// 1. Configuração do Banco
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// 2. Enums (Para evitar "magic strings" no código)
+enum Role {
+  ADMIN   // O Barbeiro
+  CLIENT  // O Cliente final (futuro)
+}
+
+enum AppointmentStatus {
+  PENDING   // Aguardando confirmação (futuro)
+  CONFIRMED // Agendado
+  CANCELED  // Cancelado
+  COMPLETED // Serviço feito (Gera pontos na Fase 3)
+  NO_SHOW   // Cliente não foi
+}
+
+// 3. Modelos
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String   // Hash!
+  phone     String?  // Opcional por enquanto
+  role      Role     @default(CLIENT)
+  
+  // Relacionamentos
+  appointments Appointment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Service {
+  id          String   @id @default(uuid())
+  name        String   // Ex: "Corte Degradê"
+  description String?
+  price       Decimal  @db.Decimal(10, 2) // Dinheiro sempre use Decimal, nunca Float!
+  durationMin Int      // Ex: 30, 45, 60 (Minutos)
+  
+  // Relacionamentos
+  appointments Appointment[]
+
+  active      Boolean  @default(true) // Para "apagar" sem perder histórico
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Appointment {
+  id        String            @id @default(uuid())
+  startsAt  DateTime          // Início do atendimento
+  endsAt    DateTime          // Fim (Calculado: start + duration)
+  status    AppointmentStatus @default(CONFIRMED)
+
+  // Dados do Cliente
+  // Se o cliente tiver App, usamos o userId. 
+  // Se for agendamento manual do barbeiro ("João do Zap"), usamos o clientName.
+  userId     String?
+  user       User?   @relation(fields: [userId], references: [id])
+  clientName String? 
+
+  // Dados do Serviço
+  serviceId String
+  service   Service @relation(fields: [serviceId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Índices para deixar a busca de conflito rápida
+  @@index([startsAt, endsAt]) 
+}
