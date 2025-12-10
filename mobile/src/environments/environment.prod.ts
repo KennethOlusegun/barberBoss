@@ -11,7 +11,7 @@ export const environment: Environment = {
 
   api: {
     baseUrl: 'https://api.barberboss.com', // TODO: Update with your production API URL
-    apiPrefix: '/api/v1',
+    apiPrefix: '',
     timeout: 30000,
   },
 

@@ -13,7 +13,7 @@ export const environment: Environment = {
 
   api: {
     baseUrl: 'http://localhost:3000',
-    apiPrefix: '/api/v1',
+    apiPrefix: '',
     timeout: 30000,
   },
 

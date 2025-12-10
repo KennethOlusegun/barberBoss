@@ -10,7 +10,7 @@ describe('ApiService', () => {
   let configService: ConfigService;
 
   const mockConfig = {
-    getApiUrl: () => 'http://localhost:3000/api/v1',
+    getApiUrl: () => 'http://localhost:3000/api',
     getApiTimeout: () => 30000,
     getTokenKey: () => 'auth_token',
     isProduction: () => false,
@@ -47,16 +47,16 @@ describe('ApiService', () => {
         expect(data).toEqual(mockData);
       });
 
-      const req = httpMock.expectOne('http://localhost:3000/api/v1/users/1');
+      const req = httpMock.expectOne('http://localhost:3000/api/users/1');
       expect(req.request.method).toBe('GET');
       req.flush(mockData);
     });
 
-    it('should include query parameters', () => {
+      it('should include query parameters', () => { 
       service.get('/users', { params: { page: 1, limit: 10 } }).subscribe();
 
       const req = httpMock.expectOne(
-        'http://localhost:3000/api/v1/users?page=1&limit=10'
+        'http://localhost:3000/api/users?page=1&limit=10'
       );
       expect(req.request.method).toBe('GET');
       req.flush([]);
@@ -72,7 +72,7 @@ describe('ApiService', () => {
         expect(data).toEqual(mockResponse);
       });
 
-      const req = httpMock.expectOne('http://localhost:3000/api/v1/users');
+      const req = httpMock.expectOne('http://localhost:3000/api/users');
       expect(req.request.method).toBe('POST');
       expect(req.request.body).toEqual(postData);
       req.flush(mockResponse);
@@ -85,7 +85,7 @@ describe('ApiService', () => {
 
       service.get('/users', { requiresAuth: true }).subscribe();
 
-      const req = httpMock.expectOne('http://localhost:3000/api/v1/users');
+      const req = httpMock.expectOne('http://localhost:3000/api/users');
       expect(req.request.headers.get('Authorization')).toBe('Bearer test-token');
       req.flush([]);
     });
@@ -95,7 +95,7 @@ describe('ApiService', () => {
 
       service.get('/users', { requiresAuth: false }).subscribe();
 
-      const req = httpMock.expectOne('http://localhost:3000/api/v1/users');
+      const req = httpMock.expectOne('http://localhost:3000/api/users');
       expect(req.request.headers.has('Authorization')).toBe(false);
       req.flush([]);
     });
@@ -110,7 +110,7 @@ describe('ApiService', () => {
         },
       });
 
-      const req = httpMock.expectOne('http://localhost:3000/api/v1/users/999');
+      const req = httpMock.expectOne('http://localhost:3000/api/users/999');
       req.flush({ message: 'Not found' }, { status: 404, statusText: 'Not Found' });
     });
 
@@ -121,7 +121,7 @@ describe('ApiService', () => {
         },
       });
 
-      const req = httpMock.expectOne('http://localhost:3000/api/v1/users');
+      const req = httpMock.expectOne('http://localhost:3000/api/users');
       req.error(new ProgressEvent('error'));
     });
   });
@@ -137,7 +137,7 @@ describe('ApiService', () => {
       expect(service.getActiveRequestCount()).toBe(1);
       expect(service.isLoading()).toBe(true);
 
-      const req = httpMock.expectOne('http://localhost:3000/api/v1/users');
+      const req = httpMock.expectOne('http://localhost:3000/api/users');
       req.flush([]);
 
       // Request completed
@@ -154,9 +154,7 @@ describe('ApiService', () => {
         search: 'test',
       });
 
-      expect(url).toBe(
-        'http://localhost:3000/api/v1/users?page=1&limit=10&search=test'
-      );
+        expect(url).toBe('http://localhost:3000/api/users?page=1&limit=10&search=test');
     });
 
     it('should handle null and undefined parameters', () => {
@@ -166,7 +164,7 @@ describe('ApiService', () => {
         email: undefined,
       });
 
-      expect(url).toBe('http://localhost:3000/api/v1/users?page=1');
+      expect(url).toBe('http://localhost:3000/api/users?page=1');
     });
   });
 });

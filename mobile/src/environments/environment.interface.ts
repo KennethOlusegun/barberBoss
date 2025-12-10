@@ -20,7 +20,7 @@ export interface Environment {
 
     /**
      * API version prefix
-     * @example '/api/v1'
+    * @example ''
      */
     apiPrefix: string;
 

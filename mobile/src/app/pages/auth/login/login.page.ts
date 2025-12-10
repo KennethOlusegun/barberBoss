@@ -55,7 +55,9 @@ export class LoginPage implements OnInit {
     };
 
     try {
-      await this.authService.login(credentials);
+      // Executa o Observable do login corretamente
+      const { firstValueFrom } = await import('rxjs');
+      await firstValueFrom(this.authService.login(credentials));
       this.router.navigate(['/tabs/tab1']);
     } catch (error: any) {
       this.errorMessage = error?.error?.message || 'Erro ao fazer login. Verifique suas credenciais.';

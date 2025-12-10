@@ -45,7 +45,7 @@ export class ConfigService {
   /**
    * Get the full API base URL
    * @returns Full API URL including prefix
-   * @example 'http://localhost:3000/api/v1'
+  * @example 'http://localhost:3000/api'
    */
   getApiUrl(): string {
     return `${this.config.api.baseUrl}${this.config.api.apiPrefix}`;
@@ -258,11 +258,11 @@ export class ConfigService {
    * Build a complete endpoint URL
    * @param endpoint The endpoint path (with or without leading slash)
    * @returns Full URL
-   * @example buildEndpointUrl('/users') => 'http://localhost:3000/api/v1/users'
+  * @example buildEndpointUrl('/users') => 'http://localhost:3000/api/users'
    */
   buildEndpointUrl(endpoint: string): string {
     const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
-    return `${this.getApiUrl()}${cleanEndpoint}`;
+    return `${this.getApiBaseUrl()}${cleanEndpoint}`;
   }
 
   /**

@@ -16,7 +16,7 @@ describe('ConfigService', () => {
   describe('API Configuration', () => {
     it('should return API URL with prefix', () => {
       const apiUrl = service.getApiUrl();
-      expect(apiUrl).toContain('/api/v1');
+      expect(apiUrl).toContain('/api');
     });
 
     it('should return API base URL', () => {
@@ -27,7 +27,7 @@ describe('ConfigService', () => {
     it('should build endpoint URL correctly', () => {
       const endpoint = service.buildEndpointUrl('/users');
       expect(endpoint).toContain('/users');
-      expect(endpoint).toContain('/api/v1');
+      expect(endpoint).toContain('/api');
     });
 
     it('should build endpoint URL without leading slash', () => {

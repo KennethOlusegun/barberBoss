@@ -62,6 +62,13 @@
   --highlight-color-focused: #667eea;
   border-radius: 12px;
 
+  // Corrige texto invisível nos campos de input
+  ion-input, input, input[type="text"], input[type="email"], input[type="password"] {
+    color: #222 !important;
+    background: transparent;
+    caret-color: #667eea;
+  }
+
   &.invalid {
     --background: #fff5f5;
     border: 1px solid #fc8181;
