@@ -37,7 +37,10 @@
             ],
             "styles": ["src/global.scss", "src/theme/variables.scss"],
             "scripts": [],
-            "browser": "src/main.ts"
+            "browser": "src/main.ts",
+            "externalDependencies": [
+              "@stencil/core"
+            ]
           },
           "configurations": {
             "production": {
@@ -129,7 +132,10 @@
     }
   },
   "cli": {
-    "schematicCollections": ["@ionic/angular-toolkit"]
+    "schematicCollections": [
+      "@ionic/angular-toolkit"
+    ],
+    "analytics": "ed9185a0-f52d-4d3d-8523-77a651e2c75a"
   },
   "schematics": {
     "@ionic/angular-toolkit:component": {

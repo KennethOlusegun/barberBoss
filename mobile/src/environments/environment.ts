@@ -2,8 +2,64 @@
 // `ng build` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
-export const environment = {
-  production: false
+import { Environment } from './environment.interface';
+
+/**
+ * Development Environment Configuration
+ * This configuration is used during local development
+ */
+export const environment: Environment = {
+  production: false,
+
+  api: {
+    baseUrl: 'http://localhost:3000',
+    apiPrefix: '/api/v1',
+    timeout: 30000,
+  },
+
+  auth: {
+    tokenKey: 'barber_boss_token',
+    refreshTokenKey: 'barber_boss_refresh_token',
+    tokenExpirationTime: 3600, // 1 hour
+  },
+
+  app: {
+    name: 'Barber Boss',
+    version: '0.0.1',
+    defaultLanguage: 'pt-BR',
+    supportedLanguages: ['pt-BR', 'en-US'],
+  },
+
+  features: {
+    enableDebugMode: true,
+    enableAnalytics: false,
+    enablePushNotifications: false,
+    enableOfflineMode: true,
+  },
+
+  logging: {
+    enableConsoleLogging: true,
+    logLevel: 'debug',
+    enableRemoteLogging: false,
+  },
+
+  storage: {
+    prefix: 'bb_',
+    type: 'localStorage',
+  },
+
+  business: {
+    defaultAppointmentDuration: 60, // minutes
+    minAdvanceBooking: 1, // hours
+    maxAdvanceBooking: 30, // days
+    cancellationDeadline: 2, // hours
+  },
+
+  ui: {
+    defaultTheme: 'auto',
+    enableAnimations: true,
+    itemsPerPage: 10,
+  },
 };
 
 /*

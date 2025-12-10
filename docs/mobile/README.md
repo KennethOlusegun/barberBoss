@@ -31,6 +31,34 @@ npm install
 
 ### Configuração
 
+#### Environment Configuration (Recomendado)
+
+O projeto utiliza um sistema robusto de configuração de ambiente. Para começar rapidamente:
+
+1. **Leia o Quick Start:**
+   ```bash
+   cat docs/mobile/ENVIRONMENT_QUICKSTART.md
+   ```
+
+2. **Revise os arquivos de ambiente:**
+   - `src/environments/environment.ts` (Desenvolvimento)
+   - `src/environments/environment.prod.ts` (Produção)
+
+3. **Use o ConfigService:**
+   ```typescript
+   import { ConfigService } from './core/services';
+   
+   constructor(private config: ConfigService) {}
+   
+   const apiUrl = this.config.getApiUrl();
+   ```
+
+4. **Documentação completa:**
+   - 📘 [Environment Configuration](./ENVIRONMENT_CONFIGURATION.md)
+   - 🚀 [Quick Start Guide](./ENVIRONMENT_QUICKSTART.md)
+
+#### Configuração Básica (Legado)
+
 Configure as variáveis de ambiente em `src/environments/`:
 
 **environment.ts** (Desenvolvimento)
@@ -123,4 +151,20 @@ npm run e2e
 
 ## 📚 Documentação Adicional
 
+### Environment Configuration (Novo!)
+
+**Comece aqui:**
+- 🚀 **[Quick Start](./ENVIRONMENT_QUICKSTART.md)** - Guia de início rápido (5 min)
+
+**Para desenvolvimento:**
+- 🔍 **[Referência Rápida](./ENVIRONMENT_QUICK_REFERENCE.md)** - Para uso diário
+- ⭐ **[Best Practices](./ENVIRONMENT_BEST_PRACTICES.md)** - Boas práticas recomendadas
+- 🧪 **[Testing Examples](./ENVIRONMENT_TESTING_EXAMPLES.md)** - Exemplos de testes
+
+**Documentação completa:**
+- 📘 **[Documentação Completa](./ENVIRONMENT_CONFIGURATION.md)** - Guia detalhado
+- 📋 **[Checklist](./ENVIRONMENT_CHECKLIST.md)** - Lista de verificação
+- 📊 **[Sumário](./ENVIRONMENT_IMPLEMENTATION_SUMMARY.md)** - Visão geral da implementação
+
+### Design
 Para informações sobre design e estilização, consulte a [documentação de design](../design/README.md).
