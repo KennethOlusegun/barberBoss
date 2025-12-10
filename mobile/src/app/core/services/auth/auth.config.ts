@@ -14,8 +14,8 @@ export const AUTH_ENDPOINTS = {
   REFRESH: '/auth/refresh',
   ME: '/auth/me',
   CHANGE_PASSWORD: '/auth/change-password',
-  RESET_PASSWORD: '/auth/reset-password',
-  RESET_PASSWORD_CONFIRM: '/auth/reset-password-confirm',
+  RESET_PASSWORD: '/auth/password/forgot',
+  RESET_PASSWORD_CONFIRM: '/auth/password/reset',
 } as const;
 
 /**

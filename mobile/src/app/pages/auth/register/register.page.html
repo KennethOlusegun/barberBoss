@@ -9,10 +9,49 @@
 
 <ion-content class="ion-padding">
   <div class="register-container">
-    <h2>Página de Registro</h2>
-    <p>Em desenvolvimento...</p>
+    <h2>Criar Conta</h2>
+    <form #registerForm="ngForm" (ngSubmit)="onSubmit()" novalidate>
+      <ion-item>
+        <ion-label position="floating">Nome</ion-label>
+        <ion-input type="text" name="name" required [(ngModel)]="form.name"></ion-input>
+      </ion-item>
+      <ion-text color="danger" *ngIf="submitted && !form.name">
+        <p>Nome é obrigatório.</p>
+      </ion-text>
 
-    <ion-button expand="block" (click)="goToLogin()">
+      <ion-item>
+        <ion-label position="floating">E-mail</ion-label>
+        <ion-input type="email" name="email" required [(ngModel)]="form.email"></ion-input>
+      </ion-item>
+      <ion-text color="danger" *ngIf="submitted && !form.email">
+        <p>E-mail é obrigatório.</p>
+      </ion-text>
+
+      <ion-item>
+        <ion-label position="floating">Senha</ion-label>
+        <ion-input type="password" name="password" required minlength="6" [(ngModel)]="form.password"></ion-input>
+      </ion-item>
+      <ion-text color="danger" *ngIf="submitted && (!form.password || form.password.length < 6)">
+        <p>Senha deve ter pelo menos 6 caracteres.</p>
+      </ion-text>
+
+      <ion-item>
+        <ion-label position="floating">Tipo de Perfil</ion-label>
+        <ion-select name="role" [(ngModel)]="form.role" interface="popover">
+          <ion-select-option *ngFor="let r of roles" [value]="r.value">{{ r.label }}</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-text color="danger" *ngIf="errorMsg">
+        <p>{{ errorMsg }}</p>
+      </ion-text>
+
+      <ion-button expand="block" type="submit" [disabled]="loading">
+        <ion-spinner *ngIf="loading" name="crescent"></ion-spinner>
+        <span *ngIf="!loading">Cadastrar</span>
+      </ion-button>
+    </form>
+    <ion-button expand="block" fill="clear" (click)="goToLogin()">
       Voltar para Login
     </ion-button>
   </div>
