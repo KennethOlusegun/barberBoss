@@ -12,3 +12,4 @@ export * from './config.service';
 export * from './api';
 export * from './auth';
 export * from './storage';
+export * from './loading.service';
