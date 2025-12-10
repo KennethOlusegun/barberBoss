@@ -12,6 +12,7 @@ import { Public } from '../../decorators/public.decorator';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { CurrentUser } from '../../decorators/current-user.decorator';
 import type { UserFromJwt } from './models/UserFromJwt';
+import { ThrottleStrict } from '../../decorators/throttle.decorator';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -19,6 +20,7 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Public()
+  @ThrottleStrict()
   @Post('register')
   @ApiOperation({ summary: 'Registro de novo usuário' })
   @ApiResponse({
@@ -51,6 +53,7 @@ export class AuthController {
   }
 
   @Public()
+  @ThrottleStrict()
   @Post('login')
   @ApiOperation({ summary: 'Login e geração de token JWT' })
   @ApiResponse({

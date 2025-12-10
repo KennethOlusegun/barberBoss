@@ -31,6 +31,7 @@ import { Roles } from '../../decorators/roles.decorator';
 import { CurrentUser } from '../../decorators/current-user.decorator';
 import { Role } from '@prisma/client';
 import dayjs from '../../config/dayjs.config';
+import { ThrottleModerate, ThrottleRelaxed } from '../../decorators/throttle.decorator';
 
 @ApiTags('appointments')
 @Controller('appointments')
@@ -39,6 +40,7 @@ export class AppointmentController {
   constructor(private readonly appointmentService: AppointmentService) {}
 
   @Post()
+  @ThrottleModerate()
   @ApiBearerAuth('JWT-auth')
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Criar novo agendamento (requer autenticação)' })
@@ -72,6 +74,7 @@ export class AppointmentController {
   }
 
   @Get()
+  @ThrottleRelaxed()
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({
     summary: 'Listar agendamentos com filtros opcionais e paginação (requer autenticação)',

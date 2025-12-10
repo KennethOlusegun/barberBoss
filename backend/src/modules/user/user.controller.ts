@@ -27,6 +27,7 @@ import { PaginationDto } from '../../common/dto/pagination.dto';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../../decorators/roles.decorator';
 import { Role } from '@prisma/client';
+import { ThrottleModerate, ThrottleRelaxed } from '../../decorators/throttle.decorator';
 
 @ApiTags('users')
 @Controller('users')
@@ -37,6 +38,7 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
+  @ThrottleModerate()
   @Roles(Role.ADMIN)
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Criar novo usuário (apenas ADMIN)' })
@@ -49,6 +51,7 @@ export class UserController {
   }
 
   @Get()
+  @ThrottleRelaxed()
   @Roles(Role.ADMIN)
   @ApiOperation({ summary: 'Listar todos os usuários com paginação (apenas ADMIN)' })
   @ApiResponse({

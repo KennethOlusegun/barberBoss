@@ -20,6 +20,7 @@ import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../../decorators/roles.decorator';
 import { Role } from '@prisma/client';
 import { Public } from '../../decorators/public.decorator';
+import { ThrottleModerate, ThrottleRelaxed } from '../../decorators/throttle.decorator';
 
 @ApiTags('services')
 @Controller('services')
@@ -28,6 +29,7 @@ export class ServiceController {
   constructor(private readonly serviceService: ServiceService) {}
 
   @Post()
+  @ThrottleModerate()
   @Roles(Role.ADMIN)
   @ApiBearerAuth('JWT-auth')
   @HttpCode(HttpStatus.CREATED)
@@ -41,6 +43,7 @@ export class ServiceController {
   }
 
   @Get()
+  @ThrottleRelaxed()
   @Public()
   @ApiOperation({ summary: 'Listar todos os serviços com paginação (público)' })
   @ApiResponse({
