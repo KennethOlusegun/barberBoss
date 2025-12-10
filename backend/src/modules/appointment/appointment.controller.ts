@@ -223,4 +223,63 @@ export class AppointmentController {
   ) {
     return this.appointmentService.getAvailableSlots(date, serviceId);
   }
+
+  @Get('client-history')
+  @ApiBearerAuth('JWT-auth')
+  @Roles(Role.ADMIN, Role.BARBER)
+  @ApiOperation({
+    summary: 'Buscar histórico de agendamentos de um cliente por nome ou telefone',
+    description:
+      'Retorna o histórico paginado de agendamentos de um cliente. ' +
+      'Busca por nome (parcial, case-insensitive) ou telefone. ' +
+      'Pelo menos um dos parâmetros (clientName ou phone) deve ser fornecido.',
+  })
+  @ApiQuery({
+    name: 'clientName',
+    required: false,
+    description: 'Nome do cliente (busca parcial)',
+    example: 'João',
+  })
+  @ApiQuery({
+    name: 'phone',
+    required: false,
+    description: 'Telefone do cliente',
+    example: '11987654321',
+  })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    description: 'Número da página',
+    example: 1,
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    description: 'Quantidade de itens por página',
+    example: 10,
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Histórico de agendamentos encontrado com sucesso',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'É necessário fornecer nome ou telefone',
+  })
+  @ApiResponse({ status: 401, description: 'Não autorizado' })
+  @ApiResponse({
+    status: 403,
+    description: 'Acesso negado (apenas Admin e Barber)',
+  })
+  async getClientHistory(
+    @Query('clientName') clientName?: string,
+    @Query('phone') phone?: string,
+    @Query() paginationDto?: PaginationDto,
+  ) {
+    return this.appointmentService.getClientHistory(
+      clientName,
+      phone,
+      paginationDto,
+    );
+  }
 }

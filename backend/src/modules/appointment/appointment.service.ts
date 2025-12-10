@@ -725,11 +725,114 @@ export class AppointmentService {
       }
     }
 
-    return {
+      return {
       slots: availableSlots,
       businessHours: {
         openTime: settings.openTime,
         closeTime: settings.closeTime,
+      },
+    };
+  }
+
+  /**
+   * Busca o histórico de agendamentos de um cliente por nome ou telefone
+   * @param clientName Nome do cliente (busca parcial, case-insensitive)
+   * @param phone Telefone do cliente
+   * @param paginationDto Opções de paginação
+   * @returns Lista paginada de agendamentos do cliente
+   */
+  async getClientHistory(
+    clientName?: string,
+    phone?: string,
+    paginationDto?: PaginationDto,
+  ): Promise<PaginatedResult<Appointment>> {
+    const { page = 1, limit = 10 } = paginationDto || {};
+
+    // Validar que pelo menos um parâmetro de busca foi fornecido
+    if (!clientName && !phone) {
+      throw new BadRequestException(
+        'É necessário fornecer pelo menos o nome ou telefone do cliente para buscar o histórico',
+      );
+    }
+
+    // Construir condições de busca
+    const whereConditions: any = {
+      OR: [],
+    };
+
+    // Buscar por nome do cliente (tanto em clientName quanto em user.name)
+    if (clientName) {
+      whereConditions.OR.push(
+        {
+          clientName: {
+            contains: clientName,
+            mode: 'insensitive',
+          },
+        },
+        {
+          user: {
+            name: {
+              contains: clientName,
+              mode: 'insensitive',
+            },
+          },
+        },
+      );
+    }
+
+    // Buscar por telefone (apenas em user.phone)
+    if (phone) {
+      whereConditions.OR.push({
+        user: {
+          phone: {
+            contains: phone,
+          },
+        },
+      });
+    }
+
+    // Buscar agendamentos
+    const [appointments, total] = await Promise.all([
+      this.prisma.appointment.findMany({
+        where: whereConditions,
+        include: {
+          service: {
+            select: {
+              id: true,
+              name: true,
+              price: true,
+              durationMin: true,
+            },
+          },
+          user: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              phone: true,
+            },
+          },
+        },
+        orderBy: {
+          startsAt: 'desc', // Mais recentes primeiro
+        },
+        skip: (page - 1) * limit,
+        take: limit,
+      }),
+      this.prisma.appointment.count({
+        where: whereConditions,
+      }),
+    ]);
+
+    const totalPages = Math.ceil(total / limit);
+
+    return {
+      data: appointments,
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages,
       },
     };
   }
