@@ -5,11 +5,17 @@
  * Import core services, constants, and other utilities from this file.
  *
  * @example
- * import { ConfigService, API_ENDPOINTS } from './core';
+ * import { ConfigService, AuthService, API_ENDPOINTS } from './core';
  */
 
 // Services
 export * from './services';
+
+// Guards
+export * from './guards';
+
+// Interceptors
+export * from './interceptors';
 
 // Constants
 export * from './constants';
