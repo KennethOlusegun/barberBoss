@@ -1,0 +1,122 @@
+<ion-content [fullscreen]="true" class="login-content">
+  <div class="login-container">
+    <!-- Logo e Header -->
+    <div class="header-section">
+      <div class="logo-container">
+        <ion-icon name="cut-outline" class="logo-icon"></ion-icon>
+      </div>
+      <h1 class="app-title">BarberBoss</h1>
+      <p class="app-subtitle">Gerencie seu salão com facilidade</p>
+    </div>
+
+    <!-- Formulário de Login -->
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+      <!-- Campo de Email -->
+      <div class="form-group">
+        <ion-item
+          lines="none"
+          class="input-item"
+          [class.invalid]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
+          <ion-icon name="mail-outline" slot="start" class="input-icon"></ion-icon>
+          <ion-input
+            formControlName="email"
+            type="email"
+            placeholder="Email"
+            [clearInput]="true"
+            autocomplete="email">
+          </ion-input>
+        </ion-item>
+        <div class="error-message" *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
+          <ion-text color="danger">
+            <small>{{ getErrorMessage('email') }}</small>
+          </ion-text>
+        </div>
+      </div>
+
+      <!-- Campo de Senha -->
+      <div class="form-group">
+        <ion-item
+          lines="none"
+          class="input-item"
+          [class.invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+          <ion-icon name="lock-closed-outline" slot="start" class="input-icon"></ion-icon>
+          <ion-input
+            formControlName="password"
+            [type]="showPassword ? 'text' : 'password'"
+            placeholder="Senha"
+            autocomplete="current-password">
+          </ion-input>
+          <ion-button
+            slot="end"
+            fill="clear"
+            (click)="togglePasswordVisibility()"
+            class="password-toggle">
+            <ion-icon
+              [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"
+              slot="icon-only">
+            </ion-icon>
+          </ion-button>
+        </ion-item>
+        <div class="error-message" *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+          <ion-text color="danger">
+            <small>{{ getErrorMessage('password') }}</small>
+          </ion-text>
+        </div>
+      </div>
+
+      <!-- Link Esqueci a Senha -->
+      <div class="forgot-password-section">
+        <ion-button
+          fill="clear"
+          size="small"
+          (click)="goToForgotPassword()"
+          class="forgot-password-btn">
+          Esqueceu a senha?
+        </ion-button>
+      </div>
+
+      <!-- Mensagem de Erro -->
+      <ion-text color="danger" *ngIf="errorMessage" class="error-alert">
+        <div class="error-box">
+          <ion-icon name="alert-circle-outline"></ion-icon>
+          <span>{{ errorMessage }}</span>
+        </div>
+      </ion-text>
+
+      <!-- Botão de Login -->
+      <ion-button
+        expand="block"
+        type="submit"
+        [disabled]="isLoading"
+        class="login-btn">
+        <ion-spinner name="crescent" *ngIf="isLoading"></ion-spinner>
+        <span *ngIf="!isLoading">Entrar</span>
+      </ion-button>
+
+      <!-- Divider -->
+      <div class="divider">
+        <span class="divider-text">ou</span>
+      </div>
+
+      <!-- Botão de Registro -->
+      <ion-button
+        expand="block"
+        fill="outline"
+        (click)="goToRegister()"
+        [disabled]="isLoading"
+        class="register-btn">
+        Criar uma conta
+      </ion-button>
+    </form>
+
+    <!-- Footer -->
+    <div class="footer-section">
+      <p class="footer-text">
+        Ao continuar, você concorda com nossos
+        <a href="#" class="footer-link">Termos de Uso</a>
+        e
+        <a href="#" class="footer-link">Política de Privacidade</a>
+      </p>
+    </div>
+  </div>
+</ion-content>

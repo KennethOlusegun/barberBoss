@@ -1,0 +1,310 @@
+/**
+ * Example Component
+ * 
+ * NOTA: Este é um arquivo de EXEMPLO apenas para referência.
+ * Não deve ser importado ou usado diretamente no projeto.
+ * Use como base para criar seus próprios componentes.
+ * 
+ * Para usar em produção, você precisaria:
+ * 1. Adicionar CUSTOM_ELEMENTS_SCHEMA ou importar os componentes Ionic
+ * 2. Adicionar CommonModule para *ngIf e *ngFor
+ * 3. Configurar imports adequadamente no @Component
+ * 
+ * Demonstra como usar o UserService e o ApiService em um componente
+ */
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { UserService, User } from './user.service.example';
+import { ApiError, ApiErrorCode } from '../api.types';
+
+/**
+ * Example Component
+ * 
+ * Demonstra como usar o UserService e o ApiService em um componente
+ */
+@Component({
+  selector: 'app-users',
+  template: `
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>Usuários</ion-title>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content>
+      <!-- Loading -->
+      <div *ngIf="isLoading" class="loading-container">
+        <ion-spinner></ion-spinner>
+      </div>
+
+      <!-- Error -->
+      <ion-card *ngIf="error" color="danger">
+        <ion-card-content>
+          {{ error }}
+        </ion-card-content>
+      </ion-card>
+
+      <!-- User list -->
+      <ion-list *ngIf="!isLoading && !error">
+        <ion-item *ngFor="let user of users" (click)="viewUser(user.id)">
+          <ion-avatar slot="start">
+            <img [src]="user.avatar || 'assets/default-avatar.png'" />
+          </ion-avatar>
+          <ion-label>
+            <h2>{{ user.name }}</h2>
+            <p>{{ user.email }}</p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+
+      <!-- Pagination -->
+      <div class="pagination" *ngIf="totalPages > 1">
+        <ion-button 
+          [disabled]="currentPage === 1" 
+          (click)="loadPage(currentPage - 1)">
+          Anterior
+        </ion-button>
+        <span>Página {{ currentPage }} de {{ totalPages }}</span>
+        <ion-button 
+          [disabled]="currentPage === totalPages" 
+          (click)="loadPage(currentPage + 1)">
+          Próxima
+        </ion-button>
+      </div>
+    </ion-content>
+  `,
+  styles: [`
+    .loading-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 200px;
+    }
+
+    .pagination {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px;
+    }
+  `]
+})
+export class UsersComponent implements OnInit, OnDestroy {
+  users: User[] = [];
+  isLoading = false;
+  error: string | null = null;
+  currentPage = 1;
+  totalPages = 1;
+  
+  private destroy$ = new Subject<void>();
+
+  constructor(private userService: UserService) {}
+
+  ngOnInit() {
+    this.loadUsers();
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  /**
+   * Load users with pagination
+   */
+  loadUsers() {
+    this.isLoading = true;
+    this.error = null;
+
+    this.userService
+      .getUsers(this.currentPage, 10)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response: { data: User[]; meta: { totalPages: number } }) => {
+          this.users = response.data;
+          this.totalPages = response.meta.totalPages;
+          this.isLoading = false;
+        },
+        error: (error: ApiError) => {
+          this.handleError(error);
+          this.isLoading = false;
+        },
+      });
+  }
+
+  /**
+   * Load specific page
+   */
+  loadPage(page: number) {
+    this.currentPage = page;
+    this.loadUsers();
+  }
+
+  /**
+   * View user details
+   */
+  viewUser(userId: string) {
+    this.userService
+      .getUser(userId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (user: User) => {
+          console.log('User details:', user);
+          // Navigate to user details page
+        },
+        error: (error: ApiError) => {
+          this.handleError(error);
+        },
+      });
+  }
+
+  /**
+   * Create new user
+   */
+  createUser() {
+    const newUser = {
+      name: 'John Doe',
+      email: 'john@example.com',
+      role: 'client' as const,
+    };
+
+    this.userService
+      .createUser(newUser)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (user: User) => {
+          console.log('User created:', user);
+          this.loadUsers(); // Reload list
+        },
+        error: (error: ApiError) => {
+          this.handleError(error);
+        },
+      });
+  }
+
+  /**
+   * Update user
+   */
+  updateUser(userId: string, updates: Partial<User>) {
+    this.userService
+      .patchUser(userId, updates)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (user: User) => {
+          console.log('User updated:', user);
+          this.loadUsers(); // Reload list
+        },
+        error: (error: ApiError) => {
+          this.handleError(error);
+        },
+      });
+  }
+
+  /**
+   * Delete user
+   */
+  deleteUser(userId: string) {
+    this.userService
+      .deleteUser(userId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          console.log('User deleted');
+          this.loadUsers(); // Reload list
+        },
+        error: (error: ApiError) => {
+          this.handleError(error);
+        },
+      });
+  }
+
+  /**
+   * Search users
+   */
+  searchUsers(query: string) {
+    if (!query.trim()) {
+      this.loadUsers();
+      return;
+    }
+
+    this.isLoading = true;
+    this.error = null;
+
+    this.userService
+      .searchUsers(query)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (users: User[]) => {
+          this.users = users;
+          this.isLoading = false;
+        },
+        error: (error: ApiError) => {
+          this.handleError(error);
+          this.isLoading = false;
+        },
+      });
+  }
+
+  /**
+   * Upload avatar
+   */
+  uploadAvatar(userId: string, file: File) {
+    this.userService
+      .uploadAvatar(userId, file)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response: { url: string }) => {
+          console.log('Avatar uploaded:', response.url);
+          this.loadUsers(); // Reload to show new avatar
+        },
+        error: (error: ApiError) => {
+          this.handleError(error);
+        },
+      });
+  }
+
+  /**
+   * Handle API errors
+   */
+  private handleError(error: ApiError) {
+    console.error('API Error:', error);
+
+    switch (error.code) {
+      case ApiErrorCode.UNAUTHORIZED:
+        this.error = 'Você precisa fazer login para acessar esta página.';
+        // Redirect to login
+        break;
+      
+      case ApiErrorCode.FORBIDDEN:
+        this.error = 'Você não tem permissão para realizar esta ação.';
+        break;
+      
+      case ApiErrorCode.NOT_FOUND:
+        this.error = 'Recurso não encontrado.';
+        break;
+      
+      case ApiErrorCode.VALIDATION_ERROR:
+        this.error = 'Dados inválidos. Verifique os campos e tente novamente.';
+        if (error.details) {
+          console.error('Validation errors:', error.details);
+        }
+        break;
+      
+      case ApiErrorCode.NETWORK_ERROR:
+        this.error = 'Erro de conexão. Verifique sua internet e tente novamente.';
+        break;
+      
+      case ApiErrorCode.TIMEOUT:
+        this.error = 'A requisição demorou muito. Tente novamente.';
+        break;
+      
+      case ApiErrorCode.SERVER_ERROR:
+        this.error = 'Erro no servidor. Tente novamente mais tarde.';
+        break;
+      
+      default:
+        this.error = error.message || 'Ocorreu um erro. Tente novamente.';
+    }
+  }
+}

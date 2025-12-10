@@ -1,0 +1,140 @@
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { ApiService } from '../api.service';
+
+/**
+ * User Model
+ */
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  phone?: string;
+  avatar?: string;
+  role: 'admin' | 'barber' | 'client';
+  createdAt: string;
+  updatedAt: string;
+}
+
+/**
+ * User Service Example
+ * 
+ * Exemplo de como criar um serviço específico usando o ApiService base.
+ * Este padrão deve ser seguido para todos os recursos da aplicação.
+ */
+@Injectable({
+  providedIn: 'root',
+})
+export class UserService {
+  private readonly endpoint = '/users';
+
+  constructor(private apiService: ApiService) {}
+
+  /**
+   * Get all users with pagination
+   */
+  getUsers(page: number = 1, limit: number = 10): Observable<{
+    data: User[];
+    meta: {
+      page: number;
+      perPage: number;
+      total: number;
+      totalPages: number;
+    };
+  }> {
+    return this.apiService.get(this.endpoint, {
+      params: { page, limit },
+    });
+  }
+
+  /**
+   * Get a single user by ID
+   */
+  getUser(id: string): Observable<User> {
+    return this.apiService.get<User>(`${this.endpoint}/${id}`);
+  }
+
+  /**
+   * Get current user profile
+   */
+  getCurrentUser(): Observable<User> {
+    return this.apiService.get<User>('/user/profile');
+  }
+
+  /**
+   * Create a new user
+   */
+  createUser(userData: Omit<User, 'id' | 'createdAt' | 'updatedAt'>): Observable<User> {
+    return this.apiService.post<User>(this.endpoint, userData);
+  }
+
+  /**
+   * Update user (full update)
+   */
+  updateUser(id: string, userData: Partial<User>): Observable<User> {
+    return this.apiService.put<User>(`${this.endpoint}/${id}`, userData);
+  }
+
+  /**
+   * Patch user (partial update)
+   */
+  patchUser(id: string, updates: Partial<User>): Observable<User> {
+    return this.apiService.patch<User>(`${this.endpoint}/${id}`, updates);
+  }
+
+  /**
+   * Delete a user
+   */
+  deleteUser(id: string): Observable<void> {
+    return this.apiService.delete(`${this.endpoint}/${id}`);
+  }
+
+  /**
+   * Search users by name or email
+   */
+  searchUsers(query: string): Observable<User[]> {
+    return this.apiService.get<{ data: User[] }>(this.endpoint, {
+      params: { search: query },
+    }).pipe(
+      map(response => response.data)
+    );
+  }
+
+  /**
+   * Upload user avatar
+   */
+  uploadAvatar(userId: string, file: File): Observable<{ url: string }> {
+    return this.apiService.uploadFile<{ url: string }>(
+      `${this.endpoint}/${userId}/avatar`,
+      file,
+      'avatar'
+    );
+  }
+
+  /**
+   * Update user password
+   */
+  updatePassword(userId: string, oldPassword: string, newPassword: string): Observable<void> {
+    return this.apiService.post(`${this.endpoint}/${userId}/password`, {
+      oldPassword,
+      newPassword,
+    });
+  }
+
+  /**
+   * Get user statistics
+   */
+  getUserStats(userId: string): Observable<{
+    totalAppointments: number;
+    totalSpent: number;
+    favoriteBarber: string;
+  }> {
+    return this.apiService.get(`${this.endpoint}/${userId}/stats`, {
+      // Cache por 5 minutos
+      headers: {
+        'X-Cache-Duration': '300000'
+      }
+    });
+  }
+}
