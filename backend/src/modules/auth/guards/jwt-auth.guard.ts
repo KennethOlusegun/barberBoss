@@ -50,7 +50,11 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     return super.canActivate(context);
   }
 
-  handleRequest(err: Error, user: any, info: any): any {
+  handleRequest<TUser = AuthenticatedUser>(
+    err: Error | null,
+    user: TUser | null,
+    info: unknown,
+  ): TUser {
     if (err || !user) {
       this.logger.error(
         `Erro de autenticação: ${err?.message || 'Usuário não encontrado'}`,
@@ -59,7 +63,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       throw err || new UnauthorizedException('Acesso não autorizado');
     }
     this.logger.debug(
-      `Usuário autenticado: ${(user as AuthenticatedUser).email}`,
+      `Usuário autenticado: ${(user as unknown as AuthenticatedUser).email}`,
     );
     return user;
   }

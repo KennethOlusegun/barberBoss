@@ -32,11 +32,11 @@ export function IsBusinessHours(
       propertyName: propertyName,
       options: validationOptions,
       validator: {
-        validate(value: any, args: ValidationArguments) {
+        validate(value: unknown, args: ValidationArguments) {
           if (!value) return true; // Se não há valor, deixa outros decorators validarem
 
           try {
-            const date = new Date(value);
+            const date = new Date(value as string | Date);
             if (isNaN(date.getTime())) {
               return false;
             }

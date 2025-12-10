@@ -27,9 +27,23 @@ async function bootstrap() {
     .setTitle('Barber Boss API')
     .setDescription('API para gerenciamento de barbearia')
     .setVersion('1.0')
+    .addTag('auth', 'Autenticação e autorização')
     .addTag('users', 'Operações relacionadas aos usuários')
     .addTag('services', 'Operações relacionadas aos serviços')
     .addTag('appointments', 'Operações relacionadas aos agendamentos')
+    .addTag('settings', 'Configurações da barbearia')
+    .addTag('time-blocks', 'Bloqueio de horários')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        name: 'JWT',
+        description: 'Insira o token JWT',
+        in: 'header',
+      },
+      'JWT-auth',
+    )
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
@@ -37,4 +51,4 @@ async function bootstrap() {
 
   await app.listen(process.env.PORT ?? 3000);
 }
-bootstrap();
+void bootstrap();

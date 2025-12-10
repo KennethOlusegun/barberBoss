@@ -13,7 +13,7 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { CurrentUser } from '../../decorators/current-user.decorator';
 import type { UserFromJwt } from './models/UserFromJwt';
 
-@ApiTags('🔐 Autenticação - Portal Gerencial')
+@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -83,7 +83,7 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @Get('me')
-  @ApiBearerAuth()
+  @ApiBearerAuth('JWT-auth')
   @ApiOperation({ summary: 'Obter perfil do usuário autenticado' })
   @ApiResponse({
     status: 200,

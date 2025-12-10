@@ -21,10 +21,15 @@ API RESTful construída com NestJS, Prisma ORM e PostgreSQL para gerenciamento d
 - **User** - Gerenciamento de usuários
 - **Service** - Serviços da barbearia
 - **Appointment** - Sistema de agendamentos
+- **Settings** - Configurações dinâmicas da barbearia
+- **TimeBlock** - Bloqueio de horários (folgas, almoço, férias)
 
 ## 📚 Documentação
 
 - [Autenticação](./AUTH.md) - Sistema de autenticação JWT e autorização por roles
+- [Configurações](./SETTINGS.md) - Configurações dinâmicas do negócio
+- [Horários Disponíveis](./AVAILABLE_SLOTS.md) - Busca de slots disponíveis para agendamento
+- [Bloqueio de Horários](./TIME_BLOCKS.md) - Gerenciamento de bloqueios (folgas, almoço, férias)
 - [Paginação](./PAGINATION.md) - Implementação de paginação nos endpoints
 - [Exemplos de Paginação](./PAGINATION_EXAMPLES.md) - Exemplos práticos de uso da API
 - [Day.js](./DAYJS.md) - Configuração e uso do Day.js com timezone PT-BR

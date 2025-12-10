@@ -9,6 +9,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { AppointmentModule } from './modules/appointment/appointment.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { SettingsModule } from './modules/settings/settings.module';
+import { TimeBlockModule } from './modules/time-block/time-block.module';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 import { RolesGuard } from './modules/auth/guards/roles.guard';
 
@@ -23,6 +24,7 @@ import { RolesGuard } from './modules/auth/guards/roles.guard';
     ServiceModule,
     AppointmentModule,
     SettingsModule,
+    TimeBlockModule,
   ],
   controllers: [AppController],
   providers: [

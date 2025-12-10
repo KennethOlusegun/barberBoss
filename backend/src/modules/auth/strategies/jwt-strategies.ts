@@ -1,6 +1,7 @@
 import { Injectable, UnauthorizedException, Logger } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
+import { ConfigService } from '@nestjs/config';
 import { UserFromJwt } from '../models/UserFromJwt';
 import { UserPayload } from '../models/UserPayload';
 import { PrismaService } from '../../../prisma/prisma.service';
@@ -9,12 +10,17 @@ import { PrismaService } from '../../../prisma/prisma.service';
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   private readonly logger = new Logger(JwtStrategy.name);
 
-  constructor(private prisma: PrismaService) {
+  constructor(
+    private prisma: PrismaService,
+    private configService: ConfigService,
+  ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: process.env.JWT_SECRET || 'default_secret_key',
+      secretOrKey: configService.get<string>('JWT_SECRET') || 'default_secret_key',
     });
+    
+    this.logger.log(`JwtStrategy inicializada com secret: ${configService.get<string>('JWT_SECRET') ? 'configurado' : 'usando default'}`);
   }
 
   async validate(payload: UserPayload): Promise<UserFromJwt> {
