@@ -21,19 +21,9 @@ import { RolesGuard } from './modules/auth/guards/roles.guard';
     }),
     ThrottlerModule.forRoot([
       {
-        name: 'short',
-        ttl: 1000, // 1 segundo
-        limit: 3, // 3 requisições por segundo
-      },
-      {
-        name: 'medium',
-        ttl: 10000, // 10 segundos
-        limit: 20, // 20 requisições por 10 segundos
-      },
-      {
-        name: 'long',
-        ttl: 60000, // 1 minuto
-        limit: 100, // 100 requisições por minuto
+        name: 'default',
+        ttl: 60000, // 60 segundos
+        limit: 100, // 100 requisições a cada 60 segundos
       },
     ]),
     PrismaModule,

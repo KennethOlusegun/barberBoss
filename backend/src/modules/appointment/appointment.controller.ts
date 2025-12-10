@@ -31,10 +31,7 @@ import { Roles } from '../../decorators/roles.decorator';
 import { CurrentUser } from '../../decorators/current-user.decorator';
 import { Role } from '@prisma/client';
 import dayjs from '../../config/dayjs.config';
-import {
-  ThrottleModerate,
-  ThrottleRelaxed,
-} from '../../decorators/throttle.decorator';
+import { ThrottleModerate, ThrottleRelaxed } from '../../decorators/throttle.decorator';
 
 @ApiTags('appointments')
 @Controller('appointments')
@@ -80,8 +77,7 @@ export class AppointmentController {
   @ThrottleRelaxed()
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({
-    summary:
-      'Listar agendamentos com filtros opcionais e paginação (requer autenticação)',
+    summary: 'Listar agendamentos com filtros opcionais e paginação (requer autenticação)',
   })
   @ApiQuery({
     name: 'date',
@@ -161,10 +157,7 @@ export class AppointmentController {
   })
   @ApiResponse({ status: 404, description: 'Agendamento não encontrado' })
   @ApiResponse({ status: 401, description: 'Não autorizado' })
-  @ApiResponse({
-    status: 403,
-    description: 'Acesso negado - apenas ADMIN ou BARBER',
-  })
+  @ApiResponse({ status: 403, description: 'Acesso negado - apenas ADMIN ou BARBER' })
   update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateAppointmentDto: UpdateAppointmentDto,
@@ -238,8 +231,7 @@ export class AppointmentController {
   @ApiBearerAuth('JWT-auth')
   @Roles(Role.ADMIN, Role.BARBER)
   @ApiOperation({
-    summary:
-      'Buscar histórico de agendamentos de um cliente por nome ou telefone',
+    summary: 'Buscar histórico de agendamentos de um cliente por nome ou telefone',
     description:
       'Retorna o histórico paginado de agendamentos de um cliente. ' +
       'Busca por nome (parcial, case-insensitive) ou telefone. ' +

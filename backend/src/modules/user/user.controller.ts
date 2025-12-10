@@ -27,10 +27,7 @@ import { PaginationDto } from '../../common/dto/pagination.dto';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../../decorators/roles.decorator';
 import { Role } from '@prisma/client';
-import {
-  ThrottleModerate,
-  ThrottleRelaxed,
-} from '../../decorators/throttle.decorator';
+import { ThrottleModerate, ThrottleRelaxed } from '../../decorators/throttle.decorator';
 
 @ApiTags('users')
 @Controller('users')
@@ -56,9 +53,7 @@ export class UserController {
   @Get()
   @ThrottleRelaxed()
   @Roles(Role.ADMIN)
-  @ApiOperation({
-    summary: 'Listar todos os usuários com paginação (apenas ADMIN)',
-  })
+  @ApiOperation({ summary: 'Listar todos os usuários com paginação (apenas ADMIN)' })
   @ApiResponse({
     status: 200,
     description: 'Lista de usuários retornada com sucesso',
