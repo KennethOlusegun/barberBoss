@@ -17,10 +17,13 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: configService.get<string>('JWT_SECRET') || 'default_secret_key',
+      secretOrKey:
+        configService.get<string>('JWT_SECRET') || 'default_secret_key',
     });
-    
-    this.logger.log(`JwtStrategy inicializada com secret: ${configService.get<string>('JWT_SECRET') ? 'configurado' : 'usando default'}`);
+
+    this.logger.log(
+      `JwtStrategy inicializada com secret: ${configService.get<string>('JWT_SECRET') ? 'configurado' : 'usando default'}`,
+    );
   }
 
   async validate(payload: UserPayload): Promise<UserFromJwt> {

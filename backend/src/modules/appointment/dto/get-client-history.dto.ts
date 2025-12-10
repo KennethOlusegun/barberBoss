@@ -4,7 +4,8 @@ import { PaginationDto } from '../../../common/dto/pagination.dto';
 
 export class GetClientHistoryDto extends PaginationDto {
   @ApiPropertyOptional({
-    description: 'Nome do cliente para buscar histórico (busca parcial, case-insensitive)',
+    description:
+      'Nome do cliente para buscar histórico (busca parcial, case-insensitive)',
     example: 'João Silva',
     minLength: 2,
   })

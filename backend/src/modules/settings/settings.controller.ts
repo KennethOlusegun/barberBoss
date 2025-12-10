@@ -1,5 +1,10 @@
 import { Controller, Get, Patch, Body, UseGuards } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { SettingsService } from './settings.service';
 import { UpdateSettingsDto } from './dto/update-settings.dto';
 import { Settings } from './entities/settings.entity';
@@ -17,14 +22,15 @@ export class SettingsController {
 
   @Get()
   @Public()
-  @ApiOperation({ 
+  @ApiOperation({
     summary: 'Consultar configurações da barbearia (público)',
-    description: 'Retorna informações sobre horário de funcionamento, dias de trabalho, etc.'
+    description:
+      'Retorna informações sobre horário de funcionamento, dias de trabalho, etc.',
   })
-  @ApiResponse({ 
-    status: 200, 
+  @ApiResponse({
+    status: 200,
     description: 'Configurações retornadas com sucesso',
-    type: Settings
+    type: Settings,
   })
   async get(): Promise<Settings> {
     return this.settingsService.get();
@@ -33,14 +39,15 @@ export class SettingsController {
   @Patch()
   @Roles(Role.ADMIN)
   @ApiBearerAuth('JWT-auth')
-  @ApiOperation({ 
+  @ApiOperation({
     summary: 'Atualizar configurações da barbearia (apenas ADMIN)',
-    description: 'Permite modificar horários de funcionamento, dias de trabalho, etc.'
+    description:
+      'Permite modificar horários de funcionamento, dias de trabalho, etc.',
   })
-  @ApiResponse({ 
-    status: 200, 
+  @ApiResponse({
+    status: 200,
     description: 'Configurações atualizadas com sucesso',
-    type: Settings
+    type: Settings,
   })
   @ApiResponse({ status: 401, description: 'Não autorizado' })
   @ApiResponse({ status: 403, description: 'Acesso negado - apenas ADMIN' })

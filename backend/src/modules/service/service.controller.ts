@@ -11,7 +11,13 @@ import {
   HttpStatus,
   UseGuards,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiParam,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { ServiceService } from './service.service';
 import { CreateServiceDto } from './dto/create-service.dto';
 import { UpdateServiceDto } from './dto/update-service.dto';
@@ -20,7 +26,10 @@ import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../../decorators/roles.decorator';
 import { Role } from '@prisma/client';
 import { Public } from '../../decorators/public.decorator';
-import { ThrottleModerate, ThrottleRelaxed } from '../../decorators/throttle.decorator';
+import {
+  ThrottleModerate,
+  ThrottleRelaxed,
+} from '../../decorators/throttle.decorator';
 
 @ApiTags('services')
 @Controller('services')
