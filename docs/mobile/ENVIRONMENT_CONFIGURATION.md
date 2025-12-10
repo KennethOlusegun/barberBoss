@@ -1,41 +1,41 @@
-# Environment Configuration - Mobile
+# Configuração de Ambiente - Mobile
 
-## Overview
+## Visão Geral
 
-The mobile application uses a structured environment configuration system that provides:
+O aplicativo mobile utiliza um sistema estruturado de configuração de ambiente que oferece:
 
-- **Type-safe configuration** with TypeScript interfaces
-- **Centralized configuration service** for easy access
-- **Environment-specific settings** (development and production)
-- **Feature flags** for enabling/disabling features
-- **Business rules configuration** for application logic
+- **Configuração com tipagem forte** usando interfaces TypeScript
+- **Serviço de configuração centralizado** para acesso fácil
+- **Configurações específicas por ambiente** (desenvolvimento e produção)
+- **Feature flags** para ativar/desativar funcionalidades
+- **Configuração de regras de negócio** para lógica da aplicação
 
-## Architecture
+## Arquitetura
 
-### Files Structure
+### Estrutura de Arquivos
 
 ```
 mobile/src/
 ├── environments/
-│   ├── environment.interface.ts    # TypeScript interface for type safety
-│   ├── environment.ts              # Development configuration
-│   └── environment.prod.ts         # Production configuration
+│   ├── environment.interface.ts    # Interface TypeScript para segurança de tipos
+│   ├── environment.ts              # Configuração de desenvolvimento
+│   └── environment.prod.ts         # Configuração de produção
 └── app/core/services/
-    ├── config.service.ts           # Configuration service
-    └── config.service.spec.ts      # Unit tests
+    ├── config.service.ts           # Serviço de configuração
+    └── config.service.spec.ts      # Testes unitários
 ```
 
-## Configuration Sections
+## Seções de Configuração
 
-### 1. API Configuration
+### 1. Configuração da API
 
-Controls backend API connection settings:
+Controla as configurações de conexão com o backend:
 
 ```typescript
 api: {
-  baseUrl: string;        // Backend API base URL
-  apiPrefix: string;      // API version prefix (e.g., '/api/v1')
-  timeout: number;        // Request timeout in milliseconds
+  baseUrl: string;        // URL base da API do backend
+  apiPrefix: string;      // Prefixo de versão da API (ex: '/api/v1')
+  timeout: number;        // Timeout das requisições em milissegundos
 }
 ```
 
