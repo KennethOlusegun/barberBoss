@@ -5,7 +5,8 @@
  * Import services from this file instead of individual files for cleaner imports.
  *
  * @example
- * import { ConfigService } from './core/services';
+ * import { ConfigService, ApiService } from './core/services';
  */
 
 export * from './config.service';
+export * from './api';
