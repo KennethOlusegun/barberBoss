@@ -1,52 +1,117 @@
 import {
-  IsString,
-  IsDateString,
+  IsNotEmpty,
   IsOptional,
   IsUUID,
-  IsEnum,
-  IsNotEmpty,
-  ValidateIf,
+  IsISO8601,
   MinLength,
-  MaxLength,
+  IsIn,
+  IsString,
+  Validate,
+  ValidationArguments,
+  ValidatorConstraint,
+  ValidatorConstraintInterface,
 } from 'class-validator';
 import { AppointmentStatus } from '@prisma/client';
 
+/**
+ * Validador customizado: garante que userId e clientName são mutuamente exclusivos
+ */
+@ValidatorConstraint({ name: 'IsUserIdXorClientName', async: false })
+export class IsUserIdXorClientNameConstraint implements ValidatorConstraintInterface {
+  validate(value: any, args: ValidationArguments) {
+    const object = args.object as any;
+    const hasUserId = !!object.userId;
+    const hasClientName = !!object.clientName;
+
+    // Deve ter exatamente um deles (XOR)
+    return hasUserId !== hasClientName;
+  }
+
+  defaultMessage(args: ValidationArguments) {
+    const object = args.object as any;
+    const hasUserId = !!object.userId;
+    const hasClientName = !!object.clientName;
+
+    if (hasUserId && hasClientName) {
+      return 'Forneça APENAS userId (cliente cadastrado) OU clientName (agendamento manual), não ambos.';
+    }
+    return 'É necessário fornecer userId (cliente cadastrado) ou clientName (agendamento manual).';
+  }
+}
+
 export class CreateAppointmentDto {
-  @IsString({ message: 'startsAt deve ser uma string de data/hora' })
-  @IsNotEmpty({ message: 'startsAt é obrigatório' })
-  startsAt: string; // Formato: "2026-01-13T10:00:00" (sem Z, horário local)
-
-  @IsString({ message: 'timezone deve ser uma string válida' })
+  /**
+   * ID do usuário cadastrado no sistema (Fase 2)
+   * Mutuamente exclusivo com clientName
+   */
   @IsOptional()
-  timezone?: string; // Ex: "America/Sao_Paulo", "America/Recife", etc. (padrão: America/Sao_Paulo)
-
-  @IsDateString(
-    {},
-    { message: 'endsAt deve ser uma data válida no formato ISO 8601' },
-  )
-  @IsOptional() // Agora é opcional - será calculado automaticamente se não fornecido
-  endsAt?: string;
-
-  @IsEnum(AppointmentStatus, {
-    message:
-      'status deve ser um valor válido: PENDING, CONFIRMED, CANCELED, COMPLETED, NO_SHOW',
-  })
-  @IsOptional()
-  status?: AppointmentStatus;
-
-  @IsUUID('4', { message: 'userId deve ser um UUID válido' })
-  @IsOptional()
-  @ValidateIf((o) => !o.clientName) // Exige userId se clientName não for fornecido
+  @IsUUID('4', { message: 'userId deve ser um UUID válido (formato v4)' })
+  @Validate(IsUserIdXorClientNameConstraint)
   userId?: string;
 
-  @IsString({ message: 'clientName deve ser uma string' })
-  @MinLength(2, { message: 'clientName deve ter no mínimo 2 caracteres' })
-  @MaxLength(100, { message: 'clientName deve ter no máximo 100 caracteres' })
+  /**
+   * Nome do cliente para agendamento manual (Fase 1)
+   * Obrigatório quando userId não for fornecido
+   */
   @IsOptional()
-  @ValidateIf((o) => !o.userId) // Exige clientName se userId não for fornecido
+  @IsString({ message: 'clientName deve ser uma string' })
+  @MinLength(2, {
+    message: 'Nome do cliente deve ter pelo menos 2 caracteres',
+  })
   clientName?: string;
 
-  @IsUUID('4', { message: 'serviceId deve ser um UUID válido' })
+  /**
+   * ID do serviço a ser agendado
+   */
   @IsNotEmpty({ message: 'serviceId é obrigatório' })
+  @IsUUID('4', { message: 'serviceId deve ser um UUID válido (formato v4)' })
   serviceId: string;
+
+  /**
+   * Data/hora de início do agendamento (ISO 8601)
+   * Exemplo: "2025-12-10T10:00:00.000Z" ou "2025-12-10T10:00:00-03:00"
+   */
+  @IsNotEmpty({ message: 'startsAt é obrigatório' })
+  @IsISO8601(
+    { strict: true },
+    {
+      message:
+        'startsAt deve estar no formato ISO 8601 (ex: "2025-12-10T10:00:00.000Z")',
+    },
+  )
+  startsAt: string;
+
+  /**
+   * Data/hora de término do agendamento (ISO 8601)
+   * Opcional: se não fornecido, será calculado automaticamente
+   * baseado na duração do serviço
+   */
+  @IsOptional()
+  @IsISO8601(
+    { strict: true },
+    {
+      message:
+        'endsAt deve estar no formato ISO 8601 (ex: "2025-12-10T11:00:00.000Z")',
+    },
+  )
+  endsAt?: string;
+
+  /**
+   * Status do agendamento
+   * Padrão: CONFIRMED
+   */
+  @IsOptional()
+  @IsIn(['PENDING', 'CONFIRMED', 'CANCELED', 'COMPLETED', 'NO_SHOW'], {
+    message:
+      'status deve ser: PENDING, CONFIRMED, CANCELED, COMPLETED ou NO_SHOW',
+  })
+  status?: AppointmentStatus;
+
+  /**
+   * Timezone para validações de horário comercial
+   * Padrão: America/Sao_Paulo
+   */
+  @IsOptional()
+  @IsString()
+  timezone?: string;
 }

@@ -528,7 +528,7 @@ Authorization: Bearer {seu_token_jwt}
 
 ### 6.3 Listar Agendamentos (com Filtros)
 
-**GET** `/appointments?status=CONFIRMED&page=1&limit=10` 🔒 *Requer token*
+**GET** `/appointments?status=CONFIRMED&page=1&limit=10` 🔒 *Requer token (qualquer role)*
 
 **Parâmetros de Query:**
 - `status`: PENDING, CONFIRMED, CANCELED, COMPLETED, NO_SHOW
@@ -578,7 +578,7 @@ Authorization: Bearer {seu_token_jwt}
 
 ### 6.4 Buscar Agendamento por ID
 
-**GET** `/appointments/{id}` 🔒 *Requer token*
+**GET** `/appointments/{id}` 🔒 *Requer token (qualquer role)*
 
 ---
 
@@ -935,11 +935,12 @@ POST /appointments
 | POST /time-blocks | ✅ | ❌ | ❌ | ❌ |
 | GET /time-blocks | ✅ | ✅ | ✅ | ✅ |
 | POST /appointments | ✅ | ✅ | ✅ | ❌ |
-| GET /appointments | ✅ | ✅ | ✅* | ❌ |
+| GET /appointments | ✅ | ✅ | ✅ | ❌ |
+| GET /appointments/:id | ✅ | ✅ | ✅ | ❌ |
 | PATCH /appointments | ✅ | ✅ | ❌** | ❌ |
+| DELETE /appointments | ✅ | ❌ | ❌ | ❌ |
 | GET /available-slots | ✅ | ✅ | ✅ | ✅ |
 
-\* Cliente só vê seus próprios agendamentos  
 \*\* Cliente pode cancelar apenas seus próprios agendamentos
 
 ---

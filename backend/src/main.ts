@@ -3,6 +3,11 @@ import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import './config/dayjs.config';
+import {
+  HttpExceptionFilter,
+  AllExceptionsFilter,
+  PrismaExceptionFilter,
+} from './common/filters';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -21,6 +26,13 @@ async function bootstrap() {
       forbidNonWhitelisted: true,
       transform: true,
     }),
+  );
+
+  // Exception Filters Globais
+  app.useGlobalFilters(
+    new AllExceptionsFilter(),
+    new PrismaExceptionFilter(),
+    new HttpExceptionFilter(),
   );
 
   const config = new DocumentBuilder()
