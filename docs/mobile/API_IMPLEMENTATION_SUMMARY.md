@@ -15,6 +15,9 @@
 - **error.interceptor.ts** - Tratamento global de erros HTTP
 - **logging.interceptor.ts** - Logs de requisições em desenvolvimento
 - **caching.interceptor.ts** - Cache inteligente para requisições GET
+- **retry.interceptor.ts** - Retry automático com backoff exponencial
+- **loading.interceptor.ts** - Loading automático para requisições
+- **timeout.interceptor.ts** - Timeout configurável
 
 ### Documentação e Exemplos
 - **README.md** - Documentação completa com exemplos de uso
@@ -33,14 +36,17 @@ mobile/src/app/core/services/api/
 ├── index.ts                    # Exports
 ├── README.md                   # Documentação
 ├── interceptors/
-│   ├── auth.interceptor.ts     # Autenticação
-│   ├── error.interceptor.ts    # Tratamento de erros
-│   ├── logging.interceptor.ts  # Logging
-│   ├── caching.interceptor.ts  # Cache
-│   └── index.ts                # Exports
+│   ├── auth.interceptor.ts
+│   ├── error.interceptor.ts
+│   ├── logging.interceptor.ts
+│   ├── caching.interceptor.ts
+│   ├── retry.interceptor.ts
+│   ├── loading.interceptor.ts
+│   ├── timeout.interceptor.ts
+│   └── index.ts
 └── examples/
-    ├── user.service.example.ts     # Exemplo de serviço
-    └── component.example.ts        # Exemplo de componente
+    ├── user.service.example.ts
+    └── component.example.ts
 ```
 
 ## 🚀 Funcionalidades Implementadas
@@ -66,16 +72,19 @@ mobile/src/app/core/services/api/
 
 ### 3. Interceptors HTTP
 - ✅ **AuthInterceptor** - Injeção automática de token JWT
-- ✅ **ErrorInterceptor** - Tratamento global de erros com redirecionamento em 401
+- ✅ **ErrorInterceptor** - Tratamento global de erros
 - ✅ **LoggingInterceptor** - Logs detalhados em desenvolvimento
-- ✅ **CachingInterceptor** - Cache configurável para GET requests
+- ✅ **CachingInterceptor** - Cache configurável para GET
+- ✅ **RetryInterceptor** - Retry com backoff exponencial
+- ✅ **LoadingInterceptor** - Loading automático
+- ✅ **TimeoutInterceptor** - Timeout configurável
 
 ### 4. Tratamento de Erros
 - ✅ Códigos de erro padronizados
 - ✅ Mensagens de erro personalizáveis
 - ✅ Handler de erro customizado por requisição
 - ✅ Logs automáticos em modo de desenvolvimento
-- ✅ Retry inteligente em erros específicos (408, 429, 500, 502, 503, 504)
+- ✅ Retry inteligente em erros específicos
 
 ### 5. Configuração
 - ✅ Integração com ConfigService
@@ -130,7 +139,6 @@ export class MyComponent {
 3. **Implementar interceptor de refresh token** - Para renovação automática de token
 4. **Adicionar suporte offline** - Queue de requisições para modo offline
 5. **Implementar Progress Tracking** - Para uploads/downloads com barra de progresso
-6. **Criar utility functions** - Helpers para transformação de dados
 
 ## 📝 Notas Importantes
 
@@ -138,7 +146,7 @@ export class MyComponent {
 - Todos os interceptors estão prontos para uso
 - A documentação completa está em `README.md`
 - Exemplos práticos estão na pasta `examples/`
-- Testes unitários estão implementados em `api.service.spec.ts`
+- Testes unitários estão implementados
 
 ## 🔧 Configurações Padrão
 
@@ -147,14 +155,6 @@ export class MyComponent {
 - **Retry Delay**: 1 segundo (com backoff exponencial)
 - **Cache Duration**: 5 minutos para GET requests
 - **Max Queued Requests**: 50 (para modo offline futuro)
-
-## 🎨 Padrões de Código
-
-- **Type-safe**: Totalmente tipado com TypeScript
-- **Reactive**: Usa RxJS Observables
-- **Testável**: Estrutura preparada para testes
-- **Modular**: Código organizado e reutilizável
-- **Documentado**: JSDoc em todas as funções públicas
 
 ---
 
