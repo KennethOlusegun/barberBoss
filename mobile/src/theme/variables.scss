@@ -1,2 +1,232 @@
-// For information on how to create your own theme, please refer to:
-// https://ionicframework.com/docs/theming/
+// ============================================================================
+// DESIGN SYSTEM "MODERN CLASSIC" - BarberBoss
+// Dark Mode Premium + Estética Clássica de Barbearia
+// ============================================================================
+
+// ============================================================================
+// 1. IMPORTAÇÕES DO GOOGLE FONTS
+// ============================================================================
+
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+// ============================================================================
+// 2. PALETA DE CORES - DESIGN SYSTEM MODERN CLASSIC
+// ============================================================================
+
+// Cores Base - Dark Mode Premium
+$barber-midnight-navy: #0B1120;
+$barber-slate-grey: #1E293B;
+$barber-royal-blue: #3B82F6;
+$barber-vintage-red: #EF4444;
+$barber-white-pure: #FFFFFF;
+$barber-grey-steel: #94A3B8;
+
+// ============================================================================
+// 3. SOBRESCRITA DAS VARIÁVEIS DO IONIC (CSS Variables)
+// ============================================================================
+
+:root {
+  // Tema Dark Mode
+  color-scheme: dark;
+
+  // Cores Primárias
+  --ion-color-primary: #{$barber-royal-blue};
+  --ion-color-primary-rgb: 59, 130, 246;
+  --ion-color-primary-contrast: #{$barber-white-pure};
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: #3367D6;
+  --ion-color-primary-tint: #4F8CFF;
+
+  // Cores Secundárias (Danger/Red)
+  --ion-color-secondary: #{$barber-vintage-red};
+  --ion-color-secondary-rgb: 239, 68, 68;
+  --ion-color-secondary-contrast: #{$barber-white-pure};
+  --ion-color-secondary-contrast-rgb: 255, 255, 255;
+  --ion-color-secondary-shade: #D63D3D;
+  --ion-color-secondary-tint: #F15555;
+
+  // Cor de Perigo
+  --ion-color-danger: #{$barber-vintage-red};
+  --ion-color-danger-rgb: 239, 68, 68;
+  --ion-color-danger-contrast: #{$barber-white-pure};
+  --ion-color-danger-contrast-rgb: 255, 255, 255;
+  --ion-color-danger-shade: #D63D3D;
+  --ion-color-danger-tint: #F15555;
+
+  // Cor de Sucesso (Verde Sutil)
+  --ion-color-success: #10B981;
+  --ion-color-success-rgb: 16, 185, 129;
+  --ion-color-success-contrast: #{$barber-white-pure};
+  --ion-color-success-contrast-rgb: 255, 255, 255;
+  --ion-color-success-shade: #0D9E71;
+  --ion-color-success-tint: #28C68E;
+
+  // Cor de Aviso (Amarelo Sutil)
+  --ion-color-warning: #F59E0B;
+  --ion-color-warning-rgb: 245, 158, 11;
+  --ion-color-warning-contrast: #{$barber-midnight-navy};
+  --ion-color-warning-contrast-rgb: 11, 17, 32;
+  --ion-color-warning-shade: #DC860D;
+  --ion-color-warning-tint: #F7A623;
+
+  // Cores de Background
+  --ion-background-color: #{$barber-midnight-navy};
+  --ion-background-color-rgb: 11, 17, 32;
+
+  // Cores de Cards/Items
+  --ion-item-background: #{$barber-slate-grey};
+  --ion-card-background: #{$barber-slate-grey};
+
+  // Cores de Texto
+  --ion-text-color: #{$barber-grey-steel};
+  --ion-text-color-rgb: 148, 163, 184;
+  --ion-text-color-step-50: #{$barber-slate-grey};
+  --ion-text-color-step-100: #3F4A61;
+  --ion-text-color-step-150: #4A5474;
+  --ion-text-color-step-200: #556084;
+  --ion-text-color-step-250: #626A97;
+  --ion-text-color-step-300: #6D74AA;
+  --ion-text-color-step-350: #7A7FBD;
+  --ion-text-color-step-400: #8A89D0;
+  --ion-text-color-step-450: #9A92E3;
+  --ion-text-color-step-500: #{$barber-white-pure};
+  --ion-text-color-step-550: #{$barber-white-pure};
+  --ion-text-color-step-600: #{$barber-white-pure};
+  --ion-text-color-step-650: #{$barber-white-pure};
+  --ion-text-color-step-700: #{$barber-white-pure};
+  --ion-text-color-step-750: #{$barber-white-pure};
+  --ion-text-color-step-800: #{$barber-white-pure};
+  --ion-text-color-step-850: #{$barber-white-pure};
+  --ion-text-color-step-900: #{$barber-white-pure};
+  --ion-text-color-step-950: #{$barber-white-pure};
+
+  // Cores de Borda
+  --ion-border-color: #{$barber-slate-grey};
+
+  // Font Family (Inter como principal)
+  --ion-font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+
+  // Sombras Customizadas
+  --ion-box-shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  --ion-box-shadow-medium: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  --ion-box-shadow-elevation: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+}
+
+// ============================================================================
+// 4. TIPOGRAFIA - ESTILOS BASE
+// ============================================================================
+
+// Headings - Oswald (Condensed, Bold, Uppercase)
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #{$barber-white-pure};
+  margin: 0;
+}
+
+h1 {
+  font-size: 3.5rem;
+  line-height: 1.2;
+
+  @media (max-width: 576px) {
+    font-size: 2.5rem;
+  }
+}
+
+h2 {
+  font-size: 2.5rem;
+  line-height: 1.2;
+
+  @media (max-width: 576px) {
+    font-size: 1.75rem;
+  }
+}
+
+h3 {
+  font-size: 1.75rem;
+  line-height: 1.3;
+
+  @media (max-width: 576px) {
+    font-size: 1.5rem;
+  }
+}
+
+h4 {
+  font-size: 1.5rem;
+  line-height: 1.4;
+}
+
+h5 {
+  font-size: 1.25rem;
+  line-height: 1.4;
+}
+
+h6 {
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+// Body Text - Inter (Clean, Modern)
+body, p, span {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  font-weight: 400;
+  color: #{$barber-grey-steel};
+}
+
+p {
+  font-size: 1rem;
+  line-height: 1.6;
+  margin: 0 0 1rem 0;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+small {
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: #{$barber-grey-steel};
+}
+
+// ============================================================================
+// 5. VARIÁVEIS CUSTOMIZADAS ADICIONAIS
+// ============================================================================
+
+// Espaçamento (Spacing Scale)
+$spacing-xs: 0.25rem;
+$spacing-sm: 0.5rem;
+$spacing-md: 1rem;
+$spacing-lg: 1.5rem;
+$spacing-xl: 2rem;
+$spacing-2xl: 3rem;
+
+// Border Radius
+$border-radius-sm: 4px;
+$border-radius-md: 8px;
+$border-radius-lg: 12px;
+$border-radius-xl: 16px;
+$border-radius-full: 9999px;
+
+// Transições
+$transition-fast: 150ms ease-in-out;
+$transition-base: 300ms ease-in-out;
+$transition-slow: 500ms ease-in-out;
+
+// Sombras (Box Shadow)
+$shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+$shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+$shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+$shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+$shadow-glow-primary: 0 4px 15px rgba(59, 130, 246, 0.4);
+$shadow-glow-danger: 0 4px 15px rgba(239, 68, 68, 0.4);
+
+// Breakpoints
+$breakpoint-xs: 0;
+$breakpoint-sm: 576px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 992px;
+$breakpoint-xl: 1200px;
