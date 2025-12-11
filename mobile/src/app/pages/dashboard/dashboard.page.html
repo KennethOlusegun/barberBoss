@@ -1,0 +1,33 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Dashboard</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-spinner *ngIf="loading" name="crescent" class="ion-margin"></ion-spinner>
+  <ion-text color="danger" *ngIf="error">{{ error }}</ion-text>
+
+  <ng-container *ngIf="!loading && !error">
+    <section class="resumo-agendamentos">
+      <h2>Resumo de Agendamentos</h2>
+      <ion-card>
+        <ion-card-content>
+          <p>Total: {{ agendamentosResumo.total }}</p>
+          <p>Próximos: {{ agendamentosResumo.proximos }}</p>
+          <p>Concluídos: {{ agendamentosResumo.concluidos }}</p>
+        </ion-card-content>
+      </ion-card>
+    </section>
+
+    <section class="perfil">
+      <h2>Perfil</h2>
+      <ion-card>
+        <ion-card-content>
+          <p>Nome: {{ perfil.name }}</p>
+          <p>Email: {{ perfil.email }}</p>
+        </ion-card-content>
+      </ion-card>
+    </section>
+  </ng-container>
+</ion-content>
