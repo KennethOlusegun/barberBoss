@@ -1,11 +1,11 @@
-.login-content {
-  --background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-
-  color: white;
-  text-decoration: underline;
-}
-
-
-  color: white;
-  text-decoration: underline;
+.login-container {
+  background: #1a1a2e;
+  
+  .header {
+    color: white;
+  }
+  
+  .form {
+    padding: 20px;
+  }
 }
