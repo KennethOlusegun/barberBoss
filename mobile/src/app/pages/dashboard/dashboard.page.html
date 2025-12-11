@@ -1,33 +1,117 @@
 <ion-header>
-  <ion-toolbar>
+  <ion-toolbar color="primary">
     <ion-title>Dashboard</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <ion-spinner *ngIf="loading" name="crescent" class="ion-margin"></ion-spinner>
-  <ion-text color="danger" *ngIf="error">{{ error }}</ion-text>
+<ion-content [fullscreen]="true">
 
-  <ng-container *ngIf="!loading && !error">
-    <section class="resumo-agendamentos">
-      <h2>Resumo de Agendamentos</h2>
+  <div class="dashboard-content">
+
+    <!-- LOADING -->
+    <div *ngIf="loading" class="loading-container">
+      <ion-spinner name="crescent" color="primary"></ion-spinner>
+      <p>Carregando dados...</p>
+    </div>
+
+    <!-- ERROR -->
+    <div *ngIf="error && !loading" class="error-container">
+      <ion-text color="danger">
+        <h2>Erro</h2>
+        <p>{{ error }}</p>
+      </ion-text>
+    </div>
+
+    <!-- CONTENT -->
+    <div *ngIf="!loading && !error">
+
+      <!-- RESUMO DE AGENDAMENTOS -->
       <ion-card>
+        <ion-card-header>
+          <ion-card-title>Resumo de Agendamentos</ion-card-title>
+        </ion-card-header>
         <ion-card-content>
-          <p>Total: {{ agendamentosResumo.total }}</p>
-          <p>Próximos: {{ agendamentosResumo.proximos }}</p>
-          <p>Concluídos: {{ agendamentosResumo.concluidos }}</p>
+          <div class="resumo-grid">
+            <div class="resumo-item">
+              <h3>{{ agendamentosResumo.total }}</h3>
+              <p>Total</p>
+            </div>
+            <div class="resumo-item">
+              <h3>{{ agendamentosResumo.proximos }}</h3>
+              <p>Próximos</p>
+            </div>
+            <div class="resumo-item">
+              <h3>{{ agendamentosResumo.concluidos }}</h3>
+              <p>Concluídos</p>
+            </div>
+          </div>
         </ion-card-content>
       </ion-card>
-    </section>
 
-    <section class="perfil">
-      <h2>Perfil</h2>
-      <ion-card>
+      <!-- LISTA DE AGENDAMENTOS -->
+      <h2>Meus Agendamentos</h2>
+
+      <div *ngIf="agendamentos.length === 0" class="empty-state">
+        <p>Nenhum agendamento encontrado</p>
+      </div>
+
+      <ion-card *ngFor="let ag of agendamentos" class="agendamento-card">
+        <ion-card-header>
+          <ion-card-title>{{ ag.service?.name }}</ion-card-title>
+          <ion-badge [color]="ag.status === 'CONFIRMED' ? 'success' : 'warning'">
+            {{ ag.status }}
+          </ion-badge>
+        </ion-card-header>
         <ion-card-content>
-          <p>Nome: {{ perfil.name }}</p>
-          <p>Email: {{ perfil.email }}</p>
+          <div class="agendamento-info">
+            <div class="info-row">
+              <span class="label">Data:</span>
+              <span class="value">{{ ag.startsAt | date: 'dd/MM/yyyy' }}</span>
+            </div>
+            <div class="info-row">
+              <span class="label">Horário:</span>
+              <span class="value">{{ ag.startsAt | date: 'HH:mm' }} - {{ ag.endsAt | date: 'HH:mm' }}</span>
+            </div>
+            <div class="info-row" *ngIf="ag.service?.price">
+              <span class="label">Preço:</span>
+              <span class="value">R$ {{ ag.service.price }}</span>
+            </div>
+            <div class="info-row" *ngIf="ag.service?.durationMin">
+              <span class="label">Duração:</span>
+              <span class="value">{{ ag.service.durationMin }} min</span>
+            </div>
+          </div>
         </ion-card-content>
       </ion-card>
-    </section>
-  </ng-container>
+
+      <!-- PERFIL -->
+      <h2>Meu Perfil</h2>
+
+      <ion-card class="perfil-card">
+        <ion-card-content>
+          <div class="perfil-info">
+            <div class="info-row">
+              <span class="label">Nome:</span>
+              <span class="value">{{ perfil.name }}</span>
+            </div>
+            <div class="info-row">
+              <span class="label">Email:</span>
+              <span class="value">{{ perfil.email }}</span>
+            </div>
+            <div class="info-row" *ngIf="perfil.phone">
+              <span class="label">Telefone:</span>
+              <span class="value">{{ perfil.phone }}</span>
+            </div>
+            <div class="info-row">
+              <span class="label">Perfil:</span>
+              <span class="value">{{ perfil.role }}</span>
+            </div>
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+    </div>
+
+  </div>
+
 </ion-content>
