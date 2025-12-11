@@ -56,7 +56,12 @@ async function bootstrap() {
       );
     }
     // Em desenvolvimento, permitir localhost em qualquer porta
-     return ['http://localhost:8100', 'http://localhost:4200', 'http://127.0.0.1:4200', 'http://localhost:3000'];
+    return [
+      'http://localhost:8100',
+      'http://localhost:4200',
+      'http://127.0.0.1:4200',
+      'http://localhost:3000',
+    ];
   };
 
   app.enableCors({

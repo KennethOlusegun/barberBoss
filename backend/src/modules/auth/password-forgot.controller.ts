@@ -13,7 +13,10 @@ export class PasswordForgotController {
   @Public()
   @Post('forgot')
   @ApiOperation({ summary: 'Solicitar recuperação de senha' })
-  @ApiResponse({ status: 200, description: 'Se o e-mail existir, um link de redefinição foi enviado.' })
+  @ApiResponse({
+    status: 200,
+    description: 'Se o e-mail existir, um link de redefinição foi enviado.',
+  })
   async forgot(@Body() dto: PasswordForgotDto) {
     return this.passwordForgotService.requestPasswordReset(dto);
   }

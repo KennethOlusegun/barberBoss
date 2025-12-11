@@ -25,13 +25,17 @@ import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { UpdateAppointmentDto } from './dto/update-appointment.dto';
 import { GetAvailableSlotsDto } from './dto/get-available-slots.dto';
 import { PaginationDto } from '../../common/dto/pagination.dto';
+import { AppointmentFilterDto } from './dto/appointment-filter.dto';
 import { Public } from '../../decorators/public.decorator';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../../decorators/roles.decorator';
 import { CurrentUser } from '../../decorators/current-user.decorator';
 import { Role } from '@prisma/client';
 import dayjs from '../../config/dayjs.config';
-import { ThrottleModerate, ThrottleRelaxed } from '../../decorators/throttle.decorator';
+import {
+  ThrottleModerate,
+  ThrottleRelaxed,
+} from '../../decorators/throttle.decorator';
 
 @ApiTags('appointments')
 @Controller('appointments')
@@ -77,61 +81,38 @@ export class AppointmentController {
   @ThrottleRelaxed()
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({
-    summary: 'Listar agendamentos com filtros opcionais e paginação (requer autenticação)',
-  })
-  @ApiQuery({
-    name: 'date',
-    required: false,
-    description: 'Filtrar por data (ISO 8601)',
-  })
-  @ApiQuery({
-    name: 'userId',
-    required: false,
-    description: 'Filtrar por UUID do usuário',
-  })
-  @ApiQuery({
-    name: 'status',
-    required: false,
-    description: 'Filtrar por status',
-  })
-  @ApiQuery({
-    name: 'page',
-    required: false,
-    description: 'Número da página (padrão: 1)',
-    type: Number,
-  })
-  @ApiQuery({
-    name: 'limit',
-    required: false,
-    description: 'Itens por página (padrão: 10, máx: 100)',
-    type: Number,
+    summary:
+      'Listar agendamentos com filtros opcionais e paginação (requer autenticação)',
   })
   @ApiResponse({
     status: 200,
     description: 'Lista de agendamentos retornada com sucesso',
   })
   findAll(
-    @Query('date') date?: string,
-    @Query('userId') userId?: string,
-    @Query('status') status?: string,
-    @Query() paginationDto?: PaginationDto,
+    @Query() filter: AppointmentFilterDto,
   ) {
-    // Se fornecida uma data específica, buscar por data
+    const { date, userId, status, page, offset, limit } = filter;
+    
+    // Converter offset para page se necessário
+    let paginationDto: any = { limit: limit || 10 };
+    if (page) {
+      paginationDto.page = page;
+    } else if (offset !== undefined) {
+      // Converter offset para page: page = (offset / limit) + 1
+      paginationDto.page = Math.floor((offset || 0) / (limit || 10)) + 1;
+    } else {
+      paginationDto.page = 1;
+    }
+
     if (date) {
       return this.appointmentService.findByDate(new Date(date), paginationDto);
     }
-
-    // Se fornecido um userId, buscar por usuário
     if (userId) {
       return this.appointmentService.findByUser(userId, paginationDto);
     }
-
-    // Se fornecido um status, buscar por status
     if (status) {
       return this.appointmentService.findByStatus(status, paginationDto);
     }
-
-    // Caso contrário, retornar todos
     return this.appointmentService.findAll(paginationDto);
   }
 
@@ -157,7 +138,10 @@ export class AppointmentController {
   })
   @ApiResponse({ status: 404, description: 'Agendamento não encontrado' })
   @ApiResponse({ status: 401, description: 'Não autorizado' })
-  @ApiResponse({ status: 403, description: 'Acesso negado - apenas ADMIN ou BARBER' })
+  @ApiResponse({
+    status: 403,
+    description: 'Acesso negado - apenas ADMIN ou BARBER',
+  })
   update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateAppointmentDto: UpdateAppointmentDto,
@@ -231,7 +215,8 @@ export class AppointmentController {
   @ApiBearerAuth('JWT-auth')
   @Roles(Role.ADMIN, Role.BARBER)
   @ApiOperation({
-    summary: 'Buscar histórico de agendamentos de um cliente por nome ou telefone',
+    summary:
+      'Buscar histórico de agendamentos de um cliente por nome ou telefone',
     description:
       'Retorna o histórico paginado de agendamentos de um cliente. ' +
       'Busca por nome (parcial, case-insensitive) ou telefone. ' +

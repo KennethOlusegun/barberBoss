@@ -9,7 +9,7 @@ export class BrevoService {
     this.apiInstance = new Brevo.TransactionalEmailsApi();
     this.apiInstance.setApiKey(
       Brevo.TransactionalEmailsApiApiKeys.apiKey,
-      process.env.BREVO_API_KEY || ''
+      process.env.BREVO_API_KEY || '',
     );
   }
 
