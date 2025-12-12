@@ -128,7 +128,7 @@ export class AppointmentController {
   }
 
   @Patch(':id')
-  @Roles(Role.ADMIN, Role.BARBER)
+  @Roles(Role.ADMIN, Role.BARBER, Role.CLIENT)
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({ summary: 'Atualizar agendamento (ADMIN ou BARBER)' })
   @ApiParam({ name: 'id', description: 'UUID do agendamento' })
@@ -145,7 +145,17 @@ export class AppointmentController {
   update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateAppointmentDto: UpdateAppointmentDto,
+    @CurrentUser() user: any,
   ) {
+    // Se for CLIENT, só pode atualizar/cancelar o próprio agendamento
+    if (user?.role === 'CLIENT') {
+      return this.appointmentService.findOne(id).then(appointment => {
+        if (appointment.userId !== user.id) {
+          throw new Error('Você só pode cancelar/agendar seus próprios agendamentos.');
+        }
+        return this.appointmentService.update(id, updateAppointmentDto);
+      });
+    }
     return this.appointmentService.update(id, updateAppointmentDto);
   }
 
