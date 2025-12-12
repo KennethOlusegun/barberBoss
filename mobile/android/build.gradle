@@ -25,18 +25,16 @@ task clean(type: Delete) {
 }
 
 subprojects {
-    // 👇 AQUI ESTÁ A CORREÇÃO DE DUPLICIDADE KOTLIN 👇
+    // Correção de conflito de classes Kotlin (Duplicate class)
     project.configurations.all {
         resolutionStrategy {
-            // Força todas as partes do Kotlin a usarem a mesma versão (1.8.22)
-            // Isso substitui as versões antigas (1.6.x) que causam o conflito
             force 'org.jetbrains.kotlin:kotlin-stdlib:1.8.22'
             force 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.22'
             force 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.22'
         }
     }
 
-    // A correção do Java 17 que já tínhamos feito
+    // Correção de compatibilidade Java 17
     afterEvaluate { project ->
         if (project.hasProperty("android")) {
             project.android {
@@ -47,3 +45,4 @@ subprojects {
             }
         }
     }
+}
