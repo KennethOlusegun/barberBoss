@@ -31,11 +31,25 @@ export class AppointmentService {
     date: Date,
     timezone: string,
   ): Promise<void> {
+
     const settings = await this.settingsService.get();
 
-    // Converter UTC para timezone especificado usando dayjs
-    const dateInTimezone = dayjs(date).tz(timezone);
-    const day = dateInTimezone.day(); // 0=domingo, 1=segunda, etc.
+    // LOGS DE DEBUG PARA FUSO/DIA DA SEMANA
+    // eslint-disable-next-line no-console
+    console.log('--- [DEBUG] validateBusinessHours ---');
+    // Valor original recebido
+    console.log('date (original, Date):', date, '| ISO:', date.toISOString());
+    // Interpretação UTC
+    const dateUtc = dayjs.utc(date);
+    console.log('dateUtc (dayjs.utc):', dateUtc.format());
+    // Convertido para timezone
+    const dateInTimezone = dateUtc.tz(timezone);
+    console.log('dateInTimezone:', dateInTimezone.format(), '| Timezone:', timezone);
+    // Dia da semana calculado
+    const day = dateInTimezone.day();
+    console.log('day (0=Domingo):', day, '| Nome:', this.settingsService.getDayName(day));
+    // Dias úteis do sistema
+    console.log('settings.workingDays:', settings.workingDays);
 
     // Verifica se é um dia útil
     if (!settings.workingDays.includes(day)) {
@@ -95,6 +109,11 @@ export class AppointmentService {
   async create(
     createAppointmentDto: CreateAppointmentDto,
   ): Promise<Appointment> {
+    // LOG DE DEBUG: início do método create
+    // eslint-disable-next-line no-console
+    console.log('--- [DEBUG] AppointmentService.create ---');
+    console.log('Payload recebido:', JSON.stringify(createAppointmentDto, null, 2));
+
     // ✅ FIX 1: Validação XOR entre userId e clientName
     // Garantir que exatamente um está preenchido (não ambos, não nenhum)
     const hasUserId = !!createAppointmentDto.userId;
@@ -132,13 +151,13 @@ export class AppointmentService {
     // Obter timezone do DTO (padrão: America/Sao_Paulo)
     const timezone = createAppointmentDto.timezone || 'America/Sao_Paulo';
 
-    // ✅ FIX 2: Sempre usar dayjs para parsing de datas
-    const startsAt = dayjs(createAppointmentDto.startsAt).toDate();
+    // ✅ FIX 2: Sempre usar dayjs.utc para parsing de datas recebidas do frontend
+    const startsAt = dayjs.utc(createAppointmentDto.startsAt).toDate();
 
     // Calcular endsAt automaticamente baseado na duração do serviço
     const endsAt = createAppointmentDto.endsAt
-      ? dayjs(createAppointmentDto.endsAt).toDate()
-      : dayjs(startsAt).add(service.durationMin, 'minutes').toDate();
+      ? dayjs.utc(createAppointmentDto.endsAt).toDate()
+      : dayjs.utc(startsAt).add(service.durationMin, 'minutes').toDate();
 
     // Validar que startsAt é antes de endsAt
     if (startsAt >= endsAt) {
