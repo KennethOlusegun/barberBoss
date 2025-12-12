@@ -66,7 +66,10 @@ export class UserController {
   })
   @ApiResponse({ status: 401, description: 'Não autorizado' })
   @ApiResponse({ status: 403, description: 'Acesso negado - apenas ADMIN' })
-  findAll(@Query() paginationDto: PaginationDto, @Query() filterDto: UserFilterDto) {
+  findAll(
+    @Query() paginationDto: PaginationDto,
+    @Query() filterDto: UserFilterDto,
+  ) {
     return this.userService.findAll(paginationDto, filterDto);
   }
 

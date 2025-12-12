@@ -43,5 +43,4 @@ export class RegisterDto {
   @IsOptional()
   @IsString({ message: 'O telefone deve ser uma string' })
   phone?: string;
-
 }

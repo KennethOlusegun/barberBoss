@@ -10,7 +10,7 @@ import { UsersService } from './users.service';
 import { UpdateUserRoleDto } from './dto/update-user-role.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
-import { Roles } from '../auth/decorators/roles.decorator';
+import { Roles } from '../../decorators/roles.decorator';
 import { Role } from '@prisma/client';
 
 @Controller('users')

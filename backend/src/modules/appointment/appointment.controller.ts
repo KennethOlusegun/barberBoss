@@ -56,7 +56,7 @@ export class AppointmentController {
     @CurrentUser() user?: any,
   ) {
     // LOG DE DEBUG: início do método create (controller)
-    // eslint-disable-next-line no-console
+
     console.log('--- [DEBUG] AppointmentController.create ---');
     console.log('DTO recebido:', JSON.stringify(createAppointmentDto, null, 2));
 
@@ -87,13 +87,11 @@ export class AppointmentController {
     status: 200,
     description: 'Lista de agendamentos retornada com sucesso',
   })
-  findAll(
-    @Query() filter: AppointmentFilterDto,
-  ) {
+  findAll(@Query() filter: AppointmentFilterDto) {
     const { date, userId, status, page, offset, limit } = filter;
 
     // Converter offset para page se necessário
-    let paginationDto: any = { limit: limit || 10 };
+    const paginationDto: any = { limit: limit || 10 };
     if (page) {
       paginationDto.page = page;
     } else if (offset !== undefined) {
@@ -148,9 +146,11 @@ export class AppointmentController {
   ) {
     // Se for CLIENT, só pode atualizar/cancelar o próprio agendamento
     if (user?.role === 'CLIENT') {
-      return this.appointmentService.findOne(id).then(appointment => {
+      return this.appointmentService.findOne(id).then((appointment) => {
         if (appointment.userId !== user.id) {
-          throw new Error('Você só pode cancelar/agendar seus próprios agendamentos.');
+          throw new Error(
+            'Você só pode cancelar/agendar seus próprios agendamentos.',
+          );
         }
         return this.appointmentService.update(id, updateAppointmentDto);
       });
