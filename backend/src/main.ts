@@ -55,12 +55,15 @@ async function bootstrap() {
         origin.trim(),
       );
     }
-    // Em desenvolvimento, permitir localhost em qualquer porta
+    // Em desenvolvimento, permitir localhost e IP local em qualquer porta
     return [
       'http://localhost:8100',
       'http://localhost:4200',
       'http://127.0.0.1:4200',
       'http://localhost:3000',
+      'http://192.168.0.8:8100', // Ionic rodando no celular
+      'http://192.168.0.8:4200',
+      'http://192.168.0.8:3000',
     ];
   };
 
