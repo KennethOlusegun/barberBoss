@@ -21,6 +21,7 @@ import {
   ApiBearerAuth,
 } from '@nestjs/swagger';
 import { UserService } from './user.service';
+import { UserFilterDto } from './dto/user-filter.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PaginationDto } from '../../common/dto/pagination.dto';
@@ -65,8 +66,8 @@ export class UserController {
   })
   @ApiResponse({ status: 401, description: 'Não autorizado' })
   @ApiResponse({ status: 403, description: 'Acesso negado - apenas ADMIN' })
-  findAll(@Query() paginationDto: PaginationDto) {
-    return this.userService.findAll(paginationDto);
+  findAll(@Query() paginationDto: PaginationDto, @Query() filterDto: UserFilterDto) {
+    return this.userService.findAll(paginationDto, filterDto);
   }
 
   @Get(':id')

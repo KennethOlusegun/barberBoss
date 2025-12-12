@@ -38,18 +38,24 @@ export class UserService {
     return new User(user);
   }
 
-  async findAll(paginationDto?: PaginationDto): Promise<PaginatedResult<User>> {
+  async findAll(paginationDto?: PaginationDto, filterDto?: { role?: string }): Promise<PaginatedResult<User>> {
     const page = paginationDto?.page || 1;
     const limit = paginationDto?.limit || 10;
     const skip = (page - 1) * limit;
+
+    const where: any = {};
+    if (filterDto?.role) {
+      where.role = filterDto.role;
+    }
 
     const [users, total] = await Promise.all([
       this.prisma.user.findMany({
         skip,
         take: limit,
         orderBy: { createdAt: 'desc' },
+        where,
       }),
-      this.prisma.user.count(),
+      this.prisma.user.count({ where }),
     ]);
 
     const userEntities = users.map((user) => new User(user));
