@@ -12,7 +12,7 @@ export const environment: Environment = {
   production: false,
 
   api: {
-    baseUrl: 'http://localhost:3000',
+    baseUrl: 'http://192.168.0.8:3000',
     apiPrefix: '',
     timeout: 30000,
   },
