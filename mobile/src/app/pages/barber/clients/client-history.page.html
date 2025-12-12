@@ -1,0 +1,21 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Histórico do Cliente</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list *ngIf="!loading && history.length">
+    <ion-item *ngFor="let ag of history">
+      <ion-label>
+        <h2>{{ ag.service?.name }}</h2>
+        <p>Data: {{ ag.startsAt | date: 'dd/MM/yyyy' }} - {{ ag.status }}</p>
+        <p *ngIf="ag.notes">Obs: {{ ag.notes }}</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+  <div *ngIf="!loading && !history.length" class="empty-state">
+    Nenhum histórico encontrado.
+  </div>
+  <ion-spinner *ngIf="loading" name="crescent" style="margin-top: 16px;"></ion-spinner>
+</ion-content>

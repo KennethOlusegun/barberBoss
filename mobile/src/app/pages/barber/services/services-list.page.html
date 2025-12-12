@@ -1,0 +1,31 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Serviços</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="fetchServices()">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <ion-list *ngIf="!loading && services.length">
+    <ion-item *ngFor="let service of services">
+      <ion-label>
+        <h2>{{ service.name }}</h2>
+        <p>Duração: {{ service.getFormattedDuration() }}</p>
+        <p *ngIf="service.price">Preço: R$ {{ service.price }}</p>
+      </ion-label>
+      <!-- Botão para editar -->
+      <ion-button fill="clear" slot="end" [routerLink]="['/barber/services', service.id]">
+        <ion-icon name="create-outline"></ion-icon>
+      </ion-button>
+    </ion-item>
+  </ion-list>
+
+  <div *ngIf="!loading && !services.length" class="empty-state">
+    Nenhum serviço encontrado.
+  </div>
+
+  <ion-spinner *ngIf="loading" name="crescent" style="margin-top: 16px;"></ion-spinner>
+</ion-content>

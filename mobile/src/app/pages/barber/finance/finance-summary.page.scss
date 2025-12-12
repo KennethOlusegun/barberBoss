@@ -1,0 +1,39 @@
+ion-content {
+  --padding-top: 16px;
+}
+
+.loading-container, .error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  gap: 20px;
+}
+
+.resumo-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin: 1rem 0;
+  .resumo-item {
+    text-align: center;
+    h3 {
+      margin: 0;
+      font-size: 1.3rem;
+      color: #3B82F6;
+      font-weight: bold;
+    }
+    p {
+      margin: 0.5rem 0 0 0;
+      font-size: 0.9rem;
+      color: #94A3B8;
+    }
+  }
+}
+
+.empty-state {
+  text-align: center;
+  color: #888;
+  margin-top: 2rem;
+}
