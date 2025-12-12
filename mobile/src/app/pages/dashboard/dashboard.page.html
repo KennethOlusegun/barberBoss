@@ -47,10 +47,14 @@
           </div>
         </ion-card-content>
 
-        <div style="display: flex; justify-content: space-between; margin-bottom: 8px; gap: 8px;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 8px; gap: 8px; flex-wrap: wrap;">
           <ion-button size="small" fill="solid" color="primary" (click)="novoAgendamento()">
             <ion-icon name="add-circle-outline" slot="start"></ion-icon>
             Novo Agendamento
+          </ion-button>
+          <ion-button *ngIf="perfil.role === 'ADMIN'" size="small" fill="outline" color="secondary" (click)="irParaAdmin()">
+            <ion-icon name="settings-outline" slot="start"></ion-icon>
+            Painel Admin
           </ion-button>
           <ion-button size="small" fill="outline" color="danger" (click)="logout()">
             <ion-icon name="log-out-outline" slot="start"></ion-icon>

@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NavController, ToastController, LoadingController } from '@ionic/angular';
 import { ApiService } from 'src/app/core/services/api/api.service';
 import { Service } from 'src/app/core/models/service.model';
+import { User } from 'src/app/core/models/user.model';
 
 import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
@@ -23,6 +24,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 export class CreateAppointmentPage implements OnInit {
   appointmentForm: FormGroup;
   services: Service[] = [];
+  barbers: User[] = [];
   loading = false;
 
   constructor(
@@ -36,12 +38,28 @@ export class CreateAppointmentPage implements OnInit {
       date: ['', Validators.required],
       time: ['', Validators.required],
       serviceId: ['', Validators.required],
+      barberId: ['', Validators.required],
       notes: ['']
     });
   }
 
   ngOnInit() {
     this.fetchServices();
+    this.fetchBarbers();
+  }
+  async fetchBarbers() {
+    try {
+      const result = await this.apiService.get<any>('/users', { params: { role: 'BARBER', limit: 100 }, requiresAuth: false }).toPromise();
+      if (Array.isArray(result)) {
+        this.barbers = result.map((u: any) => new User(u));
+      } else if (result && Array.isArray(result.data)) {
+        this.barbers = result.data.map((u: any) => new User(u));
+      } else {
+        this.barbers = [];
+      }
+    } catch (err) {
+      this.barbers = [];
+    }
   }
 
   async fetchServices() {
@@ -65,7 +83,7 @@ export class CreateAppointmentPage implements OnInit {
   async submit() {
     if (this.appointmentForm.invalid) return;
 
-    const { date, time, serviceId, notes } = this.appointmentForm.value;
+    const { date, time, serviceId, barberId, notes } = this.appointmentForm.value;
 
     // Validar domingo ANTES de enviar para o backend
     const isDomingo = this.verificarDomingo(date);
@@ -84,6 +102,7 @@ export class CreateAppointmentPage implements OnInit {
 
     const payload: any = {
       serviceId,
+      barberId,
       startsAt,
       timezone: 'America/Sao_Paulo', // Sempre Brasília
       notes: notes || undefined

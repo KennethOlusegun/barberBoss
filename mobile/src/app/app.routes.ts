@@ -38,6 +38,42 @@ export const routes: Routes = [
     redirectTo: 'auth/reset-password',
     pathMatch: 'full'
   },
+
+  {
+    path: 'admin',
+    children: [
+      {
+        path: '',
+        loadComponent: () => import('./pages/admin/admin.page').then(m => m.AdminPage),
+        canActivate: [AuthGuard]
+      },
+      {
+        path: 'barbers',
+        children: [
+          {
+            path: '',
+            loadComponent: () => import('./pages/admin/barbers/barbers.page').then(m => m.AdminBarbersPage),
+            canActivate: [AuthGuard]
+          },
+          {
+            path: 'new',
+            loadComponent: () => import('./pages/admin/barbers/barber-form.page').then(m => m.AdminBarberFormPage),
+            canActivate: [AuthGuard]
+          },
+          {
+            path: ':id',
+            loadComponent: () => import('./pages/admin/barbers/barber-form.page').then(m => m.AdminBarberFormPage),
+            canActivate: [AuthGuard]
+          }
+        ]
+      },
+      {
+        path: 'settings',
+        loadComponent: () => import('./pages/admin/settings/settings.page').then(m => m.AdminSettingsPage),
+        canActivate: [AuthGuard]
+      }
+    ]
+  },
   {
     path: 'create-appointment',
     loadChildren: () => import('./pages/create-appointment/create-appointment.module').then(m => m.CreateAppointmentPageModule),

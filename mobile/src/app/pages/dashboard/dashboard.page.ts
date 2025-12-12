@@ -1,4 +1,5 @@
 import { Component, OnInit, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
+import { Router } from '@angular/router';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { ApiService } from 'src/app/core/services/api/api.service';
 import { User } from 'src/app/core/models/user.model';
@@ -29,8 +30,13 @@ export class DashboardPage implements OnInit {
   constructor(
     private authService: AuthService,
     private apiService: ApiService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private router: Router
   ) {}
+
+  irParaAdmin() {
+    this.router.navigate(['/admin']);
+  }
 
   ngOnInit(): void {
     this.loading = true;

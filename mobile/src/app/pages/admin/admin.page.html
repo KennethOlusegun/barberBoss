@@ -1,0 +1,35 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Painel Admin</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <div style="padding: 16px;">
+    <ion-card (click)="goToBarbers()" style="cursor:pointer; margin-bottom: 16px;">
+      <ion-card-header>
+        <ion-card-title>Barbeiros</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div *ngIf="loading">
+          <ion-spinner name="crescent"></ion-spinner>
+        </div>
+        <div *ngIf="!loading">
+          <b>Total:</b> {{ barbers.length }}<br>
+          <span *ngIf="barbers.length > 0">
+            <b>Exemplo:</b> {{ barbers[0].name }} <span *ngIf="barbers[0].email">({{ barbers[0].email }})</span>
+            <span *ngIf="barbers.length > 1">, ...</span>
+          </span>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card (click)="goToSettings()" style="cursor:pointer;">
+      <ion-card-header>
+        <ion-card-title>Configurações Gerais</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <span>Gerencie configurações do sistema.</span>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>
