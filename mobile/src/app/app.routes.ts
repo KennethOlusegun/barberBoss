@@ -39,6 +39,11 @@ export const routes: Routes = [
     pathMatch: 'full'
   },
   {
+    path: 'create-appointment',
+    loadChildren: () => import('./pages/create-appointment/create-appointment.module').then(m => m.CreateAppointmentPageModule),
+    canActivate: [AuthGuard]
+  },
+  {
     path: 'tabs',
     loadChildren: () => import('./tabs/tabs.routes').then((m) => m.routes),
     canActivate: [AuthGuard]

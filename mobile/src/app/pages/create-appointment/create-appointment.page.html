@@ -1,0 +1,30 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Novo Agendamento</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form [formGroup]="appointmentForm" (ngSubmit)="submit()">
+    <ion-item>
+      <ion-label position="floating">Data</ion-label>
+      <ion-input type="date" formControlName="date"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Hora</ion-label>
+      <ion-input type="time" formControlName="time"></ion-input>
+    </ion-item>
+    <ion-item style="z-index: 2;">
+      <ion-label position="floating">Serviço</ion-label>
+      <ion-select formControlName="serviceId" interface="alert" placeholder="Selecione" style="z-index: 2;">
+        <ion-select-option *ngFor="let s of services" [value]="s.id">{{ s.name }} ({{ s.getFormattedDuration() }})</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Observações</ion-label>
+      <ion-textarea formControlName="notes"></ion-textarea>
+    </ion-item>
+    <ion-button expand="block" type="submit" [disabled]="!appointmentForm.valid || loading">Agendar</ion-button>
+  </form>
+  <ion-spinner *ngIf="loading" name="crescent" style="margin-top: 16px;"></ion-spinner>
+</ion-content>

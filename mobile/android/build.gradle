@@ -25,7 +25,7 @@ task clean(type: Delete) {
 }
 
 subprojects {
-    // Correção de conflito de classes Kotlin (Duplicate class)
+    // 1. Correção de duplicidade do Kotlin
     project.configurations.all {
         resolutionStrategy {
             force 'org.jetbrains.kotlin:kotlin-stdlib:1.8.22'
@@ -34,7 +34,7 @@ subprojects {
         }
     }
 
-    // Correção de compatibilidade Java 17
+    // 2. Forçar Java 17 em tudo (Resolve o erro "source release: 21")
     afterEvaluate { project ->
         if (project.hasProperty("android")) {
             project.android {

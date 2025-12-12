@@ -1,0 +1,16 @@
+ion-content {
+  --padding-top: 16px;
+}
+
+ion-item {
+  margin-bottom: 12px;
+  z-index: 1;
+}
+
+ion-select, ion-select-option {
+  z-index: 2 !important;
+}
+
+ion-button {
+  margin-top: 24px;
+}

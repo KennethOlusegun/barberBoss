@@ -143,4 +143,8 @@ export class DashboardPage implements OnInit {
     this.agendamentosResumo.proximos = this.agendamentos.filter((a: any) => a.status === 'CONFIRMED' || a.status === 'PENDING').length;
     this.agendamentosResumo.concluidos = this.agendamentos.filter((a: any) => a.status === 'COMPLETED').length;
   }
+  novoAgendamento() {
+    // Navegação programática para a tela de criação de agendamento
+    window.location.href = '/create-appointment';
+  }
 }
