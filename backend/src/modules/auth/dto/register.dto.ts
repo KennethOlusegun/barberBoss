@@ -43,14 +43,4 @@ export class RegisterDto {
   @IsOptional()
   @IsString({ message: 'O telefone deve ser uma string' })
   phone?: string;
-
-  @ApiProperty({
-    example: Role.BARBER,
-    description: 'Papel do usuário no sistema',
-    enum: Role,
-    default: Role.CLIENT,
-  })
-  @IsEnum(Role, { message: 'Papel inválido' })
-  @IsOptional()
-  role?: Role;
 }

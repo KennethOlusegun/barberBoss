@@ -1,4 +1,5 @@
 import { Component, OnInit, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
+import { Router } from '@angular/router';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { ApiService } from 'src/app/core/services/api/api.service';
 import { User } from 'src/app/core/models/user.model';
@@ -29,8 +30,13 @@ export class DashboardPage implements OnInit {
   constructor(
     private authService: AuthService,
     private apiService: ApiService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private router: Router
   ) {}
+
+  irParaAdmin() {
+    this.router.navigate(['/admin']);
+  }
 
   ngOnInit(): void {
     this.loading = true;
@@ -78,9 +84,7 @@ export class DashboardPage implements OnInit {
         console.log('[Dashboard] Agendamentos:', ags);
 
         this.agendamentos = ags;
-        this.agendamentosResumo.total = ags.length;
-        this.agendamentosResumo.proximos = ags.filter((a: any) => a.status === 'CONFIRMED' || a.status === 'PENDING').length;
-        this.agendamentosResumo.concluidos = ags.filter((a: any) => a.status === 'COMPLETED').length;
+        this.atualizarResumoAgendamentos();
 
         console.log('[Dashboard] Resumo atualizado:', this.agendamentosResumo);
         console.log('[Dashboard] agendamentos.length:', this.agendamentos.length);
@@ -98,5 +102,55 @@ export class DashboardPage implements OnInit {
         console.log('[Dashboard] Requisição de agendamentos completa');
       }
     });
+  }
+  logout() {
+    this.authService.logout().subscribe(() => {
+      this.cdr.detectChanges();
+      window.location.href = '/auth/login';
+    });
+  }
+
+  concluirAgendamento(agendamento: any) {
+    if (!window.confirm('Deseja marcar este agendamento como CONCLUÍDO?')) {
+      return;
+    }
+    this.apiService.patch(`/appointments/${agendamento.id}`, { status: 'COMPLETED' }, { requiresAuth: true })
+      .subscribe({
+        next: () => {
+          agendamento.status = 'COMPLETED';
+          this.atualizarResumoAgendamentos();
+          this.cdr.detectChanges();
+        },
+        error: (err) => {
+          alert('Erro ao concluir agendamento: ' + (err?.message || 'Desconhecido'));
+        }
+      });
+  }
+
+  cancelarAgendamento(agendamento: any) {
+    if (!window.confirm('Deseja CANCELAR este agendamento?')) {
+      return;
+    }
+    this.apiService.patch(`/appointments/${agendamento.id}`, { status: 'CANCELED' }, { requiresAuth: true })
+      .subscribe({
+        next: () => {
+          agendamento.status = 'CANCELED';
+          this.atualizarResumoAgendamentos();
+          this.cdr.detectChanges();
+        },
+        error: (err) => {
+          alert('Erro ao cancelar agendamento: ' + (err?.message || 'Desconhecido'));
+        }
+      });
+  }
+
+  atualizarResumoAgendamentos() {
+    this.agendamentosResumo.total = this.agendamentos.length;
+    this.agendamentosResumo.proximos = this.agendamentos.filter((a: any) => a.status === 'CONFIRMED' || a.status === 'PENDING').length;
+    this.agendamentosResumo.concluidos = this.agendamentos.filter((a: any) => a.status === 'COMPLETED').length;
+  }
+  novoAgendamento() {
+    // Navegação programática para a tela de criação de agendamento
+    window.location.href = '/create-appointment';
   }
 }

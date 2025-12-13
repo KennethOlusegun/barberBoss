@@ -46,6 +46,21 @@
             </div>
           </div>
         </ion-card-content>
+
+        <div style="display: flex; justify-content: space-between; margin-bottom: 8px; gap: 8px; flex-wrap: wrap;">
+          <ion-button size="small" fill="solid" color="primary" (click)="novoAgendamento()">
+            <ion-icon name="add-circle-outline" slot="start"></ion-icon>
+            Novo Agendamento
+          </ion-button>
+          <ion-button *ngIf="perfil.role === 'ADMIN'" size="small" fill="outline" color="secondary" (click)="irParaAdmin()">
+            <ion-icon name="settings-outline" slot="start"></ion-icon>
+            Painel Admin
+          </ion-button>
+          <ion-button size="small" fill="outline" color="danger" (click)="logout()">
+            <ion-icon name="log-out-outline" slot="start"></ion-icon>
+            Sair
+          </ion-button>
+        </div>
       </ion-card>
 
       <!-- LISTA DE AGENDAMENTOS -->
@@ -55,34 +70,50 @@
         <p>Nenhum agendamento encontrado</p>
       </div>
 
-      <ion-card *ngFor="let ag of agendamentos" class="agendamento-card">
-        <ion-card-header>
-          <ion-card-title>{{ ag.service?.name }}</ion-card-title>
-          <ion-badge [color]="ag.status === 'CONFIRMED' ? 'success' : 'warning'">
-            {{ ag.status }}
-          </ion-badge>
-        </ion-card-header>
-        <ion-card-content>
-          <div class="agendamento-info">
-            <div class="info-row">
-              <span class="label">Data:</span>
-              <span class="value">{{ ag.startsAt | date: 'dd/MM/yyyy' }}</span>
+      <ion-item-sliding *ngFor="let ag of agendamentos">
+        <ion-item-options side="start">
+          <ion-item-option color="success" (click)="concluirAgendamento(ag)" *ngIf="ag.status !== 'COMPLETED'">
+            <ion-icon name="checkmark-done-outline" slot="icon-only"></ion-icon>
+            Concluir
+          </ion-item-option>
+        </ion-item-options>
+        <ion-item [class.agendamento-card]="true">
+          <ion-label>
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <div>
+                <div style="font-weight: bold; font-size: 1.1em;">{{ ag.service?.name }}</div>
+                <ion-badge [color]="ag.status === 'CONFIRMED' ? 'success' : ag.status === 'COMPLETED' ? 'medium' : 'warning'">
+                  {{ ag.status }}
+                </ion-badge>
+              </div>
             </div>
-            <div class="info-row">
-              <span class="label">Horário:</span>
-              <span class="value">{{ ag.startsAt | date: 'HH:mm' }} - {{ ag.endsAt | date: 'HH:mm' }}</span>
+            <div class="agendamento-info">
+              <div class="info-row">
+                <span class="label">Data:</span>
+                <span class="value">{{ ag.startsAt | date: 'dd/MM/yyyy' }}</span>
+              </div>
+              <div class="info-row">
+                <span class="label">Horário:</span>
+                <span class="value">{{ ag.startsAt | date: 'HH:mm' }} - {{ ag.endsAt | date: 'HH:mm' }}</span>
+              </div>
+              <div class="info-row" *ngIf="ag.service?.price">
+                <span class="label">Preço:</span>
+                <span class="value">R$ {{ ag.service.price }}</span>
+              </div>
+              <div class="info-row" *ngIf="ag.service?.durationMin">
+                <span class="label">Duração:</span>
+                <span class="value">{{ ag.service.durationMin }} min</span>
+              </div>
             </div>
-            <div class="info-row" *ngIf="ag.service?.price">
-              <span class="label">Preço:</span>
-              <span class="value">R$ {{ ag.service.price }}</span>
-            </div>
-            <div class="info-row" *ngIf="ag.service?.durationMin">
-              <span class="label">Duração:</span>
-              <span class="value">{{ ag.service.durationMin }} min</span>
-            </div>
-          </div>
-        </ion-card-content>
-      </ion-card>
+          </ion-label>
+        </ion-item>
+        <ion-item-options side="end">
+          <ion-item-option color="danger" (click)="cancelarAgendamento(ag)" *ngIf="ag.status !== 'CANCELLED' && ag.status !== 'COMPLETED'">
+            <ion-icon name="close-outline" slot="icon-only"></ion-icon>
+            Cancelar
+          </ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
 
       <!-- PERFIL -->
       <h2>Meu Perfil</h2>
@@ -109,6 +140,13 @@
           </div>
         </ion-card-content>
       </ion-card>
+
+      <div style="display: flex; justify-content: center; margin-top: 24px;">
+        <ion-button expand="block" color="danger" routerLink="/auth/logout">
+          <ion-icon name="log-out-outline" slot="start"></ion-icon>
+          Sair da Conta
+        </ion-button>
+      </div>
 
     </div>
 

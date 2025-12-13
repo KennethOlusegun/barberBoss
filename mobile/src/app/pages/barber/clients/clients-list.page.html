@@ -1,0 +1,30 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Clientes</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="fetchClients()">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <ion-list *ngIf="!loading && clients.length">
+    <ion-item *ngFor="let client of clients">
+      <ion-label>
+        <h2>{{ client.getFullName() }}</h2>
+        <p>{{ client.email }}</p>
+      </ion-label>
+      <!-- Botão para editar/visualizar histórico -->
+      <ion-button fill="clear" slot="end" [routerLink]="['/barber/clients', client.id]">
+        <ion-icon name="create-outline"></ion-icon>
+      </ion-button>
+    </ion-item>
+  </ion-list>
+
+  <div *ngIf="!loading && !clients.length" class="empty-state">
+    Nenhum cliente encontrado.
+  </div>
+
+  <ion-spinner *ngIf="loading" name="crescent" style="margin-top: 16px;"></ion-spinner>
+</ion-content>

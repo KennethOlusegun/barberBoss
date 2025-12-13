@@ -1,6 +1,7 @@
 // 1. Configuração do Banco
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 generator client {
@@ -41,7 +42,10 @@ model User {
   role      Role     @default(CLIENT)
   
   // Relacionamentos
-  appointments Appointment[]
+  // Como barbeiro
+  barberAppointments Appointment[] @relation("BarberAppointments")
+  // Como cliente
+  clientAppointments Appointment[] @relation("ClientAppointments")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -68,11 +72,15 @@ model Appointment {
   endsAt    DateTime          // Fim (Calculado: start + duration)
   status    AppointmentStatus @default(CONFIRMED)
 
+  // Dados do Barbeiro
+  barberId   String?
+  barber     User?   @relation("BarberAppointments", fields: [barberId], references: [id])
+
   // Dados do Cliente
   // Se o cliente tiver App, usamos o userId. 
   // Se for agendamento manual do barbeiro ("João do Zap"), usamos o clientName.
   userId     String?
-  user       User?   @relation(fields: [userId], references: [id])
+  user       User?   @relation("ClientAppointments", fields: [userId], references: [id])
   clientName String? 
 
   // Dados do Serviço
@@ -114,6 +122,7 @@ model Settings {
   // Garantir apenas uma linha de configuração
   @@map("settings")
 }
+
 model TimeBlock {
   id          String    @id @default(uuid())
   type        BlockType @default(CUSTOM)

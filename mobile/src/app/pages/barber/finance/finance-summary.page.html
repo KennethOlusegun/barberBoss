@@ -1,0 +1,51 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Resumo Financeiro</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div *ngIf="loading" class="loading-container">
+    <ion-spinner name="crescent"></ion-spinner>
+    <p>Carregando dados...</p>
+  </div>
+  <div *ngIf="!loading && error" class="error-container">
+    <ion-text color="danger">
+      <h2>Erro</h2>
+      <p>{{ error }}</p>
+    </ion-text>
+  </div>
+  <div *ngIf="!loading && !error">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Receita Total</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <h2>R$ {{ total | number:'1.2-2' }}</h2>
+        <div class="resumo-grid">
+          <div class="resumo-item">
+            <h3>R$ {{ completed | number:'1.2-2' }}</h3>
+            <p>Concluídos</p>
+          </div>
+          <div class="resumo-item">
+            <h3>R$ {{ pending | number:'1.2-2' }}</h3>
+            <p>Pendentes</p>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+    <ion-list *ngIf="appointments.length">
+      <ion-list-header>Agendamentos</ion-list-header>
+      <ion-item *ngFor="let ag of appointments">
+        <ion-label>
+          <h2>{{ ag.service?.name }}</h2>
+          <p>Data: {{ ag.startsAt | date: 'dd/MM/yyyy' }} - {{ ag.status }}</p>
+          <p *ngIf="ag.service?.price">Valor: R$ {{ ag.service.price }}</p>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+    <div *ngIf="!appointments.length" class="empty-state">
+      Nenhum agendamento encontrado.
+    </div>
+  </div>
+</ion-content>

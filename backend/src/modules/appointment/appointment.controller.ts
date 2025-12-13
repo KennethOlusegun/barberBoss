@@ -55,6 +55,11 @@ export class AppointmentController {
     @Body() createAppointmentDto: CreateAppointmentDto,
     @CurrentUser() user?: any,
   ) {
+    // LOG DE DEBUG: início do método create (controller)
+
+    console.log('--- [DEBUG] AppointmentController.create ---');
+    console.log('DTO recebido:', JSON.stringify(createAppointmentDto, null, 2));
+
     // Se o usuário está autenticado e não forneceu userId, usar o ID do usuário logado
     if (user?.id && !createAppointmentDto.userId) {
       createAppointmentDto.userId = user.id;
@@ -63,18 +68,12 @@ export class AppointmentController {
     // Definir timezone padrão se não fornecido
     const timezone = createAppointmentDto.timezone || 'America/Sao_Paulo';
 
-    // Converter horário local para UTC
-    const startsAtLocal = dayjs.tz(createAppointmentDto.startsAt, timezone);
-    const startsAtUTC = startsAtLocal.utc().toISOString();
-
-    // Criar DTO com horário UTC
-    const dtoWithUTC = {
+    // Não converter a data recebida, apenas repassar para o service
+    // O service já faz o parsing correto e validação de timezone
+    return this.appointmentService.create({
       ...createAppointmentDto,
-      startsAt: startsAtUTC,
-      timezone, // Manter timezone para validações
-    };
-
-    return this.appointmentService.create(dtoWithUTC);
+      timezone,
+    });
   }
 
   @Get()
@@ -88,13 +87,11 @@ export class AppointmentController {
     status: 200,
     description: 'Lista de agendamentos retornada com sucesso',
   })
-  findAll(
-    @Query() filter: AppointmentFilterDto,
-  ) {
+  findAll(@Query() filter: AppointmentFilterDto) {
     const { date, userId, status, page, offset, limit } = filter;
-    
+
     // Converter offset para page se necessário
-    let paginationDto: any = { limit: limit || 10 };
+    const paginationDto: any = { limit: limit || 10 };
     if (page) {
       paginationDto.page = page;
     } else if (offset !== undefined) {
@@ -128,7 +125,7 @@ export class AppointmentController {
   }
 
   @Patch(':id')
-  @Roles(Role.ADMIN, Role.BARBER)
+  @Roles(Role.ADMIN, Role.BARBER, Role.CLIENT)
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({ summary: 'Atualizar agendamento (ADMIN ou BARBER)' })
   @ApiParam({ name: 'id', description: 'UUID do agendamento' })
@@ -145,7 +142,19 @@ export class AppointmentController {
   update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateAppointmentDto: UpdateAppointmentDto,
+    @CurrentUser() user: any,
   ) {
+    // Se for CLIENT, só pode atualizar/cancelar o próprio agendamento
+    if (user?.role === 'CLIENT') {
+      return this.appointmentService.findOne(id).then((appointment) => {
+        if (appointment.userId !== user.id) {
+          throw new Error(
+            'Você só pode cancelar/agendar seus próprios agendamentos.',
+          );
+        }
+        return this.appointmentService.update(id, updateAppointmentDto);
+      });
+    }
     return this.appointmentService.update(id, updateAppointmentDto);
   }
 

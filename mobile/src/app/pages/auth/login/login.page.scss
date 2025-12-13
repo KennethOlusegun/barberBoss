@@ -1,11 +1,414 @@
-.login-container {
-  background: #1a1a2e;
-  
-  .header {
-    color: white;
+// ============================================================================
+// LOGIN PAGE - DESIGN SYSTEM "MODERN CLASSIC"
+// ============================================================================
+
+// ============================================================================
+// 1. VARIÁVEIS LOCAIS DO DESIGN SYSTEM
+// ============================================================================
+
+$barber-midnight-navy: #0B1120;
+$barber-slate-grey: #1E293B;
+$barber-royal-blue: #3B82F6;
+$barber-vintage-red: #EF4444;
+$barber-white-pure: #FFFFFF;
+$barber-grey-steel: #94A3B8;
+
+// ============================================================================
+// 2. CONTAINER PRINCIPAL
+// ============================================================================
+
+.login-content {
+  --background: #{$barber-midnight-navy};
+  background-color: $barber-midnight-navy;
+
+  ion-content {
+    --background: #{$barber-midnight-navy};
   }
-  
-  .form {
-    padding: 20px;
+}
+
+.login-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding: 2rem 1.5rem;
+  background: linear-gradient(135deg, rgba(11, 17, 32, 0.95) 0%, rgba(30, 41, 59, 0.5) 100%);
+
+  @media (max-width: 768px) {
+    padding: 1.5rem 1rem;
+  }
+
+  @media (max-width: 480px) {
+    padding: 1rem;
+  }
+}
+
+// ============================================================================
+// 3. SEÇÃO DE HEADER/LOGO
+// ============================================================================
+
+.header-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 3rem;
+  animation: slide-up 600ms ease-out;
+
+  @media (max-width: 480px) {
+    margin-bottom: 2rem;
+  }
+}
+
+.logo-container {
+  width: 100px;
+  height: 100px;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: linear-gradient(135deg, $barber-royal-blue 0%, rgba(59, 130, 246, 0.8) 100%);
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+  transition: all 300ms ease-in-out;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 35px rgba(59, 130, 246, 0.4);
+  }
+
+  @media (max-width: 480px) {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 1rem;
+  }
+}
+
+.logo-icon {
+  font-size: 3.5rem;
+  color: $barber-white-pure;
+
+  @media (max-width: 480px) {
+    font-size: 2.5rem;
+  }
+}
+
+.app-subtitle {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  font-size: 1.125rem;
+  color: $barber-grey-steel;
+  text-align: center;
+  margin: 0.75rem 0 0 0;
+  font-weight: 400;
+
+  @media (max-width: 480px) {
+    font-size: 0.95rem;
+  }
+}
+
+// ============================================================================
+// 4. FORMULÁRIO E INPUTS
+// ============================================================================
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 1.5rem;
+  animation: slide-up 700ms ease-out 100ms both;
+
+  @media (max-width: 480px) {
+    gap: 1rem;
+  }
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.input-item {
+  --padding-start: 1rem;
+  --padding-end: 1rem;
+  --padding-top: 0.75rem;
+  --padding-bottom: 0.75rem;
+  --background: #{$barber-slate-grey};
+  background-color: $barber-slate-grey;
+  border-radius: 8px;
+  border: 2px solid transparent;
+  transition: all 300ms ease-in-out;
+  overflow: hidden;
+
+  ion-input {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+    font-size: 1rem;
+    color: $barber-white-pure;
+
+    &::placeholder {
+      color: rgba(148, 163, 184, 0.5);
+    }
+  }
+
+  &:focus-within {
+    border-color: $barber-royal-blue;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    background-color: rgba(30, 41, 59, 0.8);
+  }
+
+  &.invalid {
+    border-color: $barber-vintage-red;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+  }
+
+  @media (max-width: 480px) {
+    --padding-start: 0.75rem;
+    --padding-end: 0.75rem;
+  }
+}
+
+.input-icon {
+  color: $barber-grey-steel;
+  margin-right: 0.5rem;
+  font-size: 1.25rem;
+  transition: color 300ms ease-in-out;
+}
+
+.input-item:focus-within .input-icon {
+  color: $barber-royal-blue;
+}
+
+.password-toggle {
+  --color: #{$barber-grey-steel};
+  height: 100%;
+  margin: 0;
+
+  &:hover {
+    --color: #{$barber-royal-blue};
+  }
+}
+
+.error-message {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  font-size: 0.75rem;
+  color: $barber-vintage-red;
+  padding: 0 0.5rem;
+  font-weight: 500;
+  animation: slide-up 300ms ease-out;
+}
+
+// ============================================================================
+// 5. LINK ESQUECI A SENHA
+// ============================================================================
+
+.forgot-password-section {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0;
+}
+
+.forgot-password-btn {
+  --color: $barber-royal-blue;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: none;
+  padding: 0;
+  height: auto;
+  --padding-bottom: 0;
+  --padding-end: 0;
+  --padding-start: 0;
+  --padding-top: 0;
+  letter-spacing: 0;
+
+  &:hover {
+    --color: #4F8CFF;
+    text-decoration: underline;
+  }
+}
+
+// ============================================================================
+// 6. ALERTA DE ERRO
+// ============================================================================
+
+.error-alert {
+  margin: 0.5rem 0;
+}
+
+.error-box {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  border-radius: 8px;
+  background-color: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: $barber-vintage-red;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 500;
+  animation: slide-up 300ms ease-out;
+
+  ion-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+  }
+}
+
+// ============================================================================
+// 7. BOTÃO DE LOGIN (COM GLOW EFFECT)
+// ============================================================================
+
+.login-btn {
+  --background: #{$barber-royal-blue};
+  --background-activated: #2563EB;
+  --color: #{$barber-white-pure};
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  font-size: 1.125rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 0.875rem 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+  transition: all 300ms ease-in-out;
+  height: auto;
+  min-height: 50px;
+
+  &:hover:not([disabled]) {
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.5);
+    transform: translateY(-2px);
+  }
+
+  &:active:not([disabled]) {
+    box-shadow: 0 2px 10px rgba(59, 130, 246, 0.3);
+    transform: translateY(0);
+  }
+
+  &[disabled] {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+
+  ion-spinner {
+    margin-right: 0.5rem;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 1rem;
+    min-height: 44px;
+  }
+}
+
+// ============================================================================
+// 8. DIVIDER
+// ============================================================================
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 0.5rem 0;
+
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background-color: rgba(148, 163, 184, 0.2);
+  }
+}
+
+.divider-text {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  color: $barber-grey-steel;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+// ============================================================================
+// 9. BOTÃO DE REGISTRO
+// ============================================================================
+
+.register-btn {
+  --border-color: #{$barber-royal-blue};
+  --color: #{$barber-royal-blue};
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  font-size: 1.125rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 0.875rem 1.5rem;
+  border-radius: 8px;
+  border: 2px solid $barber-royal-blue;
+  height: auto;
+  min-height: 50px;
+  transition: all 300ms ease-in-out;
+
+  &:hover:not([disabled]) {
+    --background: rgba(59, 130, 246, 0.1);
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+    transform: translateY(-2px);
+  }
+
+  &:active:not([disabled]) {
+    transform: translateY(0);
+  }
+
+  &[disabled] {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 1rem;
+    min-height: 44px;
+  }
+}
+
+// ============================================================================
+// 10. FOOTER
+// ============================================================================
+
+.footer-section {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(148, 163, 184, 0.1);
+  animation: slide-up 800ms ease-out 200ms both;
+}
+
+.footer-text {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  font-size: 0.875rem;
+  color: $barber-grey-steel;
+  text-align: center;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.footer-link {
+  color: $barber-royal-blue;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 200ms ease-in-out;
+
+  &:hover {
+    color: #4F8CFF;
+    text-decoration: underline;
+  }
+}
+
+// ============================================================================
+// 11. ANIMAÇÕES
+// ============================================================================
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

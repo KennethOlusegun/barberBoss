@@ -1,0 +1,27 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{ isEdit ? 'Editar' : 'Cadastrar' }} Barbeiro</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <ion-item>
+      <ion-label position="floating">Nome</ion-label>
+      <ion-input type="text" formControlName="name"></ion-input>
+    </ion-item>
+    <ion-item *ngIf="form.get('name')?.invalid && form.get('name')?.touched" color="danger">
+      <ion-label>Nome é obrigatório</ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">E-mail</ion-label>
+      <ion-input type="email" formControlName="email"></ion-input>
+    </ion-item>
+    <ion-item *ngIf="form.get('email')?.invalid && form.get('email')?.touched" color="danger">
+      <ion-label>Email válido é obrigatório</ion-label>
+    </ion-item>
+    <ion-button expand="block" type="submit" [disabled]="form.invalid || loading">
+      {{ isEdit ? 'Salvar Alterações' : 'Cadastrar' }}
+    </ion-button>
+    <ion-spinner *ngIf="loading" name="crescent"></ion-spinner>
+  </form>
+</ion-content>
