@@ -27,11 +27,11 @@ export class HttpExceptionFilter implements ExceptionFilter {
       message:
         typeof exceptionResponse === 'string'
           ? exceptionResponse
-          : (exceptionResponse as any).message || exception.message,
+          : (exceptionResponse as { message?: string }).message || exception.message,
       error:
         typeof exceptionResponse === 'object' &&
-        (exceptionResponse as any).error
-          ? (exceptionResponse as any).error
+        (exceptionResponse as { error?: string }).error
+          ? (exceptionResponse as { error?: string }).error
           : HttpStatus[status],
     };
 
@@ -40,7 +40,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       `HTTP Exception: ${request.method} ${request.url}`,
       JSON.stringify({
         ...errorResponse,
-        user: (request as any).user?.id,
+        user: (request as Request & { user?: { id?: string } }).user?.id,
         body: request.body,
       }),
     );

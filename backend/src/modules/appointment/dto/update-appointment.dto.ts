@@ -18,8 +18,8 @@ import { AppointmentStatus } from '@prisma/client';
  */
 @ValidatorConstraint({ name: 'IsUserIdXorClientNameForUpdate', async: false })
 export class IsUserIdXorClientNameForUpdateConstraint implements ValidatorConstraintInterface {
-  validate(value: any, args: ValidationArguments) {
-    const object = args.object as any;
+  validate(value: unknown, args: ValidationArguments) {
+    const object = args.object as { userId?: string | null; clientName?: string | null };
 
     // Se nenhum dos dois foi fornecido no update, está OK (não alterar)
     if (object.userId === undefined && object.clientName === undefined) {

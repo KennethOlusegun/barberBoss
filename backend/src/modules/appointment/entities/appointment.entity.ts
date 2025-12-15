@@ -11,6 +11,7 @@ export class Appointment implements PrismaAppointment {
   status: AppointmentStatus;
   userId: string | null;
   clientName: string | null;
+  barberId: string | null;
   serviceId: string;
   createdAt: Date;
   updatedAt: Date;

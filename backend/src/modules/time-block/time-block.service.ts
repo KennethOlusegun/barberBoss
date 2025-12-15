@@ -50,7 +50,7 @@ export class TimeBlockService {
 
   async findAll(): Promise<TimeBlock[]> {
     const timeBlocks = await this.prisma.timeBlock.findMany({
-      where: { active: true },
+      where: { active: true } as Record<string, unknown>,
       orderBy: { startsAt: 'asc' },
     });
 
@@ -70,41 +70,42 @@ export class TimeBlockService {
   }
 
   async findByDateRange(start: Date, end: Date): Promise<TimeBlock[]> {
+    const where: Record<string, unknown> = {
+      active: true,
+      OR: [
+        {
+          // Bloqueio começa dentro do intervalo
+          startsAt: {
+            gte: start,
+            lt: end,
+          },
+        },
+        {
+          // Bloqueio termina dentro do intervalo
+          endsAt: {
+            gt: start,
+            lte: end,
+          },
+        },
+        {
+          // Bloqueio engloba todo o intervalo
+          AND: [
+            {
+              startsAt: {
+                lte: start,
+              },
+            },
+            {
+              endsAt: {
+                gte: end,
+              },
+            },
+          ],
+        },
+      ],
+    };
     const timeBlocks = await this.prisma.timeBlock.findMany({
-      where: {
-        active: true,
-        OR: [
-          {
-            // Bloqueio começa dentro do intervalo
-            startsAt: {
-              gte: start,
-              lt: end,
-            },
-          },
-          {
-            // Bloqueio termina dentro do intervalo
-            endsAt: {
-              gt: start,
-              lte: end,
-            },
-          },
-          {
-            // Bloqueio engloba todo o intervalo
-            AND: [
-              {
-                startsAt: {
-                  lte: start,
-                },
-              },
-              {
-                endsAt: {
-                  gte: end,
-                },
-              },
-            ],
-          },
-        ],
-      },
+      where,
       orderBy: { startsAt: 'asc' },
     });
 
@@ -117,45 +118,44 @@ export class TimeBlockService {
   async isBlocked(startsAt: Date, endsAt: Date): Promise<boolean> {
     const dayOfWeek = startsAt.getDay();
 
-    const blocks = await this.prisma.timeBlock.findMany({
-      where: {
-        active: true,
-        OR: [
-          {
-            // Bloqueio específico que sobrepõe
-            AND: [
-              { isRecurring: false },
-              {
-                OR: [
-                  {
-                    AND: [
-                      { startsAt: { lte: startsAt } },
-                      { endsAt: { gt: startsAt } },
-                    ],
-                  },
-                  {
-                    AND: [
-                      { startsAt: { lt: endsAt } },
-                      { endsAt: { gte: endsAt } },
-                    ],
-                  },
-                  {
-                    AND: [
-                      { startsAt: { gte: startsAt } },
-                      { endsAt: { lte: endsAt } },
-                    ],
-                  },
-                ],
-              },
-            ],
-          },
-          {
-            // Bloqueio recorrente no dia da semana
-            AND: [{ isRecurring: true }, { recurringDays: { has: dayOfWeek } }],
-          },
-        ],
-      },
-    });
+    const where: Record<string, unknown> = {
+      active: true,
+      OR: [
+        {
+          // Bloqueio específico que sobrepõe
+          AND: [
+            { isRecurring: false },
+            {
+              OR: [
+                {
+                  AND: [
+                    { startsAt: { lte: startsAt } },
+                    { endsAt: { gt: startsAt } },
+                  ],
+                },
+                {
+                  AND: [
+                    { startsAt: { lt: endsAt } },
+                    { endsAt: { gte: endsAt } },
+                  ],
+                },
+                {
+                  AND: [
+                    { startsAt: { gte: startsAt } },
+                    { endsAt: { lte: endsAt } },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+        {
+          // Bloqueio recorrente no dia da semana
+          AND: [{ isRecurring: true }, { recurringDays: { has: dayOfWeek } }],
+        },
+      ],
+    };
+    const blocks = await this.prisma.timeBlock.findMany({ where });
 
     // Para bloqueios recorrentes, verificar se o horário do dia conflita
     for (const block of blocks) {
@@ -198,46 +198,44 @@ export class TimeBlockService {
   async getBlockInfo(startsAt: Date, endsAt: Date): Promise<TimeBlock | null> {
     const dayOfWeek = startsAt.getDay();
 
-    const blocks = await this.prisma.timeBlock.findMany({
-      where: {
-        active: true,
-        OR: [
-          {
-            // Bloqueio específico que sobrepõe
-            AND: [
-              { isRecurring: false },
-              {
-                OR: [
-                  {
-                    AND: [
-                      { startsAt: { lte: startsAt } },
-                      { endsAt: { gt: startsAt } },
-                    ],
-                  },
-                  {
-                    AND: [
-                      { startsAt: { lt: endsAt } },
-                      { endsAt: { gte: endsAt } },
-                    ],
-                  },
-                  {
-                    AND: [
-                      { startsAt: { gte: startsAt } },
-                      { endsAt: { lte: endsAt } },
-                    ],
-                  },
-                ],
-              },
-            ],
-          },
-          {
-            // Bloqueio recorrente no dia da semana
-            AND: [{ isRecurring: true }, { recurringDays: { has: dayOfWeek } }],
-          },
-        ],
-      },
-      orderBy: { createdAt: 'asc' },
-    });
+    const where: Record<string, unknown> = {
+      active: true,
+      OR: [
+        {
+          // Bloqueio específico que sobrepõe
+          AND: [
+            { isRecurring: false },
+            {
+              OR: [
+                {
+                  AND: [
+                    { startsAt: { lte: startsAt } },
+                    { endsAt: { gt: startsAt } },
+                  ],
+                },
+                {
+                  AND: [
+                    { startsAt: { lt: endsAt } },
+                    { endsAt: { gte: endsAt } },
+                  ],
+                },
+                {
+                  AND: [
+                    { startsAt: { gte: startsAt } },
+                    { endsAt: { lte: endsAt } },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+        {
+          // Bloqueio recorrente no dia da semana
+          AND: [{ isRecurring: true }, { recurringDays: { has: dayOfWeek } }],
+        },
+      ],
+    };
+    const blocks = await this.prisma.timeBlock.findMany({ where, orderBy: { createdAt: 'asc' } });
 
     // Para bloqueios recorrentes, verificar se o horário do dia conflita
     for (const block of blocks) {

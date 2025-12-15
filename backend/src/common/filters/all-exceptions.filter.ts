@@ -28,8 +28,8 @@ export class AllExceptionsFilter implements ExceptionFilter {
       if (typeof exceptionResponse === 'string') {
         message = exceptionResponse;
       } else if (typeof exceptionResponse === 'object') {
-        message = (exceptionResponse as any).message || exception.message;
-        error = (exceptionResponse as any).error || error;
+        message = (exceptionResponse as { message?: string }).message || exception.message;
+        error = (exceptionResponse as { error?: string }).error || error;
       }
     } else if (exception instanceof Error) {
       message = exception.message;
@@ -51,7 +51,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
       exception instanceof Error ? exception.stack : JSON.stringify(exception),
       JSON.stringify({
         ...errorResponse,
-        user: (request as any).user?.id,
+        user: (request as Request & { user?: { id?: string } }).user?.id,
         body: request.body,
       }),
     );

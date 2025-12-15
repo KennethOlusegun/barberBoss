@@ -4,18 +4,20 @@ import { UpdateServiceDto } from './dto/update-service.dto';
 import { PrismaService } from '../../prisma/prisma.service';
 import { PaginatedResult } from '../../common/interfaces/paginated-result.interface';
 import { PaginationDto } from '../../common/dto/pagination.dto';
+import { Service } from '@prisma/client';
 
 @Injectable()
 export class ServiceService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(createServiceDto: CreateServiceDto) {
+
+  async create(createServiceDto: CreateServiceDto): Promise<Service> {
     return await this.prisma.service.create({
       data: createServiceDto,
     });
   }
 
-  async findAll(paginationDto?: PaginationDto) {
+  async findAll(paginationDto?: PaginationDto): Promise<PaginatedResult> {
     const page = paginationDto?.page || 1;
     const limit = paginationDto?.limit || 10;
     const skip = (page - 1) * limit;
@@ -41,7 +43,7 @@ export class ServiceService {
     return new PaginatedResult(services, total, page, limit);
   }
 
-  async findOne(id: string) {
+  async findOne(id: string): Promise<Service> {
     const service = await this.prisma.service.findUnique({
       where: {
         id,
@@ -56,7 +58,7 @@ export class ServiceService {
     return service;
   }
 
-  async update(id: string, updateServiceDto: UpdateServiceDto) {
+  async update(id: string, updateServiceDto: UpdateServiceDto): Promise<Service> {
     await this.findOne(id); // Verifica se existe e está ativo
 
     return await this.prisma.service.update({
@@ -65,7 +67,7 @@ export class ServiceService {
     });
   }
 
-  async remove(id: string) {
+  async remove(id: string): Promise<Service> {
     await this.findOne(id); // Verifica se existe e está ativo
 
     // Soft delete: marca como inativo ao invés de deletar

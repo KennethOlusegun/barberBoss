@@ -17,7 +17,7 @@ async function main() {
   // ==========================================
   // 1. CRIAR USUÁRIOS
   // ==========================================
-  const hashedPassword = await bcrypt.hash('senha123', 10);
+  const hashedPassword = await bcrypt.hash('Olupa98@', 10);
 
   // Admin
   const admin = await prisma.user.create({
@@ -241,10 +241,10 @@ async function main() {
   console.log(`   - Agendamentos: ${totalAppointments}`);
   console.log('\n🎉 Seed concluído com sucesso!');
   console.log('\n🔑 Credenciais de acesso:');
-  console.log('   Admin: admin@barberboss.com / senha123');
-  console.log('   Barbeiro 1: carlos@barberboss.com / senha123');
-  console.log('   Barbeiro 2: ricardo@barberboss.com / senha123');
-  console.log('   Cliente: joao@email.com / senha123');
+  console.log('   Admin: admin@barberboss.com / Olupa98@');
+  console.log('   Barbeiro 1: carlos@barberboss.com / Olupa98@');
+  console.log('   Barbeiro 2: ricardo@barberboss.com / Olupa98@');
+  console.log('   Cliente: joao@email.com / Olupa98@');
 }
 
 main()

@@ -490,7 +490,7 @@ export class AppointmentService {
               status: {
                 notIn: ['CANCELED', 'COMPLETED', 'NO_SHOW'],
               },
-            },
+            } as Record<string, unknown>,
             include: {
               user: true,
               service: true,
@@ -875,7 +875,7 @@ export class AppointmentService {
       );
     }
 
-    const whereConditions: any = {
+    const whereConditions: Record<string, unknown> = {
       OR: [],
     };
 

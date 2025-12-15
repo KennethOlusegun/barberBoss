@@ -53,7 +53,7 @@ export class AppointmentController {
   @ApiResponse({ status: 401, description: 'Não autorizado' })
   create(
     @Body() createAppointmentDto: CreateAppointmentDto,
-    @CurrentUser() user?: any,
+    @CurrentUser() user?: { id: string; role: string } | undefined,
   ) {
     // LOG DE DEBUG: início do método create (controller)
 
@@ -91,7 +91,7 @@ export class AppointmentController {
     const { date, userId, status, page, offset, limit } = filter;
 
     // Converter offset para page se necessário
-    const paginationDto: any = { limit: limit || 10 };
+    const paginationDto: PaginationDto = { limit: limit || 10 };
     if (page) {
       paginationDto.page = page;
     } else if (offset !== undefined) {
@@ -142,7 +142,7 @@ export class AppointmentController {
   update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateAppointmentDto: UpdateAppointmentDto,
-    @CurrentUser() user: any,
+    @CurrentUser() user: { id: string; role: string },
   ) {
     // Se for CLIENT, só pode atualizar/cancelar o próprio agendamento
     if (user?.role === 'CLIENT') {

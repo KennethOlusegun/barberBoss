@@ -61,12 +61,12 @@ describe('AppointmentService', () => {
 
       jest
         .spyOn(prisma.service, 'findUnique')
-        .mockResolvedValue(mockService as any);
-      jest.spyOn(prisma.user, 'findUnique').mockResolvedValue(mockUser as any);
+        .mockResolvedValue(mockService as unknown);
+      jest.spyOn(prisma.user, 'findUnique').mockResolvedValue(mockUser as unknown);
       jest.spyOn(prisma.appointment, 'findMany').mockResolvedValue([]);
       jest
         .spyOn(prisma.appointment, 'create')
-        .mockResolvedValue(mockAppointment as any);
+        .mockResolvedValue(mockAppointment as unknown);
 
       const result = await service.create(createDto);
 
@@ -98,7 +98,7 @@ describe('AppointmentService', () => {
 
       jest
         .spyOn(prisma.appointment, 'findMany')
-        .mockResolvedValue(mockAppointments as any);
+        .mockResolvedValue(mockAppointments as unknown);
 
       const result = await service.findAll();
 
@@ -118,7 +118,7 @@ describe('AppointmentService', () => {
 
       jest
         .spyOn(prisma.appointment, 'findUnique')
-        .mockResolvedValue(mockAppointment as any);
+        .mockResolvedValue(mockAppointment as unknown);
 
       const result = await service.findOne('appointment-id');
 
@@ -143,16 +143,16 @@ describe('AppointmentService', () => {
       };
 
       const updateDto = {
-        status: 'COMPLETED' as any,
+        status: 'COMPLETED' as string,
       };
 
       jest
         .spyOn(prisma.appointment, 'findUnique')
-        .mockResolvedValue(mockAppointment as any);
+        .mockResolvedValue(mockAppointment as unknown);
       jest.spyOn(prisma.appointment, 'update').mockResolvedValue({
         ...mockAppointment,
         ...updateDto,
-      } as any);
+      } as unknown);
 
       const result = await service.update('appointment-id', updateDto);
 
@@ -172,10 +172,10 @@ describe('AppointmentService', () => {
 
       jest
         .spyOn(prisma.appointment, 'findUnique')
-        .mockResolvedValue(mockAppointment as any);
+        .mockResolvedValue(mockAppointment as unknown);
       jest
         .spyOn(prisma.appointment, 'delete')
-        .mockResolvedValue(mockAppointment as any);
+        .mockResolvedValue(mockAppointment as unknown);
 
       const result = await service.remove('appointment-id');
 

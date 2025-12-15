@@ -46,7 +46,7 @@ export class UserService {
     const limit = paginationDto?.limit || 10;
     const skip = (page - 1) * limit;
 
-    const where: any = {};
+    const where: Record<string, unknown> = {};
     if (filterDto?.role) {
       where.role = filterDto.role;
     }

@@ -18,20 +18,19 @@ import { AppointmentStatus } from '@prisma/client';
  */
 @ValidatorConstraint({ name: 'IsUserIdXorClientName', async: false })
 export class IsUserIdXorClientNameConstraint implements ValidatorConstraintInterface {
-  validate(value: any, args: ValidationArguments) {
-    const object = args.object as any;
+
+  validate(value: unknown, args: ValidationArguments) {
+    const object = args.object as { userId?: string; clientName?: string };
     const hasUserId = !!object.userId;
     const hasClientName = !!object.clientName;
-
     // Deve ter exatamente um deles (XOR)
     return hasUserId !== hasClientName;
   }
 
   defaultMessage(args: ValidationArguments) {
-    const object = args.object as any;
+    const object = args.object as { userId?: string; clientName?: string };
     const hasUserId = !!object.userId;
     const hasClientName = !!object.clientName;
-
     if (hasUserId && hasClientName) {
       return 'Forneça APENAS userId (cliente cadastrado) OU clientName (agendamento manual), não ambos.';
     }

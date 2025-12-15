@@ -29,7 +29,7 @@ export class FilterExamplesController {
    * O HttpExceptionFilter captura e formata
    */
   @Post('bad-request')
-  badRequestExample(@Body() data: any) {
+  badRequestExample(@Body() data: { email?: string }) {
     if (!data.email) {
       throw new BadRequestException('Email é obrigatório');
     }
@@ -86,7 +86,7 @@ export class FilterExamplesController {
   unexpectedErrorExample() {
     // Este erro não é uma HttpException nem um erro do Prisma
     // O AllExceptionsFilter capturará e formatará como erro 500
-    const obj: any = null;
+    const obj: { property?: string } | null = null;
     return obj.property; // TypeError: Cannot read property of null
   }
 
