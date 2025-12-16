@@ -5,9 +5,11 @@ Guia de boas práticas para trabalhar com configuração de ambiente no Barber B
 ## 🎯 Princípios Fundamentais
 
 ### 1. Única Fonte de Verdade
+
 **Sempre use ConfigService para acessar configurações.**
 
 ✅ **Correto:**
+
 ```typescript
 constructor(private config: ConfigService) {}
 
@@ -15,56 +17,65 @@ const apiUrl = this.config.getApiUrl();
 ```
 
 ❌ **Incorreto:**
+
 ```typescript
-import { environment } from '../environments/environment';
+import { environment } from "../environments/environment";
 
 const apiUrl = environment.api.baseUrl;
 ```
 
 **Por quê?**
+
 - Centralização: Uma única fonte de configuração
 - Testabilidade: Fácil de mockar em testes
 - Manutenibilidade: Mudanças em um só lugar
 - Type Safety: IntelliSense e validação de tipos
 
 ### 2. Use Constantes, Não Strings
+
 **Evite strings mágicas no código.**
 
 ✅ **Correto:**
+
 ```typescript
-import { STORAGE_KEYS, API_ENDPOINTS } from './core/constants';
+import { STORAGE_KEYS, API_ENDPOINTS } from "./core/constants";
 
 const key = this.config.getStorageKey(STORAGE_KEYS.TOKEN);
 const url = this.config.buildEndpointUrl(API_ENDPOINTS.AUTH.LOGIN);
 ```
 
 ❌ **Incorreto:**
+
 ```typescript
-const key = 'bb_token';
-const url = 'http://localhost:3000/api/v1/auth/login';
+const key = "bb_token";
+const url = "http://localhost:3000/api/v1/auth/login";
 ```
 
 **Por quê?**
+
 - Sem typos: Erros detectados em compile-time
 - Refatoração segura: Mudar em um lugar atualiza tudo
 - IntelliSense: Auto-complete ajuda na produtividade
 - Documentação: Constantes documentam valores válidos
 
 ### 3. Feature Flags para Código Condicional
+
 **Use flags ao invés de comentar/descomentar código.**
 
 ✅ **Correto:**
+
 ```typescript
 if (this.config.isDebugModeEnabled()) {
-  console.log('User data:', user);
+  console.log("User data:", user);
 }
 
 if (this.config.isAnalyticsEnabled()) {
-  this.analytics.track('page_view');
+  this.analytics.track("page_view");
 }
 ```
 
 ❌ **Incorreto:**
+
 ```typescript
 // console.log('User data:', user); // Comentado manualmente
 
@@ -74,6 +85,7 @@ if (this.config.isAnalyticsEnabled()) {
 ```
 
 **Por quê?**
+
 - Flexibilidade: Liga/desliga features facilmente
 - Testabilidade: Testar diferentes cenários
 - Deployments: Features podem ser toggleadas sem code change
@@ -84,13 +96,13 @@ if (this.config.isAnalyticsEnabled()) {
 ### HTTP Service
 
 ```typescript
-@Injectable({ providedIn: 'root' })
+@Injectable({ providedIn: "root" })
 export class ApiService {
   private apiUrl: string;
 
   constructor(
     private http: HttpClient,
-    private config: ConfigService
+    private config: ConfigService,
   ) {
     this.apiUrl = this.config.getApiUrl();
   }
@@ -110,15 +122,15 @@ export class ApiService {
 ### Storage Service
 
 ```typescript
-@Injectable({ providedIn: 'root' })
+@Injectable({ providedIn: "root" })
 export class StorageService {
   constructor(private config: ConfigService) {}
 
   set(key: string, value: any): void {
     const prefixedKey = this.config.getStorageKey(key);
-    
+
     const storageType = this.config.getStorageType();
-    if (storageType === 'localStorage') {
+    if (storageType === "localStorage") {
       localStorage.setItem(prefixedKey, JSON.stringify(value));
     } else {
       // indexedDB implementation
@@ -136,14 +148,14 @@ export class StorageService {
 ### Auth Service
 
 ```typescript
-@Injectable({ providedIn: 'root' })
+@Injectable({ providedIn: "root" })
 export class AuthService {
   private tokenKey: string;
   private refreshTokenKey: string;
 
   constructor(
     private config: ConfigService,
-    private storage: StorageService
+    private storage: StorageService,
   ) {
     this.tokenKey = STORAGE_KEYS.TOKEN;
     this.refreshTokenKey = STORAGE_KEYS.REFRESH_TOKEN;
@@ -151,12 +163,12 @@ export class AuthService {
 
   login(credentials: LoginDto): Observable<AuthResponse> {
     const url = this.config.buildEndpointUrl(API_ENDPOINTS.AUTH.LOGIN);
-    
+
     return this.http.post<AuthResponse>(url, credentials).pipe(
-      tap(response => {
+      tap((response) => {
         this.storage.set(this.tokenKey, response.token);
         this.storage.set(this.refreshTokenKey, response.refreshToken);
-      })
+      }),
     );
   }
 
@@ -169,18 +181,18 @@ export class AuthService {
 ### Logging Service
 
 ```typescript
-@Injectable({ providedIn: 'root' })
+@Injectable({ providedIn: "root" })
 export class LoggerService {
   constructor(private config: ConfigService) {}
 
   debug(message: string, data?: any): void {
     if (!this.config.isConsoleLoggingEnabled()) return;
-    if (this.config.getLogLevel() !== 'debug') return;
-    
+    if (this.config.getLogLevel() !== "debug") return;
+
     console.debug(`[DEBUG] ${message}`, data);
-    
+
     if (this.config.isRemoteLoggingEnabled()) {
-      this.sendToRemote('debug', message, data);
+      this.sendToRemote("debug", message, data);
     }
   }
 
@@ -188,9 +200,9 @@ export class LoggerService {
     if (this.config.isConsoleLoggingEnabled()) {
       console.error(`[ERROR] ${message}`, error);
     }
-    
+
     if (this.config.isRemoteLoggingEnabled()) {
-      this.sendToRemote('error', message, error);
+      this.sendToRemote("error", message, error);
     }
   }
 
@@ -205,37 +217,35 @@ export class LoggerService {
 ### Mockar ConfigService
 
 ```typescript
-describe('MyComponent', () => {
+describe("MyComponent", () => {
   let component: MyComponent;
   let fixture: ComponentFixture<MyComponent>;
   let mockConfigService: jasmine.SpyObj<ConfigService>;
 
   beforeEach(() => {
     // Create mock
-    mockConfigService = jasmine.createSpyObj('ConfigService', [
-      'getApiUrl',
-      'isDebugModeEnabled',
-      'getStorageKey',
-      'buildEndpointUrl'
+    mockConfigService = jasmine.createSpyObj("ConfigService", [
+      "getApiUrl",
+      "isDebugModeEnabled",
+      "getStorageKey",
+      "buildEndpointUrl",
     ]);
 
     // Configure mock
-    mockConfigService.getApiUrl.and.returnValue('http://test.com/api/v1');
+    mockConfigService.getApiUrl.and.returnValue("http://test.com/api/v1");
     mockConfigService.isDebugModeEnabled.and.returnValue(true);
-    mockConfigService.getStorageKey.and.callFake(key => `test_${key}`);
+    mockConfigService.getStorageKey.and.callFake((key) => `test_${key}`);
 
     TestBed.configureTestingModule({
       declarations: [MyComponent],
-      providers: [
-        { provide: ConfigService, useValue: mockConfigService }
-      ]
+      providers: [{ provide: ConfigService, useValue: mockConfigService }],
     });
 
     fixture = TestBed.createComponent(MyComponent);
     component = fixture.componentInstance;
   });
 
-  it('should use config service', () => {
+  it("should use config service", () => {
     component.ngOnInit();
     expect(mockConfigService.getApiUrl).toHaveBeenCalled();
   });
@@ -245,21 +255,21 @@ describe('MyComponent', () => {
 ### Testar Diferentes Ambientes
 
 ```typescript
-describe('ApiService', () => {
-  it('should use development URL in dev', () => {
+describe("ApiService", () => {
+  it("should use development URL in dev", () => {
     const devConfig = {
-      getApiUrl: () => 'http://localhost:3000/api/v1'
+      getApiUrl: () => "http://localhost:3000/api/v1",
     };
-    
+
     const service = new ApiService(http, devConfig as any);
     // Test with dev URL
   });
 
-  it('should use production URL in prod', () => {
+  it("should use production URL in prod", () => {
     const prodConfig = {
-      getApiUrl: () => 'https://api.barberboss.com/api/v1'
+      getApiUrl: () => "https://api.barberboss.com/api/v1",
     };
-    
+
     const service = new ApiService(http, prodConfig as any);
     // Test with prod URL
   });
@@ -271,12 +281,14 @@ describe('ApiService', () => {
 ### 1. Não Hardcode Credenciais
 
 ❌ **NUNCA faça:**
+
 ```typescript
-const API_KEY = 'abc123xyz';
-const SECRET = 'my-secret-key';
+const API_KEY = "abc123xyz";
+const SECRET = "my-secret-key";
 ```
 
 ✅ **Faça:**
+
 ```typescript
 // Em environment.ts (não comitar!)
 apiKey: process.env['API_KEY'] || '',
@@ -290,7 +302,7 @@ const apiKey = this.config.get('api.apiKey');
 ```typescript
 debug(message: string, data: any): void {
   if (!this.config.isDebugModeEnabled()) return;
-  
+
   // Remove dados sensíveis
   const sanitized = this.sanitize(data);
   console.log(message, sanitized);
@@ -299,13 +311,13 @@ debug(message: string, data: any): void {
 private sanitize(data: any): any {
   const sensitive = ['password', 'token', 'creditCard', 'ssn'];
   const sanitized = { ...data };
-  
+
   for (const key of sensitive) {
     if (sanitized[key]) {
       sanitized[key] = '***REDACTED***';
     }
   }
-  
+
   return sanitized;
 }
 ```
@@ -316,7 +328,7 @@ private sanitize(data: any): any {
 ngOnInit() {
   if (this.config.isProduction()) {
     const apiUrl = this.config.getApiBaseUrl();
-    
+
     if (!apiUrl.startsWith('https://')) {
       console.error('⚠️ Production must use HTTPS!');
     }
@@ -329,7 +341,7 @@ ngOnInit() {
 ### 1. Cache Valores Usados Frequentemente
 
 ```typescript
-@Injectable({ providedIn: 'root' })
+@Injectable({ providedIn: "root" })
 export class CachedConfigService {
   private apiUrl: string;
   private storagePrefix: string;
@@ -365,7 +377,7 @@ async loadAnalytics(): Promise<void> {
 ### 1. Detectar Conectividade
 
 ```typescript
-@Injectable({ providedIn: 'root' })
+@Injectable({ providedIn: "root" })
 export class NetworkService {
   constructor(private config: ConfigService) {}
 
@@ -382,21 +394,21 @@ export class NetworkService {
 ### 2. Adaptar por Plataforma
 
 ```typescript
-import { Platform } from '@ionic/angular';
+import { Platform } from "@ionic/angular";
 
-@Injectable({ providedIn: 'root' })
+@Injectable({ providedIn: "root" })
 export class PlatformConfigService {
   constructor(
     private config: ConfigService,
-    private platform: Platform
+    private platform: Platform,
   ) {}
 
-  getStorageStrategy(): 'localStorage' | 'indexedDB' {
+  getStorageStrategy(): "localStorage" | "indexedDB" {
     // No mobile, sempre use indexedDB se disponível
-    if (this.platform.is('cordova') || this.platform.is('capacitor')) {
-      return 'indexedDB';
+    if (this.platform.is("cordova") || this.platform.is("capacitor")) {
+      return "indexedDB";
     }
-    
+
     return this.config.getStorageType();
   }
 }
@@ -407,24 +419,24 @@ export class PlatformConfigService {
 ### 1. Respeitar Preferências de Tema
 
 ```typescript
-@Injectable({ providedIn: 'root' })
+@Injectable({ providedIn: "root" })
 export class ThemeService {
   constructor(private config: ConfigService) {}
 
   initialize(): void {
-    const savedTheme = localStorage.getItem('theme');
+    const savedTheme = localStorage.getItem("theme");
     const theme = savedTheme || this.config.getDefaultTheme();
-    
+
     this.applyTheme(theme);
   }
 
-  applyTheme(theme: 'light' | 'dark' | 'auto'): void {
-    if (theme === 'auto') {
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
-      theme = prefersDark.matches ? 'dark' : 'light';
+  applyTheme(theme: "light" | "dark" | "auto"): void {
+    if (theme === "auto") {
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)");
+      theme = prefersDark.matches ? "dark" : "light";
     }
-    
-    document.body.classList.toggle('dark', theme === 'dark');
+
+    document.body.classList.toggle("dark", theme === "dark");
   }
 }
 ```
@@ -433,8 +445,8 @@ export class ThemeService {
 
 ```typescript
 @Component({
-  selector: 'app-list',
-  animations: [fadeIn, slideIn]
+  selector: "app-list",
+  animations: [fadeIn, slideIn],
 })
 export class ListComponent {
   enableAnimations: boolean;
@@ -444,7 +456,7 @@ export class ListComponent {
   }
 
   getAnimationState(): string {
-    return this.enableAnimations ? 'enter' : 'none';
+    return this.enableAnimations ? "enter" : "none";
   }
 }
 ```
@@ -454,23 +466,23 @@ export class ListComponent {
 ### 1. Track Configuration Usage
 
 ```typescript
-@Injectable({ providedIn: 'root' })
+@Injectable({ providedIn: "root" })
 export class ConfigMonitorService {
   constructor(
     private config: ConfigService,
-    private analytics: AnalyticsService
+    private analytics: AnalyticsService,
   ) {}
 
   trackConfigUsage(): void {
     if (!this.config.isAnalyticsEnabled()) return;
 
-    this.analytics.track('config_loaded', {
-      environment: this.config.isProduction() ? 'prod' : 'dev',
+    this.analytics.track("config_loaded", {
+      environment: this.config.isProduction() ? "prod" : "dev",
       features: {
         debug: this.config.isDebugModeEnabled(),
         analytics: this.config.isAnalyticsEnabled(),
         offline: this.config.isOfflineModeEnabled(),
-      }
+      },
     });
   }
 }
@@ -481,11 +493,12 @@ export class ConfigMonitorService {
 ### Migrando Código Legado
 
 **Antes:**
+
 ```typescript
-import { environment } from '../environments/environment';
+import { environment } from "../environments/environment";
 
 const apiUrl = environment.apiUrl;
-localStorage.setItem('token', token);
+localStorage.setItem("token", token);
 
 if (environment.production) {
   // production code
@@ -493,6 +506,7 @@ if (environment.production) {
 ```
 
 **Depois:**
+
 ```typescript
 import { ConfigService } from './core/services';
 import { STORAGE_KEYS } from './core/constants';
@@ -551,24 +565,31 @@ Ao revisar código, verifique:
 ## 🆘 Problemas Comuns
 
 ### "ConfigService is not defined"
+
 **Solução:** Importar corretamente
+
 ```typescript
-import { ConfigService } from './core/services';
+import { ConfigService } from "./core/services";
 ```
 
 ### "Configuration not loading"
+
 **Solução:** Verificar providedIn
+
 ```typescript
 @Injectable({ providedIn: 'root' })
 ```
 
 ### "Wrong environment used"
+
 **Solução:** Verificar angular.json file replacements
 
 ### "Type errors"
+
 **Solução:** Usar interface Environment
+
 ```typescript
-import { Environment } from './environment.interface';
+import { Environment } from "./environment.interface";
 ```
 
 ---

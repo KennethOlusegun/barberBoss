@@ -10,25 +10,25 @@ O módulo Settings gerencia todas as configurações da barbearia de forma centr
 model Settings {
   id                String   @id @default(uuid())
   businessName      String   @default("Barber Boss")
-  
+
   // Horário comercial
   openTime          String   @default("08:00") // Formato HH:mm
   closeTime         String   @default("18:00") // Formato HH:mm
-  
+
   // Dias de funcionamento (0=Domingo, 6=Sábado)
   workingDays       Int[]    @default([1, 2, 3, 4, 5, 6]) // Segunda a Sábado
-  
+
   // Intervalo entre agendamentos (em minutos)
   slotIntervalMin   Int      @default(15)
-  
+
   // Configurações de agendamento
   maxAdvanceDays    Int      @default(30)  // Quantos dias no futuro pode agendar
   minAdvanceHours   Int      @default(2)   // Mínimo de horas de antecedência
-  
+
   // Notificações (para futuro)
   enableReminders   Boolean  @default(false)
   reminderHoursBefore Int    @default(24)
-  
+
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 }
@@ -44,6 +44,7 @@ Authorization: Bearer {token}
 ```
 
 **Resposta de Sucesso (200)**
+
 ```json
 {
   "id": "uuid",
@@ -70,6 +71,7 @@ Content-Type: application/json
 ```
 
 **Body**
+
 ```json
 {
   "businessName": "Minha Barbearia",
@@ -81,6 +83,7 @@ Content-Type: application/json
 ```
 
 **Resposta de Sucesso (200)**
+
 ```json
 {
   "id": "uuid",
@@ -101,24 +104,28 @@ Content-Type: application/json
 ## Configurações Disponíveis
 
 ### businessName
+
 - **Tipo**: String
 - **Padrão**: "Barber Boss"
 - **Descrição**: Nome da barbearia
 - **Validação**: 2-100 caracteres
 
 ### openTime
+
 - **Tipo**: String (HH:mm)
 - **Padrão**: "08:00"
 - **Descrição**: Horário de abertura
 - **Validação**: Formato HH:mm (ex: 08:00)
 
 ### closeTime
+
 - **Tipo**: String (HH:mm)
 - **Padrão**: "18:00"
 - **Descrição**: Horário de fechamento
 - **Validação**: Formato HH:mm, deve ser posterior ao openTime
 
 ### workingDays
+
 - **Tipo**: Array de números
 - **Padrão**: [1, 2, 3, 4, 5, 6] (Segunda a Sábado)
 - **Descrição**: Dias da semana de funcionamento
@@ -126,29 +133,34 @@ Content-Type: application/json
 - **Validação**: 1-7 dias únicos, valores entre 0-6
 
 ### slotIntervalMin
+
 - **Tipo**: Número inteiro
 - **Padrão**: 15
 - **Descrição**: Intervalo mínimo entre slots de agendamento (minutos)
 - **Validação**: 5-120 minutos
 
 ### maxAdvanceDays
+
 - **Tipo**: Número inteiro
 - **Padrão**: 30
 - **Descrição**: Quantos dias no futuro o cliente pode agendar
 - **Validação**: 1-365 dias
 
 ### minAdvanceHours
+
 - **Tipo**: Número inteiro
 - **Padrão**: 2
 - **Descrição**: Mínimo de horas de antecedência para agendamento
 - **Validação**: 0-72 horas
 
 ### enableReminders
+
 - **Tipo**: Boolean
 - **Padrão**: false
 - **Descrição**: Ativar lembretes de agendamento (funcionalidade futura)
 
 ### reminderHoursBefore
+
 - **Tipo**: Número inteiro
 - **Padrão**: 24
 - **Descrição**: Quantas horas antes enviar lembrete
@@ -159,35 +171,39 @@ Content-Type: application/json
 O módulo Settings é integrado automaticamente no `AppointmentService` para validar:
 
 ### 1. Horário Comercial
+
 ```typescript
 // Valida se o agendamento está dentro do horário de funcionamento
-await this.validateBusinessHours(startsAt, 'início');
-await this.validateBusinessHours(endsAt, 'término');
+await this.validateBusinessHours(startsAt, "início");
+await this.validateBusinessHours(endsAt, "término");
 ```
 
 ### 2. Dias Úteis
+
 ```typescript
 // Verifica se o dia está em workingDays
 if (!settings.workingDays.includes(day)) {
-  throw new BadRequestException('Dia não útil');
+  throw new BadRequestException("Dia não útil");
 }
 ```
 
 ### 3. Antecedência Mínima
+
 ```typescript
 // Valida se o agendamento respeita minAdvanceHours
 const minAdvanceMs = settings.minAdvanceHours * 60 * 60 * 1000;
 if (date.getTime() - now.getTime() < minAdvanceMs) {
-  throw new BadRequestException('Antecedência mínima não respeitada');
+  throw new BadRequestException("Antecedência mínima não respeitada");
 }
 ```
 
 ### 4. Antecedência Máxima
+
 ```typescript
 // Valida se o agendamento não excede maxAdvanceDays
 const maxAdvanceMs = settings.maxAdvanceDays * 24 * 60 * 60 * 1000;
 if (date.getTime() - now.getTime() > maxAdvanceMs) {
-  throw new BadRequestException('Antecedência máxima excedida');
+  throw new BadRequestException("Antecedência máxima excedida");
 }
 ```
 
@@ -230,6 +246,7 @@ curl -X PATCH http://localhost:3000/api/settings \
 ## Mensagens de Erro
 
 ### Horário Fora do Expediente
+
 ```json
 {
   "statusCode": 400,
@@ -239,6 +256,7 @@ curl -X PATCH http://localhost:3000/api/settings \
 ```
 
 ### Dia Não Útil
+
 ```json
 {
   "statusCode": 400,
@@ -248,6 +266,7 @@ curl -X PATCH http://localhost:3000/api/settings \
 ```
 
 ### Antecedência Mínima Não Respeitada
+
 ```json
 {
   "statusCode": 400,
@@ -257,6 +276,7 @@ curl -X PATCH http://localhost:3000/api/settings \
 ```
 
 ### Antecedência Máxima Excedida
+
 ```json
 {
   "statusCode": 400,
@@ -266,6 +286,7 @@ curl -X PATCH http://localhost:3000/api/settings \
 ```
 
 ### Horário Inválido
+
 ```json
 {
   "statusCode": 400,
@@ -285,6 +306,7 @@ private readonly CACHE_DURATION_MS = 60000; // 1 minuto
 ```
 
 Para forçar atualização do cache:
+
 ```typescript
 await settingsService.refreshCache();
 ```

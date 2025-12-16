@@ -35,10 +35,10 @@ Todas as respostas paginadas seguem a seguinte estrutura:
 
 ## Parâmetros de Paginação
 
-| Parâmetro | Tipo   | Obrigatório | Padrão | Descrição                          |
-|-----------|--------|-------------|--------|------------------------------------|
-| page      | number | Não         | 1      | Número da página (começa em 1)     |
-| limit     | number | Não         | 10     | Itens por página (máx: 100)        |
+| Parâmetro | Tipo   | Obrigatório | Padrão | Descrição                      |
+| --------- | ------ | ----------- | ------ | ------------------------------ |
+| page      | number | Não         | 1      | Número da página (começa em 1) |
+| limit     | number | Não         | 10     | Itens por página (máx: 100)    |
 
 ## Endpoints com Paginação
 
@@ -49,11 +49,13 @@ GET /users?page=1&limit=10
 ```
 
 **Exemplo de Requisição:**
+
 ```bash
 curl http://localhost:3000/users?page=2&limit=20
 ```
 
 **Exemplo de Resposta:**
+
 ```json
 {
   "data": [
@@ -82,11 +84,13 @@ GET /services?page=1&limit=10
 ```
 
 **Exemplo de Requisição:**
+
 ```bash
 curl http://localhost:3000/services?page=1&limit=15
 ```
 
 **Exemplo de Resposta:**
+
 ```json
 {
   "data": [
@@ -94,7 +98,7 @@ curl http://localhost:3000/services?page=1&limit=15
       "id": "uuid",
       "name": "Corte de Cabelo",
       "description": "Corte masculino tradicional",
-      "price": 30.00,
+      "price": 30.0,
       "durationMin": 30,
       "active": true
     }
@@ -119,11 +123,13 @@ GET /appointments?page=1&limit=10
 O endpoint de agendamentos também suporta filtros combinados com paginação:
 
 **Filtros Disponíveis:**
+
 - `date`: Filtrar por data específica (ISO 8601)
 - `userId`: Filtrar por UUID do usuário
 - `status`: Filtrar por status do agendamento
 
 **Exemplo com Filtros:**
+
 ```bash
 # Listar agendamentos de uma data específica com paginação
 curl "http://localhost:3000/appointments?date=2024-01-15&page=1&limit=20"
@@ -136,6 +142,7 @@ curl "http://localhost:3000/appointments?status=CONFIRMED&page=2&limit=15"
 ```
 
 **Exemplo de Resposta:**
+
 ```json
 {
   "data": [
@@ -153,7 +160,7 @@ curl "http://localhost:3000/appointments?status=CONFIRMED&page=2&limit=15"
       "service": {
         "id": "uuid",
         "name": "Corte de Cabelo",
-        "price": 30.00
+        "price": 30.0
       }
     }
   ],

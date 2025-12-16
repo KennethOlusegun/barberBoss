@@ -1,6 +1,7 @@
 # 🔄 Fluxo Completo de Testes - BarberBoss API
 
 ## 📋 Índice
+
 1. [Criação de Usuários](#1-criação-de-usuários)
 2. [Autenticação](#2-autenticação)
 3. [Criação de Serviços](#3-criação-de-serviços)
@@ -28,6 +29,7 @@
 ```
 
 **Resposta Esperada (201):**
+
 ```json
 {
   "id": "uuid-admin",
@@ -88,6 +90,7 @@
 ```
 
 **Resposta Esperada (200):**
+
 ```json
 {
   "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
@@ -135,11 +138,13 @@
 **GET** `/auth/me`
 
 **Header:**
+
 ```
 Authorization: Bearer {seu_token_jwt}
 ```
 
 **Resposta (200):**
+
 ```json
 {
   "id": "uuid-admin",
@@ -157,18 +162,19 @@ Authorization: Bearer {seu_token_jwt}
 
 ### 3.1 Criar Serviço: Corte Simples
 
-**POST** `/services` 🔒 *Requer token ADMIN*
+**POST** `/services` 🔒 _Requer token ADMIN_
 
 ```json
 {
   "name": "Corte Simples",
   "description": "Corte de cabelo masculino tradicional",
-  "price": 35.00,
+  "price": 35.0,
   "durationMin": 30
 }
 ```
 
 **Resposta Esperada (201):**
+
 ```json
 {
   "id": "uuid-servico-1",
@@ -188,13 +194,13 @@ Authorization: Bearer {seu_token_jwt}
 
 ### 3.2 Criar Serviço: Corte + Barba
 
-**POST** `/services` 🔒 *Requer token ADMIN*
+**POST** `/services` 🔒 _Requer token ADMIN_
 
 ```json
 {
   "name": "Corte + Barba",
   "description": "Corte de cabelo e barba completa",
-  "price": 60.00,
+  "price": 60.0,
   "durationMin": 45
 }
 ```
@@ -203,13 +209,13 @@ Authorization: Bearer {seu_token_jwt}
 
 ### 3.3 Criar Serviço: Barba Completa
 
-**POST** `/services` 🔒 *Requer token ADMIN*
+**POST** `/services` 🔒 _Requer token ADMIN_
 
 ```json
 {
   "name": "Barba Completa",
   "description": "Barba aparada e finalizada",
-  "price": 30.00,
+  "price": 30.0,
   "durationMin": 20
 }
 ```
@@ -218,13 +224,13 @@ Authorization: Bearer {seu_token_jwt}
 
 ### 3.4 Criar Serviço: Corte Degradê
 
-**POST** `/services` 🔒 *Requer token ADMIN*
+**POST** `/services` 🔒 _Requer token ADMIN_
 
 ```json
 {
   "name": "Corte Degradê",
   "description": "Corte degradê com desenho",
-  "price": 50.00,
+  "price": 50.0,
   "durationMin": 40
 }
 ```
@@ -233,9 +239,10 @@ Authorization: Bearer {seu_token_jwt}
 
 ### 3.5 Listar Todos os Serviços
 
-**GET** `/services` 🔓 *Público*
+**GET** `/services` 🔓 _Público_
 
 **Resposta (200):**
+
 ```json
 {
   "data": [
@@ -270,9 +277,10 @@ Authorization: Bearer {seu_token_jwt}
 
 ### 4.1 Consultar Configurações
 
-**GET** `/settings` 🔓 *Público*
+**GET** `/settings` 🔓 _Público_
 
 **Resposta (200):**
+
 ```json
 {
   "id": "uuid-config",
@@ -292,7 +300,7 @@ Authorization: Bearer {seu_token_jwt}
 
 ### 4.2 Atualizar Configurações
 
-**PATCH** `/settings` 🔒 *Requer token ADMIN*
+**PATCH** `/settings` 🔒 _Requer token ADMIN_
 
 ```json
 {
@@ -307,6 +315,7 @@ Authorization: Bearer {seu_token_jwt}
 ```
 
 **Resposta (200):**
+
 ```json
 {
   "id": "uuid-config",
@@ -327,7 +336,7 @@ Authorization: Bearer {seu_token_jwt}
 
 ### 5.1 Criar Bloqueio: Almoço Diário
 
-**POST** `/time-blocks` 🔒 *Requer token ADMIN*
+**POST** `/time-blocks` 🔒 _Requer token ADMIN_
 
 ```json
 {
@@ -341,6 +350,7 @@ Authorization: Bearer {seu_token_jwt}
 ```
 
 **Resposta (201):**
+
 ```json
 {
   "id": "uuid-bloqueio-1",
@@ -360,7 +370,7 @@ Authorization: Bearer {seu_token_jwt}
 
 ### 5.2 Criar Bloqueio: Pausa para Café
 
-**POST** `/time-blocks` 🔒 *Requer token ADMIN*
+**POST** `/time-blocks` 🔒 _Requer token ADMIN_
 
 ```json
 {
@@ -377,7 +387,7 @@ Authorization: Bearer {seu_token_jwt}
 
 ### 5.3 Criar Bloqueio: Férias
 
-**POST** `/time-blocks` 🔒 *Requer token ADMIN*
+**POST** `/time-blocks` 🔒 _Requer token ADMIN_
 
 ```json
 {
@@ -393,7 +403,7 @@ Authorization: Bearer {seu_token_jwt}
 
 ### 5.4 Criar Bloqueio: Folga Específica
 
-**POST** `/time-blocks` 🔒 *Requer token ADMIN*
+**POST** `/time-blocks` 🔒 _Requer token ADMIN_
 
 ```json
 {
@@ -409,9 +419,10 @@ Authorization: Bearer {seu_token_jwt}
 
 ### 5.5 Listar Todos os Bloqueios
 
-**GET** `/time-blocks` 🔓 *Público*
+**GET** `/time-blocks` 🔓 _Público_
 
 **Resposta (200):**
+
 ```json
 [
   {
@@ -441,7 +452,7 @@ Authorization: Bearer {seu_token_jwt}
 
 ### 5.6 Buscar Bloqueios por Período
 
-**GET** `/time-blocks/range?startDate=2025-01-10T08:00:00.000Z&endDate=2025-01-10T20:00:00.000Z` 🔓 *Público*
+**GET** `/time-blocks/range?startDate=2025-01-10T08:00:00.000Z&endDate=2025-01-10T20:00:00.000Z` 🔓 _Público_
 
 ---
 
@@ -449,7 +460,7 @@ Authorization: Bearer {seu_token_jwt}
 
 ### 6.1 Criar Agendamento como ADMIN (Agendamento Manual)
 
-**POST** `/appointments` 🔒 *Requer token (qualquer role)*
+**POST** `/appointments` 🔒 _Requer token (qualquer role)_
 
 ```json
 {
@@ -460,6 +471,7 @@ Authorization: Bearer {seu_token_jwt}
 ```
 
 **Resposta (201):**
+
 ```json
 {
   "id": "uuid-agendamento-1",
@@ -486,7 +498,7 @@ Authorization: Bearer {seu_token_jwt}
 
 ### 6.2 Criar Agendamento como CLIENT (Agendamento pelo App)
 
-**POST** `/appointments` 🔒 *Requer token CLIENT*
+**POST** `/appointments` 🔒 _Requer token CLIENT_
 
 ```json
 {
@@ -498,6 +510,7 @@ Authorization: Bearer {seu_token_jwt}
 **Nota:** Quando o cliente está autenticado, não precisa informar `clientName`. O sistema usa o `userId` automaticamente.
 
 **Resposta (201):**
+
 ```json
 {
   "id": "uuid-agendamento-2",
@@ -528,9 +541,10 @@ Authorization: Bearer {seu_token_jwt}
 
 ### 6.3 Listar Agendamentos (com Filtros)
 
-**GET** `/appointments?status=CONFIRMED&page=1&limit=10` 🔒 *Requer token (qualquer role)*
+**GET** `/appointments?status=CONFIRMED&page=1&limit=10` 🔒 _Requer token (qualquer role)_
 
 **Parâmetros de Query:**
+
 - `status`: PENDING, CONFIRMED, CANCELED, COMPLETED, NO_SHOW
 - `page`: Número da página (padrão: 1)
 - `limit`: Itens por página (padrão: 10)
@@ -538,6 +552,7 @@ Authorization: Bearer {seu_token_jwt}
 - `endDate`: Filtrar por data fim (ISO 8601)
 
 **Resposta (200):**
+
 ```json
 {
   "data": [
@@ -578,13 +593,13 @@ Authorization: Bearer {seu_token_jwt}
 
 ### 6.4 Buscar Agendamento por ID
 
-**GET** `/appointments/{id}` 🔒 *Requer token (qualquer role)*
+**GET** `/appointments/{id}` 🔒 _Requer token (qualquer role)_
 
 ---
 
 ### 6.5 Atualizar Agendamento (Mudar Horário)
 
-**PATCH** `/appointments/{id}` 🔒 *Requer token ADMIN ou BARBER*
+**PATCH** `/appointments/{id}` 🔒 _Requer token ADMIN ou BARBER_
 
 ```json
 {
@@ -596,7 +611,7 @@ Authorization: Bearer {seu_token_jwt}
 
 ### 6.6 Atualizar Status do Agendamento
 
-**PATCH** `/appointments/{id}` 🔒 *Requer token ADMIN ou BARBER*
+**PATCH** `/appointments/{id}` 🔒 _Requer token ADMIN ou BARBER_
 
 ```json
 {
@@ -605,6 +620,7 @@ Authorization: Bearer {seu_token_jwt}
 ```
 
 **Status Disponíveis:**
+
 - `PENDING` - Aguardando confirmação
 - `CONFIRMED` - Confirmado
 - `CANCELED` - Cancelado
@@ -615,7 +631,7 @@ Authorization: Bearer {seu_token_jwt}
 
 ### 6.7 Cancelar Agendamento
 
-**PATCH** `/appointments/{id}` 🔒 *Requer token*
+**PATCH** `/appointments/{id}` 🔒 _Requer token_
 
 ```json
 {
@@ -627,7 +643,7 @@ Authorization: Bearer {seu_token_jwt}
 
 ### 6.8 Deletar Agendamento
 
-**DELETE** `/appointments/{id}` 🔒 *Requer token ADMIN*
+**DELETE** `/appointments/{id}` 🔒 _Requer token ADMIN_
 
 **Resposta (204):** Sem conteúdo
 
@@ -637,13 +653,15 @@ Authorization: Bearer {seu_token_jwt}
 
 ### 7.1 Buscar Horários Disponíveis para um Serviço
 
-**GET** `/appointments/available-slots/search?date=2025-01-11&serviceId=uuid-servico-1` 🔓 *Público*
+**GET** `/appointments/available-slots/search?date=2025-01-11&serviceId=uuid-servico-1` 🔓 _Público_
 
 **Parâmetros de Query:**
+
 - `date`: Data no formato YYYY-MM-DD (obrigatório)
 - `serviceId`: UUID do serviço (obrigatório)
 
 **Resposta (200):**
+
 ```json
 {
   "date": "2025-01-11",
@@ -685,9 +703,10 @@ Authorization: Bearer {seu_token_jwt}
 
 ### 7.2 Buscar Horários para Serviço Longo (45min)
 
-**GET** `/appointments/available-slots/search?date=2025-01-11&serviceId=uuid-servico-2` 🔓 *Público*
+**GET** `/appointments/available-slots/search?date=2025-01-11&serviceId=uuid-servico-2` 🔓 _Público_
 
 **Resposta (200):**
+
 ```json
 {
   "date": "2025-01-11",
@@ -872,6 +891,7 @@ POST /appointments
 ```
 
 **Resposta (400):**
+
 ```json
 {
   "statusCode": 400,
@@ -892,6 +912,7 @@ POST /appointments
 ```
 
 **Resposta (400):**
+
 ```json
 {
   "statusCode": 400,
@@ -912,6 +933,7 @@ POST /appointments
 ```
 
 **Resposta (400):**
+
 ```json
 {
   "statusCode": 400,
@@ -923,23 +945,23 @@ POST /appointments
 
 ## 📊 Resumo de Permissões
 
-| Endpoint | ADMIN | BARBER | CLIENT | Público |
-|----------|-------|--------|--------|---------|
-| POST /auth/register | ✅ | ✅ | ✅ | ✅ |
-| POST /auth/login | ✅ | ✅ | ✅ | ✅ |
-| GET /auth/me | ✅ | ✅ | ✅ | ❌ |
-| POST /services | ✅ | ❌ | ❌ | ❌ |
-| GET /services | ✅ | ✅ | ✅ | ✅ |
-| GET /settings | ✅ | ✅ | ✅ | ✅ |
-| PATCH /settings | ✅ | ❌ | ❌ | ❌ |
-| POST /time-blocks | ✅ | ❌ | ❌ | ❌ |
-| GET /time-blocks | ✅ | ✅ | ✅ | ✅ |
-| POST /appointments | ✅ | ✅ | ✅ | ❌ |
-| GET /appointments | ✅ | ✅ | ✅ | ❌ |
-| GET /appointments/:id | ✅ | ✅ | ✅ | ❌ |
-| PATCH /appointments | ✅ | ✅ | ❌** | ❌ |
-| DELETE /appointments | ✅ | ❌ | ❌ | ❌ |
-| GET /available-slots | ✅ | ✅ | ✅ | ✅ |
+| Endpoint              | ADMIN | BARBER | CLIENT | Público |
+| --------------------- | ----- | ------ | ------ | ------- |
+| POST /auth/register   | ✅    | ✅     | ✅     | ✅      |
+| POST /auth/login      | ✅    | ✅     | ✅     | ✅      |
+| GET /auth/me          | ✅    | ✅     | ✅     | ❌      |
+| POST /services        | ✅    | ❌     | ❌     | ❌      |
+| GET /services         | ✅    | ✅     | ✅     | ✅      |
+| GET /settings         | ✅    | ✅     | ✅     | ✅      |
+| PATCH /settings       | ✅    | ❌     | ❌     | ❌      |
+| POST /time-blocks     | ✅    | ❌     | ❌     | ❌      |
+| GET /time-blocks      | ✅    | ✅     | ✅     | ✅      |
+| POST /appointments    | ✅    | ✅     | ✅     | ❌      |
+| GET /appointments     | ✅    | ✅     | ✅     | ❌      |
+| GET /appointments/:id | ✅    | ✅     | ✅     | ❌      |
+| PATCH /appointments   | ✅    | ✅     | ❌\*\* | ❌      |
+| DELETE /appointments  | ✅    | ❌     | ❌     | ❌      |
+| GET /available-slots  | ✅    | ✅     | ✅     | ✅      |
 
 \*\* Cliente pode cancelar apenas seus próprios agendamentos
 

@@ -45,14 +45,14 @@ mobile/src/app/core/services/api/
 No arquivo `app.config.ts`, adicione o provider HTTP:
 
 ```typescript
-import { ApplicationConfig } from '@angular/core';
-import { provideApiHttpClient } from './core/services/api';
+import { ApplicationConfig } from "@angular/core";
+import { provideApiHttpClient } from "./core/services/api";
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideApiHttpClient(),
     // ... outros providers
-  ]
+  ],
 };
 ```
 
@@ -64,8 +64,8 @@ Certifique-se de que seu arquivo `environment.ts` contém as configurações da 
 export const environment = {
   production: false,
   api: {
-    baseUrl: 'http://localhost:3000',
-    apiPrefix: '/api/v1',
+    baseUrl: "http://localhost:3000",
+    apiPrefix: "/api/v1",
     timeout: 30000,
   },
   // ...
@@ -77,16 +77,16 @@ export const environment = {
 ### Injetar o Serviço
 
 ```typescript
-import { Component, inject } from '@angular/core';
-import { ApiService } from './core/services';
+import { Component, inject } from "@angular/core";
+import { ApiService } from "./core/services";
 
 @Component({
-  selector: 'app-users',
-  template: '...'
+  selector: "app-users",
+  template: "...",
 })
 export class UsersComponent {
   private apiService = inject(ApiService);
-  
+
   // ou via construtor
   constructor(private apiService: ApiService) {}
 }
@@ -96,35 +96,39 @@ export class UsersComponent {
 
 ```typescript
 // Simples
-this.apiService.get<User>('/users/123').subscribe({
+this.apiService.get<User>("/users/123").subscribe({
   next: (user) => console.log(user),
-  error: (error) => console.error(error)
+  error: (error) => console.error(error),
 });
 
 // Com parâmetros
-this.apiService.get<User[]>('/users', {
-  params: {
-    page: 1,
-    limit: 10,
-    search: 'John'
-  }
-}).subscribe(users => console.log(users));
+this.apiService
+  .get<User[]>("/users", {
+    params: {
+      page: 1,
+      limit: 10,
+      search: "John",
+    },
+  })
+  .subscribe((users) => console.log(users));
 ```
 
 ### POST Request
 
 ```typescript
 const userData = {
-  name: 'John Doe',
-  email: 'john@example.com'
+  name: "John Doe",
+  email: "john@example.com",
 };
 
-this.apiService.post<User>('/users', userData, {
-  requiresAuth: true
-}).subscribe({
-  next: (user) => console.log('Usuário criado:', user),
-  error: (error) => console.error('Erro:', error)
-});
+this.apiService
+  .post<User>("/users", userData, {
+    requiresAuth: true,
+  })
+  .subscribe({
+    next: (user) => console.log("Usuário criado:", user),
+    error: (error) => console.error("Erro:", error),
+  });
 ```
 
 ## Interceptors
@@ -132,78 +136,95 @@ this.apiService.post<User>('/users', userData, {
 O serviço inclui 7 interceptors automáticos:
 
 ### 1. Auth Interceptor 🔐
+
 - Adiciona automaticamente o token JWT nas requisições
 - Refresh automático em 401
 - Adiciona headers padrão (Content-Type, Accept)
 
 ### 2. Error Interceptor ❌
+
 - Trata erros globalmente
 - Redireciona para login em caso de 401
 - Logs de erro em desenvolvimento
 
 ### 3. Logging Interceptor 📝
+
 - Loga todas as requisições e respostas
 - Mede duração das requisições
 - Ativo apenas em modo de desenvolvimento
 
 ### 4. Caching Interceptor 💾
+
 - Cache automático para requisições GET
 - Configurável via header `X-Cache-Duration`
 - Cache de 5 minutos por padrão
 
 ### 5. Retry Interceptor 🔁
+
 - Retry automático com backoff exponencial
 - Padrão: 3 tentativas, 1s inicial
 - Headers: `X-Retry-Count`, `X-Retry-Delay`, `X-Skip-Retry`
 
 ### 6. Loading Interceptor 🔄
+
 - Mostra/esconde loading automaticamente
 - Headers: `X-Skip-Loading`, `X-Loading-Message`
 
 ### 7. Timeout Interceptor ⏱️
+
 - Timeout padrão: 30 segundos
 - Headers: `X-Timeout`, `X-Skip-Timeout`
 
 ## Headers de Controle
 
-| Header | Valores | Descrição |
-|--------|---------|-----------|
-| `X-Timeout` | milliseconds | Timeout customizado |
-| `X-Skip-Timeout` | `'true'` | Desabilita timeout |
-| `X-Skip-Loading` | `'true'` | Desabilita loading |
-| `X-Loading-Message` | string | Mensagem customizada |
-| `X-Retry-Count` | number | Número de tentativas |
-| `X-Retry-Delay` | milliseconds | Delay inicial |
-| `X-Skip-Retry` | `'true'` | Desabilita retry |
-| `X-Cache-Duration` | milliseconds | Duração do cache |
+| Header              | Valores      | Descrição            |
+| ------------------- | ------------ | -------------------- |
+| `X-Timeout`         | milliseconds | Timeout customizado  |
+| `X-Skip-Timeout`    | `'true'`     | Desabilita timeout   |
+| `X-Skip-Loading`    | `'true'`     | Desabilita loading   |
+| `X-Loading-Message` | string       | Mensagem customizada |
+| `X-Retry-Count`     | number       | Número de tentativas |
+| `X-Retry-Delay`     | milliseconds | Delay inicial        |
+| `X-Skip-Retry`      | `'true'`     | Desabilita retry     |
+| `X-Cache-Duration`  | milliseconds | Duração do cache     |
 
 ## Exemplos de Uso com Headers
 
 ```typescript
 // Sem loading
-this.http.get('/api/data', {
-  headers: { 'X-Skip-Loading': 'true' }
-}).subscribe();
+this.http
+  .get("/api/data", {
+    headers: { "X-Skip-Loading": "true" },
+  })
+  .subscribe();
 
 // Loading customizado
-this.http.post('/api/upload', data, {
-  headers: { 'X-Loading-Message': 'Fazendo upload...' }
-}).subscribe();
+this.http
+  .post("/api/upload", data, {
+    headers: { "X-Loading-Message": "Fazendo upload..." },
+  })
+  .subscribe();
 
 // Mais retries
-this.http.get('/api/unstable', {
-  headers: { 'X-Retry-Count': '5' }
-}).subscribe();
+this.http
+  .get("/api/unstable", {
+    headers: { "X-Retry-Count": "5" },
+  })
+  .subscribe();
 
 // Cache longo
-this.http.get('/api/config', {
-  headers: { 'X-Cache-Duration': '3600000' } // 1 hora
-}).subscribe();
+this.http
+  .get("/api/config", {
+    headers: { "X-Cache-Duration": "3600000" }, // 1 hora
+  })
+  .subscribe();
 
 // Timeout customizado
-this.http.get('/api/long', {
-  headers: { 'X-Timeout': '120000' } // 2 minutos
-}).subscribe();
+this.http
+  .get("/api/long", {
+    headers: { "X-Timeout": "120000" }, // 2 minutos
+  })
+  .subscribe();
 ```
 
 ## Boas Práticas
@@ -213,14 +234,14 @@ this.http.get('/api/long', {
 Em vez de usar o ApiService diretamente nos componentes, crie serviços específicos:
 
 ```typescript
-@Injectable({ providedIn: 'root' })
+@Injectable({ providedIn: "root" })
 export class UserService {
   constructor(private apiService: ApiService) {}
-  
+
   getUser(id: string): Observable<User> {
     return this.apiService.get<User>(`/users/${id}`);
   }
-  
+
   updateUser(id: string, data: Partial<User>): Observable<User> {
     return this.apiService.patch<User>(`/users/${id}`, data);
   }
@@ -268,6 +289,7 @@ users$ = this.apiService.get<User[]>('/users');
 ## Documentação Completa
 
 Para documentação detalhada, exemplos adicionais e referência completa da API, consulte:
+
 - `mobile/src/app/core/services/api/README.md`
 - `mobile/src/app/core/services/api/interceptors/README.md`
 

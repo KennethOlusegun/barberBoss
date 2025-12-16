@@ -33,18 +33,20 @@ Controla as configurações de conexão com o backend:
 
 ```typescript
 api: {
-  baseUrl: string;        // URL base da API do backend
-  apiPrefix: string;      // Prefixo de versão da API (ex: '/api/v1')
-  timeout: number;        // Timeout das requisições em milissegundos
+  baseUrl: string; // URL base da API do backend
+  apiPrefix: string; // Prefixo de versão da API (ex: '/api/v1')
+  timeout: number; // Timeout das requisições em milissegundos
 }
 ```
 
 **Development:**
+
 - `baseUrl`: `http://localhost:3000`
 - `apiPrefix`: `/api/v1`
 - `timeout`: `30000` (30 seconds)
 
 **Production:**
+
 - `baseUrl`: `https://api.barberboss.com` (update before deploy)
 - `apiPrefix`: `/api/v1`
 - `timeout`: `30000`
@@ -55,9 +57,9 @@ Manages authentication tokens and session:
 
 ```typescript
 auth: {
-  tokenKey: string;              // Token storage key
-  refreshTokenKey: string;       // Refresh token storage key
-  tokenExpirationTime: number;   // Token expiration in seconds
+  tokenKey: string; // Token storage key
+  refreshTokenKey: string; // Refresh token storage key
+  tokenExpirationTime: number; // Token expiration in seconds
 }
 ```
 
@@ -80,10 +82,10 @@ Enable or disable features:
 
 ```typescript
 features: {
-  enableDebugMode: boolean;           // Debug mode with extra logging
-  enableAnalytics: boolean;           // Analytics tracking
-  enablePushNotifications: boolean;   // Push notifications
-  enableOfflineMode: boolean;         // Offline mode support
+  enableDebugMode: boolean; // Debug mode with extra logging
+  enableAnalytics: boolean; // Analytics tracking
+  enablePushNotifications: boolean; // Push notifications
+  enableOfflineMode: boolean; // Offline mode support
 }
 ```
 
@@ -96,9 +98,9 @@ Controls application logging:
 
 ```typescript
 logging: {
-  enableConsoleLogging: boolean;      // Console logging
-  logLevel: 'debug' | 'info' | 'warn' | 'error';
-  enableRemoteLogging: boolean;       // Remote logging service
+  enableConsoleLogging: boolean; // Console logging
+  logLevel: "debug" | "info" | "warn" | "error";
+  enableRemoteLogging: boolean; // Remote logging service
 }
 ```
 
@@ -108,8 +110,8 @@ Defines storage strategy:
 
 ```typescript
 storage: {
-  prefix: string;                     // Prefix for storage keys
-  type: 'localStorage' | 'indexedDB'; // Storage mechanism
+  prefix: string; // Prefix for storage keys
+  type: "localStorage" | "indexedDB"; // Storage mechanism
 }
 ```
 
@@ -119,10 +121,10 @@ Application-specific business logic:
 
 ```typescript
 business: {
-  defaultAppointmentDuration: number;  // In minutes
-  minAdvanceBooking: number;           // Minimum hours in advance
-  maxAdvanceBooking: number;           // Maximum days in advance
-  cancellationDeadline: number;        // Hours before appointment
+  defaultAppointmentDuration: number; // In minutes
+  minAdvanceBooking: number; // Minimum hours in advance
+  maxAdvanceBooking: number; // Maximum days in advance
+  cancellationDeadline: number; // Hours before appointment
 }
 ```
 
@@ -132,9 +134,9 @@ User interface settings:
 
 ```typescript
 ui: {
-  defaultTheme: 'light' | 'dark' | 'auto';
+  defaultTheme: "light" | "dark" | "auto";
   enableAnimations: boolean;
-  itemsPerPage: number;               // Pagination size
+  itemsPerPage: number; // Pagination size
 }
 ```
 
@@ -143,12 +145,12 @@ ui: {
 ### 1. Inject the Config Service
 
 ```typescript
-import { Component } from '@angular/core';
-import { ConfigService } from './core/services/config.service';
+import { Component } from "@angular/core";
+import { ConfigService } from "./core/services/config.service";
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
+  selector: "app-root",
+  templateUrl: "./app.component.html",
 })
 export class AppComponent {
   constructor(private configService: ConfigService) {}
@@ -156,7 +158,7 @@ export class AppComponent {
   ngOnInit() {
     // Access configuration
     const apiUrl = this.configService.getApiUrl();
-    console.log('API URL:', apiUrl);
+    console.log("API URL:", apiUrl);
   }
 }
 ```
@@ -171,7 +173,7 @@ const apiUrl = this.configService.getApiUrl();
 // => 'http://localhost:3000/api/v1'
 
 // Build endpoint URL
-const usersEndpoint = this.configService.buildEndpointUrl('/users');
+const usersEndpoint = this.configService.buildEndpointUrl("/users");
 // => 'http://localhost:3000/api/v1/users'
 ```
 
@@ -180,7 +182,7 @@ const usersEndpoint = this.configService.buildEndpointUrl('/users');
 ```typescript
 // Check if debug mode is enabled
 if (this.configService.isDebugModeEnabled()) {
-  console.log('Debug mode is active');
+  console.log("Debug mode is active");
 }
 
 // Check if analytics is enabled
@@ -189,7 +191,7 @@ if (this.configService.isAnalyticsEnabled()) {
 }
 
 // Generic feature check
-if (this.configService.isFeatureEnabled('enablePushNotifications')) {
+if (this.configService.isFeatureEnabled("enablePushNotifications")) {
   // Setup push notifications
 }
 ```
@@ -198,7 +200,7 @@ if (this.configService.isFeatureEnabled('enablePushNotifications')) {
 
 ```typescript
 // Get prefixed storage key
-const userKey = this.configService.getStorageKey('user');
+const userKey = this.configService.getStorageKey("user");
 // => 'bb_user'
 
 // Store data with prefixed key
@@ -221,19 +223,23 @@ const deadline = this.configService.getCancellationDeadline();
 
 ```typescript
 // Get nested configuration using dot notation
-const baseUrl = this.configService.get('api.baseUrl');
+const baseUrl = this.configService.get("api.baseUrl");
 // => 'http://localhost:3000'
 
-const logLevel = this.configService.get('logging.logLevel');
+const logLevel = this.configService.get("logging.logLevel");
 // => 'debug'
 ```
 
 ### 3. HTTP Interceptor Example
 
 ```typescript
-import { Injectable } from '@angular/core';
-import { HttpInterceptor, HttpRequest, HttpHandler } from '@angular/common/http';
-import { ConfigService } from '../services/config.service';
+import { Injectable } from "@angular/core";
+import {
+  HttpInterceptor,
+  HttpRequest,
+  HttpHandler,
+} from "@angular/common/http";
+import { ConfigService } from "../services/config.service";
 
 @Injectable()
 export class ApiInterceptor implements HttpInterceptor {
@@ -241,7 +247,7 @@ export class ApiInterceptor implements HttpInterceptor {
 
   intercept(req: HttpRequest<any>, next: HttpHandler) {
     // Clone request and add base URL if needed
-    if (!req.url.startsWith('http')) {
+    if (!req.url.startsWith("http")) {
       const apiUrl = this.configService.getApiUrl();
       req = req.clone({
         url: `${apiUrl}${req.url}`,
@@ -258,6 +264,7 @@ export class ApiInterceptor implements HttpInterceptor {
 ### Development Environment
 
 1. Copy `.env.example` to `.env`:
+
 ```bash
 cp .env.example .env
 ```
@@ -265,6 +272,7 @@ cp .env.example .env
 2. Update values in `.env` if needed
 
 3. Run development server:
+
 ```bash
 npm start
 ```
@@ -278,6 +286,7 @@ npm start
    - Enable remote logging
 
 2. Build for production:
+
 ```bash
 ng build --configuration production
 ```
@@ -287,11 +296,13 @@ ng build --configuration production
 ### 1. Never Hardcode Values
 
 ❌ **Bad:**
+
 ```typescript
-const apiUrl = 'http://localhost:3000/api/v1';
+const apiUrl = "http://localhost:3000/api/v1";
 ```
 
 ✅ **Good:**
+
 ```typescript
 const apiUrl = this.configService.getApiUrl();
 ```
@@ -300,8 +311,8 @@ const apiUrl = this.configService.getApiUrl();
 
 ```typescript
 // Instead of commenting out code
-if (this.configService.isFeatureEnabled('enableAnalytics')) {
-  this.trackEvent('page_view');
+if (this.configService.isFeatureEnabled("enableAnalytics")) {
+  this.trackEvent("page_view");
 }
 ```
 
@@ -309,7 +320,7 @@ if (this.configService.isFeatureEnabled('enableAnalytics')) {
 
 ```typescript
 if (this.configService.isDebugModeEnabled()) {
-  console.log('Debug info:', data);
+  console.log("Debug info:", data);
 }
 ```
 
@@ -318,7 +329,7 @@ if (this.configService.isDebugModeEnabled()) {
 Always use the `Environment` interface when working with configuration:
 
 ```typescript
-import { Environment } from './environment.interface';
+import { Environment } from "./environment.interface";
 
 const config: Environment = {
   // TypeScript will enforce all required properties
@@ -340,9 +351,9 @@ npm test -- --coverage
 ### Test Example
 
 ```typescript
-it('should return API URL with prefix', () => {
+it("should return API URL with prefix", () => {
   const apiUrl = service.getApiUrl();
-  expect(apiUrl).toContain('/api/v1');
+  expect(apiUrl).toContain("/api/v1");
 });
 ```
 
@@ -368,6 +379,7 @@ If you have existing hardcoded values:
 ### Issue: Configuration not loading
 
 **Solution:** Ensure `ConfigService` is provided in `root`:
+
 ```typescript
 @Injectable({
   providedIn: 'root',
@@ -377,6 +389,7 @@ If you have existing hardcoded values:
 ### Issue: Different values in development and production
 
 **Solution:** Check file replacements in `angular.json`:
+
 ```json
 "fileReplacements": [
   {
@@ -389,8 +402,9 @@ If you have existing hardcoded values:
 ### Issue: TypeScript errors with configuration
 
 **Solution:** Ensure you're importing the correct interface:
+
 ```typescript
-import { Environment } from './environment.interface';
+import { Environment } from "./environment.interface";
 ```
 
 ## Future Enhancements

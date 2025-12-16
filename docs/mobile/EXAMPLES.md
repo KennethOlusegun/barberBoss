@@ -17,6 +17,7 @@ Demonstra o uso do `ConfigService` para acessar configuração da aplicação.
 **Localização:** `mobile/src/app/examples/config-demo.component.ts`
 
 **Recursos:**
+
 - Exibir todos os valores de configuração
 - Testar construção de URL de endpoint
 - Testar geração de chave de storage
@@ -82,7 +83,7 @@ Exemplo:
 
 ```typescript
 // app.module.ts
-import { environment } from '../environments/environment';
+import { environment } from "../environments/environment";
 
 const imports = [
   // ... outras importações

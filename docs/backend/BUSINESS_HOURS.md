@@ -44,6 +44,7 @@ O método `validateBusinessHours()` valida tanto o horário de início quanto o 
 ## Mensagens de Erro
 
 ### Dia não útil (Domingo)
+
 ```json
 {
   "statusCode": 400,
@@ -53,6 +54,7 @@ O método `validateBusinessHours()` valida tanto o horário de início quanto o 
 ```
 
 ### Horário fora do expediente
+
 ```json
 {
   "statusCode": 400,
@@ -62,6 +64,7 @@ O método `validateBusinessHours()` valida tanto o horário de início quanto o 
 ```
 
 ### Serviço estendendo além do horário comercial
+
 ```json
 {
   "statusCode": 400,
@@ -140,7 +143,8 @@ curl -X PATCH http://localhost:3000/api/settings \
 ```
 
 **Veja todas as opções disponíveis em**: [SETTINGS.md](./SETTINGS.md)
-```
+
+````
 
 ## Comportamento em Updates
 
@@ -151,7 +155,7 @@ PATCH /api/appointments/:id
 {
   "startsAt": "2025-12-09T19:00:00.000Z"
 }
-```
+````
 
 **Resultado**: Erro 400 - Fora do horário comercial
 

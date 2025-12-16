@@ -43,7 +43,7 @@ Response Flow:
 Os interceptors já estão configurados automaticamente no `main.ts`:
 
 ```typescript
-import { provideApiHttpClient } from './app/core/services/api/api.providers';
+import { provideApiHttpClient } from "./app/core/services/api/api.providers";
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -63,14 +63,18 @@ Aplica timeout padrão de 30 segundos a todas as requisições.
 
 ```typescript
 // Timeout customizado (15 segundos)
-this.http.get('/api/data', {
-  headers: { 'X-Timeout': '15000' }
-}).subscribe();
+this.http
+  .get("/api/data", {
+    headers: { "X-Timeout": "15000" },
+  })
+  .subscribe();
 
 // Desabilitar timeout
-this.http.get('/api/long-operation', {
-  headers: { 'X-Skip-Timeout': 'true' }
-}).subscribe();
+this.http
+  .get("/api/long-operation", {
+    headers: { "X-Skip-Timeout": "true" },
+  })
+  .subscribe();
 ```
 
 ### 2. LoadingInterceptor
@@ -81,14 +85,18 @@ Mostra/esconde automaticamente indicador de carregamento durante requisições.
 
 ```typescript
 // Desabilitar loading
-this.http.get('/api/background-sync', {
-  headers: { 'X-Skip-Loading': 'true' }
-}).subscribe();
+this.http
+  .get("/api/background-sync", {
+    headers: { "X-Skip-Loading": "true" },
+  })
+  .subscribe();
 
 // Loading com mensagem customizada
-this.http.post('/api/upload', data, {
-  headers: { 'X-Loading-Message': 'Fazendo upload...' }
-}).subscribe();
+this.http
+  .post("/api/upload", data, {
+    headers: { "X-Loading-Message": "Fazendo upload..." },
+  })
+  .subscribe();
 ```
 
 **Uso direto do LoadingService:**
@@ -113,6 +121,7 @@ this.loadingService.isLoading$.subscribe(isLoading => {
 Adiciona automaticamente o token JWT às requisições autenticadas.
 
 **Funcionalidades:**
+
 - Adiciona header `Authorization: Bearer <token>`
 - Refresh automático de token em caso de 401
 - Fila de requisições durante refresh
@@ -156,6 +165,7 @@ Registra todas as requisições e respostas no console (apenas em modo desenvolv
 Tenta novamente requisições falhas com backoff exponencial.
 
 **Configuração padrão:**
+
 - 3 tentativas máximas
 - Delay inicial de 1 segundo
 - Backoff exponencial (1s, 2s, 4s)
@@ -165,22 +175,29 @@ Tenta novamente requisições falhas com backoff exponencial.
 
 ```typescript
 // Customizar número de tentativas
-this.http.get('/api/unstable', {
-  headers: { 'X-Retry-Count': '5' }
-}).subscribe();
+this.http
+  .get("/api/unstable", {
+    headers: { "X-Retry-Count": "5" },
+  })
+  .subscribe();
 
 // Customizar delay inicial
-this.http.get('/api/data', {
-  headers: { 'X-Retry-Delay': '2000' }
-}).subscribe();
+this.http
+  .get("/api/data", {
+    headers: { "X-Retry-Delay": "2000" },
+  })
+  .subscribe();
 
 // Desabilitar retry
-this.http.post('/api/critical', data, {
-  headers: { 'X-Skip-Retry': 'true' }
-}).subscribe();
+this.http
+  .post("/api/critical", data, {
+    headers: { "X-Skip-Retry": "true" },
+  })
+  .subscribe();
 ```
 
 **Códigos de status retentáveis:**
+
 - 408 - Request Timeout
 - 429 - Too Many Requests
 - 500 - Internal Server Error
@@ -193,6 +210,7 @@ this.http.post('/api/critical', data, {
 Armazena respostas GET em cache para melhorar performance.
 
 **Configuração padrão:**
+
 - Apenas requisições GET
 - Duração padrão: 5 minutos
 - Cache em memória
@@ -201,14 +219,18 @@ Armazena respostas GET em cache para melhorar performance.
 
 ```typescript
 // Cache com duração customizada (10 minutos)
-this.http.get('/api/static-data', {
-  headers: { 'X-Cache-Duration': '600000' }
-}).subscribe();
+this.http
+  .get("/api/static-data", {
+    headers: { "X-Cache-Duration": "600000" },
+  })
+  .subscribe();
 
 // Desabilitar cache
-this.http.get('/api/real-time-data', {
-  headers: { 'X-Cache-Duration': 'none' }
-}).subscribe();
+this.http
+  .get("/api/real-time-data", {
+    headers: { "X-Cache-Duration": "none" },
+  })
+  .subscribe();
 ```
 
 **Limpeza manual do cache:**
@@ -240,52 +262,52 @@ Trata erros HTTP globalmente com redirecionamento e logging.
 ## Exemplo Completo
 
 ```typescript
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Injectable } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
+import { Observable } from "rxjs";
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class UserService {
   constructor(private http: HttpClient) {}
 
   // Requisição simples - todos os interceptors aplicados
   getUsers(): Observable<User[]> {
-    return this.http.get<User[]>('/api/users');
+    return this.http.get<User[]>("/api/users");
   }
 
   // Sem loading e com cache longo
   getStaticConfig(): Observable<Config> {
-    return this.http.get<Config>('/api/config', {
+    return this.http.get<Config>("/api/config", {
       headers: {
-        'X-Skip-Loading': 'true',
-        'X-Cache-Duration': '3600000' // 1 hora
-      }
+        "X-Skip-Loading": "true",
+        "X-Cache-Duration": "3600000", // 1 hora
+      },
     });
   }
 
   // Upload com loading customizado e sem retry
   uploadFile(file: File): Observable<UploadResponse> {
     const formData = new FormData();
-    formData.append('file', file);
+    formData.append("file", file);
 
-    return this.http.post<UploadResponse>('/api/upload', formData, {
+    return this.http.post<UploadResponse>("/api/upload", formData, {
       headers: {
-        'X-Loading-Message': 'Fazendo upload do arquivo...',
-        'X-Skip-Retry': 'true',
-        'X-Timeout': '60000' // 60 segundos
-      }
+        "X-Loading-Message": "Fazendo upload do arquivo...",
+        "X-Skip-Retry": "true",
+        "X-Timeout": "60000", // 60 segundos
+      },
     });
   }
 
   // Operação em background
   syncData(): Observable<void> {
-    return this.http.post<void>('/api/sync', null, {
+    return this.http.post<void>("/api/sync", null, {
       headers: {
-        'X-Skip-Loading': 'true',
-        'X-Retry-Count': '5'
-      }
+        "X-Skip-Loading": "true",
+        "X-Retry-Count": "5",
+      },
     });
   }
 }
@@ -294,26 +316,31 @@ export class UserService {
 ## Boas Práticas
 
 ### 1. Loading Indicator
+
 - Use `X-Skip-Loading: true` para operações em background
 - Use mensagens customizadas para operações demoradas
 - Não abuse - muitos loadings prejudicam UX
 
 ### 2. Cache
+
 - Use cache para dados que não mudam frequentemente
 - Limpe o cache após mutações (POST, PUT, DELETE)
 - Evite cachear dados sensíveis
 
 ### 3. Retry
+
 - Desabilite retry para operações críticas (pagamentos, etc)
 - Use retry para operações idempotentes
 - Ajuste o número de tentativas conforme necessidade
 
 ### 4. Timeout
+
 - Aumente timeout para uploads e downloads
 - Use timeout menor para operações rápidas
 - Considere timeout zero para operações em tempo real
 
 ### 5. Headers Customizados
+
 - Combine múltiplos headers para controle fino
 - Documente headers customizados no código
 - Use constantes para valores comuns
@@ -323,12 +350,15 @@ export class UserService {
 ### Testar Interceptors
 
 ```typescript
-import { TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
-import { AuthInterceptor } from './auth.interceptor';
+import { TestBed } from "@angular/core/testing";
+import {
+  HttpClientTestingModule,
+  HttpTestingController,
+} from "@angular/common/http/testing";
+import { HTTP_INTERCEPTORS } from "@angular/common/http";
+import { AuthInterceptor } from "./auth.interceptor";
 
-describe('AuthInterceptor', () => {
+describe("AuthInterceptor", () => {
   let httpMock: HttpTestingController;
 
   beforeEach(() => {
@@ -346,7 +376,7 @@ describe('AuthInterceptor', () => {
     httpMock = TestBed.inject(HttpTestingController);
   });
 
-  it('should add Authorization header', () => {
+  it("should add Authorization header", () => {
     // ... teste
   });
 });
@@ -355,21 +385,25 @@ describe('AuthInterceptor', () => {
 ## Troubleshooting
 
 ### Loading não esconde
+
 - Verifique se há erros não tratados
 - Use `forceHide()` em casos de erro
 - Verifique console para requests pendentes
 
 ### Cache não funciona
+
 - Verifique se é requisição GET
 - Confirme duração do cache
 - Verifique se header está correto
 
 ### Retry infinito
+
 - Verifique status code da resposta
 - Confirme que não há loop de retry
 - Use `X-Skip-Retry` se necessário
 
 ### Token não refresh
+
 - Verifique implementação do AuthService
 - Confirme endpoint de refresh
 - Verifique logs do AuthInterceptor

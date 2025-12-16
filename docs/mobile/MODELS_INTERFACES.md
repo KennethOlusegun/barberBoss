@@ -37,11 +37,11 @@ src/app/core/
 Você pode importar tudo de forma centralizada:
 
 ```typescript
-import { 
-  User, 
-  Service, 
-  Appointment, 
-  Settings, 
+import {
+  User,
+  Service,
+  Appointment,
+  Settings,
   TimeBlock,
   IUser,
   IService,
@@ -50,8 +50,8 @@ import {
   ITimeBlock,
   Role,
   AppointmentStatus,
-  BlockType
-} from '@app/core';
+  BlockType,
+} from "@app/core";
 ```
 
 ## 🎯 Enums
@@ -62,9 +62,9 @@ Define os papéis de usuário no sistema:
 
 ```typescript
 enum Role {
-  ADMIN = 'ADMIN',
-  BARBER = 'BARBER',
-  CLIENT = 'CLIENT'
+  ADMIN = "ADMIN",
+  BARBER = "BARBER",
+  CLIENT = "CLIENT",
 }
 ```
 
@@ -74,11 +74,11 @@ Define os status de agendamento:
 
 ```typescript
 enum AppointmentStatus {
-  PENDING = 'PENDING',
-  CONFIRMED = 'CONFIRMED',
-  CANCELED = 'CANCELED',
-  COMPLETED = 'COMPLETED',
-  NO_SHOW = 'NO_SHOW'
+  PENDING = "PENDING",
+  CONFIRMED = "CONFIRMED",
+  CANCELED = "CANCELED",
+  COMPLETED = "COMPLETED",
+  NO_SHOW = "NO_SHOW",
 }
 ```
 
@@ -88,11 +88,11 @@ Define os tipos de bloqueio de horário:
 
 ```typescript
 enum BlockType {
-  LUNCH = 'LUNCH',
-  BREAK = 'BREAK',
-  DAY_OFF = 'DAY_OFF',
-  VACATION = 'VACATION',
-  CUSTOM = 'CUSTOM'
+  LUNCH = "LUNCH",
+  BREAK = "BREAK",
+  DAY_OFF = "DAY_OFF",
+  VACATION = "VACATION",
+  CUSTOM = "CUSTOM",
 }
 ```
 
@@ -118,11 +118,11 @@ interface IUser {
 const user = new User(userData);
 
 // Métodos úteis
-user.isAdmin();           // Verifica se é admin
-user.isBarber();          // Verifica se é barbeiro
-user.isClient();          // Verifica se é cliente
-user.getFullName();       // Retorna nome completo
-user.getInitials();       // Retorna iniciais (ex: "JD")
+user.isAdmin(); // Verifica se é admin
+user.isBarber(); // Verifica se é barbeiro
+user.isClient(); // Verifica se é cliente
+user.getFullName(); // Retorna nome completo
+user.getInitials(); // Retorna iniciais (ex: "JD")
 ```
 
 ### DTOs
@@ -182,10 +182,10 @@ interface IService {
 const service = new Service(serviceData);
 
 // Métodos úteis
-service.getFormattedPrice();           // Ex: "R$ 50,00"
-service.getFormattedDuration();        // Ex: "45 min" ou "1h 30min"
-service.calculateEndTime(startDate);   // Calcula horário de término
-service.isAvailable();                 // Verifica se está ativo
+service.getFormattedPrice(); // Ex: "R$ 50,00"
+service.getFormattedDuration(); // Ex: "45 min" ou "1h 30min"
+service.calculateEndTime(startDate); // Calcula horário de término
+service.isAvailable(); // Verifica se está ativo
 ```
 
 ## 📅 Appointment (Agendamento)
@@ -214,16 +214,16 @@ interface IAppointment {
 const appointment = new Appointment(appointmentData);
 
 // Métodos úteis
-appointment.getClientName();           // Nome do cliente
-appointment.getFormattedDate();        // Ex: "15/12/2025"
-appointment.getFormattedTimeRange();   // Ex: "14:00 - 15:00"
-appointment.getDurationMinutes();      // Duração em minutos
-appointment.isPast();                  // Se já passou
-appointment.isToday();                 // Se é hoje
-appointment.canBeCanceled();           // Se pode cancelar
-appointment.canBeEdited();             // Se pode editar
-appointment.getStatusLabel();          // Label do status em PT
-appointment.getStatusColor();          // Cor Ionic para o status
+appointment.getClientName(); // Nome do cliente
+appointment.getFormattedDate(); // Ex: "15/12/2025"
+appointment.getFormattedTimeRange(); // Ex: "14:00 - 15:00"
+appointment.getDurationMinutes(); // Duração em minutos
+appointment.isPast(); // Se já passou
+appointment.isToday(); // Se é hoje
+appointment.canBeCanceled(); // Se pode cancelar
+appointment.canBeEdited(); // Se pode editar
+appointment.getStatusLabel(); // Label do status em PT
+appointment.getStatusColor(); // Cor Ionic para o status
 ```
 
 ### DTOs e Tipos
@@ -265,12 +265,12 @@ interface IAppointmentStats {
 interface ISettings {
   id: string;
   businessName: string;
-  openTime: string;           // "08:00"
-  closeTime: string;          // "18:00"
-  workingDays: number[];      // [1,2,3,4,5,6]
-  slotIntervalMin: number;    // 15
-  maxAdvanceDays: number;     // 30
-  minAdvanceHours: number;    // 2
+  openTime: string; // "08:00"
+  closeTime: string; // "18:00"
+  workingDays: number[]; // [1,2,3,4,5,6]
+  slotIntervalMin: number; // 15
+  maxAdvanceDays: number; // 30
+  minAdvanceHours: number; // 2
   enableReminders: boolean;
   reminderHoursBefore: number;
   createdAt: Date | string;
@@ -284,16 +284,16 @@ interface ISettings {
 const settings = new Settings(settingsData);
 
 // Métodos úteis
-settings.getBusinessHours();              // Ex: "08:00 - 18:00"
-settings.getWorkingDaysLabels();          // ["Segunda", "Terça", ...]
-settings.getWorkingDaysString();          // "Segunda a Sábado"
-settings.isWorkingDay(3);                 // Verifica dia da semana
-settings.getOpeningTime(date);            // Date de abertura
-settings.getClosingTime(date);            // Date de fechamento
-settings.isWithinBusinessHours(date);     // Se horário está aberto
-settings.getMaxBookingDate();             // Data máxima para agendar
-settings.getMinBookingDateTime();         // Data/hora mínima
-settings.isDateBookable(date);            // Se data pode ser agendada
+settings.getBusinessHours(); // Ex: "08:00 - 18:00"
+settings.getWorkingDaysLabels(); // ["Segunda", "Terça", ...]
+settings.getWorkingDaysString(); // "Segunda a Sábado"
+settings.isWorkingDay(3); // Verifica dia da semana
+settings.getOpeningTime(date); // Date de abertura
+settings.getClosingTime(date); // Date de fechamento
+settings.isWithinBusinessHours(date); // Se horário está aberto
+settings.getMaxBookingDate(); // Data máxima para agendar
+settings.getMinBookingDateTime(); // Data/hora mínima
+settings.isDateBookable(date); // Se data pode ser agendada
 ```
 
 ## 🚫 TimeBlock (Bloqueio de Horário)
@@ -321,17 +321,17 @@ interface ITimeBlock {
 const timeBlock = new TimeBlock(blockData);
 
 // Métodos úteis
-timeBlock.getTypeLabel();                     // Ex: "Almoço"
-timeBlock.getDisplayTitle();                  // Ex: "Almoço: Pausa"
-timeBlock.getFormattedDateRange();            // Ex: "15/12/2025"
-timeBlock.getFormattedTimeRange();            // Ex: "12:00 - 13:00"
-timeBlock.getRecurringDaysString();           // Ex: "Segunda, Terça"
-timeBlock.isActiveOnDate(date);               // Se ativo na data
-timeBlock.overlapsWithTimeRange(start, end);  // Se sobrepõe horário
-timeBlock.isPast();                           // Se já passou
-timeBlock.isCurrentlyActive();                // Se está ativo agora
-timeBlock.getDurationMinutes();               // Duração em minutos
-timeBlock.getTypeColor();                     // Cor Ionic para o tipo
+timeBlock.getTypeLabel(); // Ex: "Almoço"
+timeBlock.getDisplayTitle(); // Ex: "Almoço: Pausa"
+timeBlock.getFormattedDateRange(); // Ex: "15/12/2025"
+timeBlock.getFormattedTimeRange(); // Ex: "12:00 - 13:00"
+timeBlock.getRecurringDaysString(); // Ex: "Segunda, Terça"
+timeBlock.isActiveOnDate(date); // Se ativo na data
+timeBlock.overlapsWithTimeRange(start, end); // Se sobrepõe horário
+timeBlock.isPast(); // Se já passou
+timeBlock.isCurrentlyActive(); // Se está ativo agora
+timeBlock.getDurationMinutes(); // Duração em minutos
+timeBlock.getTypeColor(); // Cor Ionic para o tipo
 ```
 
 ## 🛠️ Tipos Comuns
@@ -372,7 +372,7 @@ interface IQueryParams {
   limit?: number;
   search?: string;
   sortBy?: string;
-  sortOrder?: 'asc' | 'desc';
+  sortOrder?: "asc" | "desc";
 }
 ```
 
@@ -381,7 +381,7 @@ interface IQueryParams {
 ### Exemplo 1: Listar Agendamentos
 
 ```typescript
-import { Appointment, IAppointmentQuery } from '@app/core';
+import { Appointment, IAppointmentQuery } from "@app/core";
 
 // Query
 const query: IAppointmentQuery = {
@@ -389,17 +389,17 @@ const query: IAppointmentQuery = {
   startDate: new Date(),
   endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
   page: 1,
-  limit: 10
+  limit: 10,
 };
 
 // Buscar
 const response = await this.appointmentService.getAppointments(query);
 
 // Converter para models
-const appointments = response.data.map(data => new Appointment(data));
+const appointments = response.data.map((data) => new Appointment(data));
 
 // Usar métodos
-appointments.forEach(appointment => {
+appointments.forEach((appointment) => {
   console.log(appointment.getFormattedDate());
   console.log(appointment.getClientName());
   console.log(appointment.getStatusLabel());
@@ -409,30 +409,30 @@ appointments.forEach(appointment => {
 ### Exemplo 2: Criar Serviço
 
 ```typescript
-import { Service, IServiceCreate } from '@app/core';
+import { Service, IServiceCreate } from "@app/core";
 
 const newService: IServiceCreate = {
-  name: 'Corte Degradê',
-  description: 'Corte moderno com degradê',
-  price: 45.00,
+  name: "Corte Degradê",
+  description: "Corte moderno com degradê",
+  price: 45.0,
   durationMin: 45,
-  active: true
+  active: true,
 };
 
 const response = await this.serviceService.create(newService);
 const service = new Service(response.data);
 
-console.log(service.getFormattedPrice());    // "R$ 45,00"
+console.log(service.getFormattedPrice()); // "R$ 45,00"
 console.log(service.getFormattedDuration()); // "45 min"
 ```
 
 ### Exemplo 3: Verificar Horários Disponíveis
 
 ```typescript
-import { Settings, TimeBlock } from '@app/core';
+import { Settings, TimeBlock } from "@app/core";
 
 const settings = new Settings(settingsData);
-const blocks = blocksData.map(b => new TimeBlock(b));
+const blocks = blocksData.map((b) => new TimeBlock(b));
 
 // Verificar se data está disponível
 const date = new Date();
@@ -440,8 +440,8 @@ const isWorkingDay = settings.isWorkingDay(date.getDay());
 const isBookable = settings.isDateBookable(date);
 
 // Verificar bloqueios
-const hasBlock = blocks.some(block => 
-  block.isActiveOnDate(date) && block.isWithinBusinessHours(date)
+const hasBlock = blocks.some(
+  (block) => block.isActiveOnDate(date) && block.isWithinBusinessHours(date),
 );
 
 const isAvailable = isWorkingDay && isBookable && !hasBlock;
@@ -450,16 +450,12 @@ const isAvailable = isWorkingDay && isBookable && !hasBlock;
 ## 📱 Uso em Components
 
 ```typescript
-import { Component, OnInit } from '@angular/core';
-import { 
-  Appointment, 
-  AppointmentStatus, 
-  IAppointmentQuery 
-} from '@app/core';
+import { Component, OnInit } from "@angular/core";
+import { Appointment, AppointmentStatus, IAppointmentQuery } from "@app/core";
 
 @Component({
-  selector: 'app-appointments',
-  templateUrl: './appointments.page.html'
+  selector: "app-appointments",
+  templateUrl: "./appointments.page.html",
 })
 export class AppointmentsPage implements OnInit {
   appointments: Appointment[] = [];
@@ -471,11 +467,11 @@ export class AppointmentsPage implements OnInit {
   async loadAppointments() {
     const query: IAppointmentQuery = {
       status: AppointmentStatus.CONFIRMED,
-      startDate: new Date()
+      startDate: new Date(),
     };
 
     const response = await this.appointmentService.getAppointments(query);
-    this.appointments = response.data.map(data => new Appointment(data));
+    this.appointments = response.data.map((data) => new Appointment(data));
   }
 
   getStatusColor(appointment: Appointment): string {
@@ -516,22 +512,22 @@ Os models suportam relacionamentos aninhados:
 
 ```typescript
 const appointment = new Appointment({
-  id: '123',
+  id: "123",
   startsAt: new Date(),
   endsAt: new Date(),
   status: AppointmentStatus.CONFIRMED,
   service: {
-    id: '456',
-    name: 'Corte',
+    id: "456",
+    name: "Corte",
     price: 45,
-    durationMin: 45
+    durationMin: 45,
   },
   user: {
-    id: '789',
-    name: 'João Silva',
-    email: 'joao@email.com',
-    role: Role.CLIENT
-  }
+    id: "789",
+    name: "João Silva",
+    email: "joao@email.com",
+    role: Role.CLIENT,
+  },
 });
 
 // Acessar relacionamentos

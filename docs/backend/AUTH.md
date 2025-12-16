@@ -9,6 +9,7 @@ O módulo de autenticação foi adaptado para atender às necessidades específi
 ### 1. **Endpoints de Autenticação**
 
 #### `POST /auth/register`
+
 - Registro de novos usuários
 - Retorna token JWT e dados do usuário
 - Permite definir o papel (role) do usuário
@@ -16,6 +17,7 @@ O módulo de autenticação foi adaptado para atender às necessidades específi
 - Validação de email único
 
 **Exemplo de Request:**
+
 ```json
 {
   "name": "João Silva",
@@ -27,6 +29,7 @@ O módulo de autenticação foi adaptado para atender às necessidades específi
 ```
 
 **Exemplo de Response:**
+
 ```json
 {
   "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
@@ -42,11 +45,13 @@ O módulo de autenticação foi adaptado para atender às necessidades específi
 ```
 
 #### `POST /auth/login`
+
 - Login de usuários existentes
 - Retorna token JWT e dados do usuário
 - Validação de credenciais
 
 **Exemplo de Request:**
+
 ```json
 {
   "email": "joao@exemplo.com",
@@ -55,11 +60,13 @@ O módulo de autenticação foi adaptado para atender às necessidades específi
 ```
 
 #### `GET /auth/me`
+
 - Retorna perfil do usuário autenticado
 - Requer token JWT no header Authorization
 - Formato: `Bearer <token>`
 
 **Exemplo de Response:**
+
 ```json
 {
   "id": "uuid",
@@ -75,12 +82,14 @@ O módulo de autenticação foi adaptado para atender às necessidades específi
 ### 2. **Guards Implementados**
 
 #### `JwtAuthGuard`
+
 - Protege rotas que requerem autenticação
 - Aplicado globalmente em toda a aplicação
 - Verifica token JWT no header Authorization
 - Rotas públicas podem usar o decorator `@Public()`
 
 #### `RolesGuard`
+
 - Protege rotas por papel de usuário (role)
 - Aplicado após o JwtAuthGuard
 - Usa o decorator `@Roles()` para definir roles permitidas
@@ -88,7 +97,9 @@ O módulo de autenticação foi adaptado para atender às necessidades específi
 ### 3. **Decorators Customizados**
 
 #### `@Public()`
+
 Marca uma rota como pública (sem autenticação):
+
 ```typescript
 @Public()
 @Get('public-endpoint')
@@ -98,7 +109,9 @@ async publicEndpoint() {
 ```
 
 #### `@Roles(...roles)`
+
 Define quais roles podem acessar uma rota:
+
 ```typescript
 @Roles(Role.ADMIN, Role.BARBER)
 @Get('protected-endpoint')
@@ -108,7 +121,9 @@ async protectedEndpoint() {
 ```
 
 #### `@CurrentUser()`
+
 Obtém o usuário autenticado da requisição:
+
 ```typescript
 @Get('my-data')
 async getMyData(@CurrentUser() user: UserFromJwt) {
@@ -197,11 +212,11 @@ async getMyAppointments(@CurrentUser() user: UserFromJwt) {
 
 ## 📝 Roles Disponíveis
 
-| Role | Descrição | Permissões Típicas |
-|------|-----------|-------------------|
-| **ADMIN** | Administrador do sistema | Acesso total ao sistema |
-| **BARBER** | Barbeiro | Gerenciar agendamentos, serviços |
-| **CLIENT** | Cliente | Visualizar e criar agendamentos |
+| Role       | Descrição                | Permissões Típicas               |
+| ---------- | ------------------------ | -------------------------------- |
+| **ADMIN**  | Administrador do sistema | Acesso total ao sistema          |
+| **BARBER** | Barbeiro                 | Gerenciar agendamentos, serviços |
+| **CLIENT** | Cliente                  | Visualizar e criar agendamentos  |
 
 ## 🚀 Próximos Passos
 
@@ -226,6 +241,7 @@ async getMyAppointments(@CurrentUser() user: UserFromJwt) {
 ### Token inválido ou expirado
 
 Certifique-se de:
+
 1. Incluir o header `Authorization: Bearer <token>`
 2. O token ainda está válido (não expirou)
 3. O JWT_SECRET está configurado corretamente
@@ -233,6 +249,7 @@ Certifique-se de:
 ### Acesso negado (403 Forbidden)
 
 Verifique se:
+
 1. O usuário tem a role necessária para acessar a rota
 2. Os guards estão aplicados corretamente
 3. O decorator `@Roles()` está especificando as roles corretas

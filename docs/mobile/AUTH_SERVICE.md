@@ -43,18 +43,18 @@ core/
 ### 1. Importação
 
 ```typescript
-import { AuthService, UserRole } from '@core';
+import { AuthService, UserRole } from "@core";
 ```
 
 ### 2. Login
 
 ```typescript
-import { Component } from '@angular/core';
-import { AuthService } from '@core';
+import { Component } from "@angular/core";
+import { AuthService } from "@core";
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.page.html',
+  selector: "app-login",
+  templateUrl: "./login.page.html",
 })
 export class LoginPage {
   constructor(private authService: AuthService) {}
@@ -62,11 +62,11 @@ export class LoginPage {
   login(email: string, password: string) {
     this.authService.login({ email, password }).subscribe({
       next: (user) => {
-        console.log('Login successful:', user);
+        console.log("Login successful:", user);
         // Redirecionar para home
       },
       error: (error) => {
-        console.error('Login failed:', error);
+        console.error("Login failed:", error);
         // Mostrar mensagem de erro
       },
     });
@@ -113,12 +113,12 @@ logout() {
 ```typescript
 // Observable
 this.authService.isAuthenticated$.subscribe((isAuth) => {
-  console.log('Is authenticated:', isAuth);
+  console.log("Is authenticated:", isAuth);
 });
 
 // Síncrono
 if (this.authService.isAuthenticated()) {
-  console.log('User is authenticated');
+  console.log("User is authenticated");
 }
 ```
 
@@ -128,13 +128,13 @@ if (this.authService.isAuthenticated()) {
 // Observable
 this.authService.user$.subscribe((user) => {
   if (user) {
-    console.log('Current user:', user.name, user.role);
+    console.log("Current user:", user.name, user.role);
   }
 });
 
 // Buscar do servidor
 this.authService.getCurrentUser().subscribe((user) => {
-  console.log('User profile:', user);
+  console.log("User profile:", user);
 });
 ```
 
@@ -143,17 +143,17 @@ this.authService.getCurrentUser().subscribe((user) => {
 ```typescript
 // Verificar role específica
 if (this.authService.hasRole(UserRole.ADMIN)) {
-  console.log('User is admin');
+  console.log("User is admin");
 }
 
 // Verificar múltiplas roles
 if (this.authService.hasAnyRole([UserRole.ADMIN, UserRole.BARBER])) {
-  console.log('User is admin or barber');
+  console.log("User is admin or barber");
 }
 
 // Obter role atual
 const role = this.authService.getUserRole();
-console.log('User role:', role);
+console.log("User role:", role);
 ```
 
 ### 8. Gerenciamento de Senha
@@ -174,8 +174,8 @@ changePassword() {
 
 // Solicitar reset de senha
 requestReset() {
-  this.authService.requestPasswordReset({ 
-    email: 'user@example.com' 
+  this.authService.requestPasswordReset({
+    email: 'user@example.com'
   }).subscribe({
     next: () => console.log('Reset email sent'),
     error: (error) => console.error('Failed:', error),
@@ -199,13 +199,13 @@ confirmReset() {
 ### AuthGuard - Proteger rotas autenticadas
 
 ```typescript
-import { Routes } from '@angular/router';
-import { AuthGuard } from '@core';
+import { Routes } from "@angular/router";
+import { AuthGuard } from "@core";
 
 export const routes: Routes = [
   {
-    path: 'profile',
-    loadComponent: () => import('./profile/profile.page'),
+    path: "profile",
+    loadComponent: () => import("./profile/profile.page"),
     canActivate: [AuthGuard], // Requer autenticação
   },
 ];
@@ -216,8 +216,8 @@ export const routes: Routes = [
 ```typescript
 export const routes: Routes = [
   {
-    path: 'login',
-    loadComponent: () => import('./login/login.page'),
+    path: "login",
+    loadComponent: () => import("./login/login.page"),
     canActivate: [GuestGuard], // Apenas não autenticados
   },
 ];
@@ -226,21 +226,21 @@ export const routes: Routes = [
 ### RoleGuard - Proteger por role
 
 ```typescript
-import { UserRole } from '@core';
+import { UserRole } from "@core";
 
 export const routes: Routes = [
   {
-    path: 'admin',
-    loadComponent: () => import('./admin/admin.page'),
+    path: "admin",
+    loadComponent: () => import("./admin/admin.page"),
     canActivate: [RoleGuard],
     data: { roles: [UserRole.ADMIN] }, // Apenas admin
   },
   {
-    path: 'appointments',
-    loadComponent: () => import('./appointments/appointments.page'),
+    path: "appointments",
+    loadComponent: () => import("./appointments/appointments.page"),
     canActivate: [RoleGuard],
-    data: { 
-      roles: [UserRole.ADMIN, UserRole.BARBER] // Admin ou Barber
+    data: {
+      roles: [UserRole.ADMIN, UserRole.BARBER], // Admin ou Barber
     },
   },
 ];
@@ -251,21 +251,20 @@ export const routes: Routes = [
 O `AuthInterceptor` é configurado automaticamente no `app.config.ts`:
 
 ```typescript
-import { ApplicationConfig } from '@angular/core';
-import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { AuthInterceptor } from '@core';
+import { ApplicationConfig } from "@angular/core";
+import { provideHttpClient, withInterceptors } from "@angular/common/http";
+import { AuthInterceptor } from "@core";
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideHttpClient(
-      withInterceptors([AuthInterceptor])
-    ),
+    provideHttpClient(withInterceptors([AuthInterceptor])),
     // ... outros providers
   ],
 };
 ```
 
 O interceptor automaticamente:
+
 - ✅ Adiciona o token JWT ao header `Authorization`
 - ✅ Trata erros 401 (Unauthorized)
 - ✅ Faz refresh automático do token quando necessário
@@ -278,7 +277,7 @@ O AuthService expõe vários observables para monitorar o estado:
 ```typescript
 // Estado completo de autenticação
 authService.authState$.subscribe((state) => {
-  console.log('Auth state:', {
+  console.log("Auth state:", {
     isAuthenticated: state.isAuthenticated,
     user: state.user,
     token: state.token,
@@ -288,17 +287,17 @@ authService.authState$.subscribe((state) => {
 
 // Apenas usuário
 authService.user$.subscribe((user) => {
-  console.log('User:', user);
+  console.log("User:", user);
 });
 
 // Apenas status de autenticação
 authService.isAuthenticated$.subscribe((isAuth) => {
-  console.log('Is authenticated:', isAuth);
+  console.log("Is authenticated:", isAuth);
 });
 
 // Estado de loading
 authService.loading$.subscribe((loading) => {
-  console.log('Loading:', loading);
+  console.log("Loading:", loading);
 });
 ```
 
@@ -315,6 +314,7 @@ Os tokens são armazenados com segurança no localStorage:
 ### Token Validation
 
 O serviço valida automaticamente:
+
 - ✅ Formato do token JWT
 - ✅ Expiração do token
 - ✅ Integridade do payload
@@ -322,6 +322,7 @@ O serviço valida automaticamente:
 ### Token Refresh
 
 O refresh acontece automaticamente quando:
+
 - Token está próximo da expiração (5 minutos)
 - Requisição retorna 401 Unauthorized
 - Múltiplas requisições são enfileiradas durante refresh
@@ -335,6 +336,7 @@ ng test
 ```
 
 Os testes cobrem:
+
 - ✅ Login/Register/Logout
 - ✅ Token management
 - ✅ Role verification

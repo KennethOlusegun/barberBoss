@@ -5,6 +5,7 @@ Use este checklist para garantir que a configuração de ambiente foi implementa
 ## ✅ Setup Inicial
 
 ### Arquivos Criados
+
 - [x] `environment.interface.ts` - Interface TypeScript
 - [x] `environment.ts` - Configuração de desenvolvimento
 - [x] `environment.prod.ts` - Configuração de produção
@@ -15,6 +16,7 @@ Use este checklist para garantir que a configuração de ambiente foi implementa
 - [x] `.gitignore` atualizado
 
 ### Documentação
+
 - [x] Quick Start Guide
 - [x] Documentação completa
 - [x] Exemplos de uso
@@ -23,12 +25,14 @@ Use este checklist para garantir que a configuração de ambiente foi implementa
 ## 🔧 Configuração
 
 ### Desenvolvimento
+
 - [x] API URL configurada (`http://localhost:3000`)
 - [x] Debug mode ativado
 - [x] Console logging ativado
 - [x] Analytics desativado
 
 ### Produção
+
 - [ ] **IMPORTANTE:** Atualizar `api.baseUrl` em `environment.prod.ts`
 - [x] Debug mode desativado
 - [x] Console logging desativado
@@ -38,12 +42,14 @@ Use este checklist para garantir que a configuração de ambiente foi implementa
 ## 🎯 Tarefas de Integração
 
 ### Fase 1: Preparação
+
 - [ ] Ler Quick Start Guide
 - [ ] Revisar documentação completa
 - [ ] Entender estrutura de configuração
 - [ ] Testar demo component (opcional)
 
 ### Fase 2: Migração de Código Existente
+
 - [ ] Identificar valores hardcoded no código
 - [ ] Substituir por chamadas ao ConfigService
 - [ ] Remover imports diretos de environment
@@ -52,6 +58,7 @@ Use este checklist para garantir que a configuração de ambiente foi implementa
 ### Fase 3: Implementação em Serviços
 
 #### HTTP Service/Interceptor
+
 - [ ] Injetar ConfigService
 - [ ] Usar `getApiUrl()` para base URL
 - [ ] Usar `getApiTimeout()` para timeout
@@ -65,6 +72,7 @@ const url = this.config.buildEndpointUrl(API_ENDPOINTS.USERS.BASE);
 ```
 
 #### Auth Service
+
 - [ ] Usar `getTokenKey()` para storage
 - [ ] Usar `getRefreshTokenKey()` para refresh token
 - [ ] Usar `getTokenExpirationTime()` para validação
@@ -76,19 +84,21 @@ localStorage.setItem(tokenKey, token);
 ```
 
 #### Storage Service
+
 - [ ] Usar `getStoragePrefix()` para prefixo
 - [ ] Usar `getStorageType()` para estratégia
 - [ ] Usar `getStorageKey()` para chaves
 
 ```typescript
 // Exemplo
-const key = this.config.getStorageKey('user');
+const key = this.config.getStorageKey("user");
 const type = this.config.getStorageType();
 ```
 
 ### Fase 4: Feature Flags
 
 - [ ] Implementar conditional analytics
+
 ```typescript
 if (this.config.isAnalyticsEnabled()) {
   // Track event
@@ -96,13 +106,15 @@ if (this.config.isAnalyticsEnabled()) {
 ```
 
 - [ ] Implementar debug logging
+
 ```typescript
 if (this.config.isDebugModeEnabled()) {
-  console.log('Debug info');
+  console.log("Debug info");
 }
 ```
 
 - [ ] Implementar push notifications
+
 ```typescript
 if (this.config.arePushNotificationsEnabled()) {
   // Setup push
@@ -110,6 +122,7 @@ if (this.config.arePushNotificationsEnabled()) {
 ```
 
 - [ ] Implementar offline mode
+
 ```typescript
 if (this.config.isOfflineModeEnabled()) {
   // Setup offline queue
@@ -129,7 +142,7 @@ const minHours = this.config.getMinAdvanceBooking();
 const selectedDate = dayjs(date);
 const now = dayjs();
 
-if (selectedDate.diff(now, 'hours') < minHours) {
+if (selectedDate.diff(now, "hours") < minHours) {
   // Show error
 }
 ```
@@ -137,16 +150,19 @@ if (selectedDate.diff(now, 'hours') < minHours) {
 ### Fase 6: UI Configuration
 
 - [ ] Implementar theme switching
+
 ```typescript
 const theme = this.config.getDefaultTheme();
 ```
 
 - [ ] Configurar animations
+
 ```typescript
 const enableAnimations = this.config.areAnimationsEnabled();
 ```
 
 - [ ] Configurar pagination
+
 ```typescript
 const itemsPerPage = this.config.getItemsPerPage();
 ```
@@ -154,6 +170,7 @@ const itemsPerPage = this.config.getItemsPerPage();
 ## 🧪 Testes
 
 ### Testes Unitários
+
 - [x] ConfigService tem testes completos
 - [ ] Adicionar testes nos serviços que usam ConfigService
 - [ ] Mockar ConfigService nos testes
@@ -161,19 +178,21 @@ const itemsPerPage = this.config.getItemsPerPage();
 ```typescript
 // Exemplo de mock
 const mockConfig = {
-  getApiUrl: () => 'http://test.com/api/v1',
+  getApiUrl: () => "http://test.com/api/v1",
   isDebugModeEnabled: () => false,
   // ...
 };
 ```
 
 ### Testes de Integração
+
 - [ ] Testar com ambiente de desenvolvimento
 - [ ] Testar build de produção
 - [ ] Verificar file replacements no angular.json
 - [ ] Testar diferentes feature flags
 
 ### Testes Manuais
+
 - [ ] Verificar API calls no Network tab
 - [ ] Verificar storage keys no DevTools
 - [ ] Verificar logs no console (dev mode)
@@ -182,6 +201,7 @@ const mockConfig = {
 ## 🚀 Deploy
 
 ### Antes do Deploy
+
 - [ ] Atualizar `api.baseUrl` em `environment.prod.ts`
 - [ ] Verificar todas as feature flags de produção
 - [ ] Desabilitar debug mode em produção
@@ -190,12 +210,14 @@ const mockConfig = {
 - [ ] Atualizar versão da app
 
 ### Build de Produção
+
 - [ ] Executar `ng build --configuration production`
 - [ ] Verificar que arquivo correto foi usado (environment.prod.ts)
 - [ ] Testar build localmente
 - [ ] Verificar tamanho do bundle
 
 ### Verificação Pós-Deploy
+
 - [ ] API URL correta
 - [ ] Debug mode desabilitado
 - [ ] Logs não aparecem no console

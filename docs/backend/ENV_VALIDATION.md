@@ -7,6 +7,7 @@ O sistema implementa validação rigorosa de variáveis de ambiente usando `clas
 ## Funcionalidades
 
 ### Validação Automática
+
 - ✅ Validação de tipo (string, number, enum)
 - ✅ Validação de range (min/max para portas e horários)
 - ✅ Validação de valores obrigatórios
@@ -17,28 +18,28 @@ O sistema implementa validação rigorosa de variáveis de ambiente usando `clas
 
 #### Obrigatórias
 
-| Variável | Tipo | Descrição | Exemplo |
-|----------|------|-----------|---------|
-| `NODE_ENV` | enum | Ambiente de execução | `development`, `production`, `test` |
-| `PORT` | number | Porta do servidor (1-65535) | `3000` |
-| `DATABASE_URL` | string | URL de conexão PostgreSQL | `postgresql://user:pass@host:5432/db` |
-| `POSTGRES_USER` | string | Usuário do banco de dados | `barber_user` |
-| `POSTGRES_PASSWORD` | string | Senha do banco de dados | `barber_password` |
-| `POSTGRES_DB` | string | Nome do banco de dados | `barber_boss` |
-| `JWT_SECRET` | string | Chave secreta para JWT | `your-secret-key` |
+| Variável            | Tipo   | Descrição                   | Exemplo                               |
+| ------------------- | ------ | --------------------------- | ------------------------------------- |
+| `NODE_ENV`          | enum   | Ambiente de execução        | `development`, `production`, `test`   |
+| `PORT`              | number | Porta do servidor (1-65535) | `3000`                                |
+| `DATABASE_URL`      | string | URL de conexão PostgreSQL   | `postgresql://user:pass@host:5432/db` |
+| `POSTGRES_USER`     | string | Usuário do banco de dados   | `barber_user`                         |
+| `POSTGRES_PASSWORD` | string | Senha do banco de dados     | `barber_password`                     |
+| `POSTGRES_DB`       | string | Nome do banco de dados      | `barber_boss`                         |
+| `JWT_SECRET`        | string | Chave secreta para JWT      | `your-secret-key`                     |
 
 #### Opcionais
 
-| Variável | Tipo | Padrão | Descrição |
-|----------|------|--------|-----------|
-| `JWT_EXPIRES_IN` | string | `7d` | Tempo de expiração do token JWT |
-| `ALLOWED_ORIGINS` | string | - | Origens permitidas para CORS (separadas por vírgula) |
-| `CORS_CREDENTIALS` | string | `true` | Permitir credenciais no CORS |
-| `THROTTLE_TTL` | number | `60000` | Tempo (ms) para rate limiting |
-| `THROTTLE_LIMIT` | number | `10` | Limite de requisições por TTL |
-| `DEFAULT_BUSINESS_HOUR_START` | number | `8` | Hora de início do expediente (0-23) |
-| `DEFAULT_BUSINESS_HOUR_END` | number | `18` | Hora de fim do expediente (0-23) |
-| `DEFAULT_APPOINTMENT_DURATION` | number | `30` | Duração padrão de agendamentos (minutos) |
+| Variável                       | Tipo   | Padrão  | Descrição                                            |
+| ------------------------------ | ------ | ------- | ---------------------------------------------------- |
+| `JWT_EXPIRES_IN`               | string | `7d`    | Tempo de expiração do token JWT                      |
+| `ALLOWED_ORIGINS`              | string | -       | Origens permitidas para CORS (separadas por vírgula) |
+| `CORS_CREDENTIALS`             | string | `true`  | Permitir credenciais no CORS                         |
+| `THROTTLE_TTL`                 | number | `60000` | Tempo (ms) para rate limiting                        |
+| `THROTTLE_LIMIT`               | number | `10`    | Limite de requisições por TTL                        |
+| `DEFAULT_BUSINESS_HOUR_START`  | number | `8`     | Hora de início do expediente (0-23)                  |
+| `DEFAULT_BUSINESS_HOUR_END`    | number | `18`    | Hora de fim do expediente (0-23)                     |
+| `DEFAULT_APPOINTMENT_DURATION` | number | `30`    | Duração padrão de agendamentos (minutos)             |
 
 ## Como Usar
 
@@ -101,18 +102,16 @@ class EnvironmentVariables {
 }
 
 export function validate(config: Record<string, unknown>) {
-  const validatedConfig = plainToInstance(
-    EnvironmentVariables, 
-    config,
-    { enableImplicitConversion: true }
-  );
+  const validatedConfig = plainToInstance(EnvironmentVariables, config, {
+    enableImplicitConversion: true,
+  });
 
   const errors = validateSync(validatedConfig, {
     skipMissingProperties: false,
   });
 
   if (errors.length > 0) {
-    throw new Error('Environment validation failed');
+    throw new Error("Environment validation failed");
   }
 
   return validatedConfig;
@@ -126,8 +125,8 @@ export function validate(config: Record<string, unknown>) {
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      validate,           // Função de validação
-      cache: true,        // Cache das variáveis
+      validate, // Função de validação
+      cache: true, // Cache das variáveis
       expandVariables: true, // Expansão de variáveis
     }),
     // ... outros módulos
@@ -141,7 +140,7 @@ export class AppModule {}
 Use o `ConfigService` para acessar variáveis validadas:
 
 ```typescript
-import { ConfigService } from '@nestjs/config';
+import { ConfigService } from "@nestjs/config";
 
 @Injectable()
 export class MyService {
@@ -149,19 +148,19 @@ export class MyService {
 
   getPort() {
     // Tipo seguro, sempre será um número válido
-    return this.configService.get<number>('PORT');
+    return this.configService.get<number>("PORT");
   }
 
   getJwtSecret() {
     // Sempre retornará uma string não vazia
-    return this.configService.get<string>('JWT_SECRET');
+    return this.configService.get<string>("JWT_SECRET");
   }
 }
 ```
 
 ## Segurança
 
-⚠️ **IMPORTANTE**: 
+⚠️ **IMPORTANTE**:
 
 1. **Nunca commite** o arquivo `.env` no git
 2. `.env` está no `.gitignore`
@@ -173,6 +172,7 @@ export class MyService {
 ## Ambientes
 
 ### Development
+
 ```env
 NODE_ENV=development
 PORT=3000
@@ -180,6 +180,7 @@ DATABASE_URL=postgresql://localhost:5432/barber_boss_dev
 ```
 
 ### Production
+
 ```env
 NODE_ENV=production
 PORT=3000
@@ -189,6 +190,7 @@ ALLOWED_ORIGINS=https://app.barberboss.com,https://www.barberboss.com
 ```
 
 ### Test
+
 ```env
 NODE_ENV=test
 PORT=3001
@@ -198,18 +200,22 @@ DATABASE_URL=postgresql://localhost:5432/barber_boss_test
 ## Troubleshooting
 
 ### Erro: "should not be empty"
+
 - Verifique se a variável está definida no arquivo `.env`
 - Certifique-se de que não há espaços extras
 
 ### Erro: "must be a valid enum value"
+
 - `NODE_ENV` deve ser: `development`, `production` ou `test`
 
 ### Erro: "must not be less than X"
+
 - Verifique ranges de valores numéricos
 - `PORT`: 1-65535
 - `DEFAULT_BUSINESS_HOUR_START/END`: 0-23
 
 ### Erro: "must be a number"
+
 - Certifique-se de que valores numéricos não estão entre aspas
 - Exemplo correto: `PORT=3000` (não `PORT="3000"`)
 

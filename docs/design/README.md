@@ -16,26 +16,26 @@ Guia de estilização e design system do BarberBoss.
 ### Cores Primárias
 
 ```css
---primary: #1e3a8a;        /* Azul escuro */
---primary-light: #3b82f6;  /* Azul claro */
---primary-dark: #1e40af;   /* Azul mais escuro */
+--primary: #1e3a8a; /* Azul escuro */
+--primary-light: #3b82f6; /* Azul claro */
+--primary-dark: #1e40af; /* Azul mais escuro */
 ```
 
 ### Cores Secundárias
 
 ```css
---secondary: #f59e0b;      /* Laranja */
---secondary-light: #fbbf24;/* Laranja claro */
+--secondary: #f59e0b; /* Laranja */
+--secondary-light: #fbbf24; /* Laranja claro */
 --secondary-dark: #d97706; /* Laranja escuro */
 ```
 
 ### Cores de Estado
 
 ```css
---success: #10b981;        /* Verde - Sucesso */
---warning: #f59e0b;        /* Amarelo - Aviso */
---danger: #ef4444;         /* Vermelho - Erro */
---info: #3b82f6;          /* Azul - Informação */
+--success: #10b981; /* Verde - Sucesso */
+--warning: #f59e0b; /* Amarelo - Aviso */
+--danger: #ef4444; /* Vermelho - Erro */
+--info: #3b82f6; /* Azul - Informação */
 ```
 
 ### Cores Neutras
@@ -65,28 +65,17 @@ Guia de estilização e design system do BarberBoss.
 
 ```css
 /* Títulos */
---h1: 32px / 2rem     /* font-size */
---h2: 28px / 1.75rem
---h3: 24px / 1.5rem
---h4: 20px / 1.25rem
---h5: 18px / 1.125rem
---h6: 16px / 1rem
-
-/* Corpo */
---body-large: 18px / 1.125rem
---body: 16px / 1rem
---body-small: 14px / 0.875rem
---caption: 12px / 0.75rem
+--h1: 32px / 2rem /* font-size */ --h2: 28px / 1.75rem --h3: 24px / 1.5rem
+  --h4: 20px / 1.25rem --h5: 18px / 1.125rem --h6: 16px / 1rem /* Corpo */
+  --body-large: 18px / 1.125rem --body: 16px / 1rem --body-small: 14px /
+  0.875rem --caption: 12px / 0.75rem;
 ```
 
 ### Peso da Fonte
 
 ```css
---font-light: 300
---font-regular: 400
---font-medium: 500
---font-semibold: 600
---font-bold: 700
+--font-light: 300 --font-regular: 400 --font-medium: 500 --font-semibold: 600
+  --font-bold: 700;
 ```
 
 ## 📏 Espaçamento
@@ -94,13 +83,8 @@ Guia de estilização e design system do BarberBoss.
 Sistema de espaçamento baseado em 4px:
 
 ```css
---spacing-xs: 4px
---spacing-sm: 8px
---spacing-md: 16px
---spacing-lg: 24px
---spacing-xl: 32px
---spacing-2xl: 48px
---spacing-3xl: 64px
+--spacing-xs: 4px --spacing-sm: 8px --spacing-md: 16px --spacing-lg: 24px
+  --spacing-xl: 32px --spacing-2xl: 48px --spacing-3xl: 64px;
 ```
 
 ## 🔲 Bordas e Sombras
@@ -108,11 +92,8 @@ Sistema de espaçamento baseado em 4px:
 ### Border Radius
 
 ```css
---radius-sm: 4px
---radius-md: 8px
---radius-lg: 12px
---radius-xl: 16px
---radius-full: 9999px
+--radius-sm: 4px --radius-md: 8px --radius-lg: 12px --radius-xl: 16px
+  --radius-full: 9999px;
 ```
 
 ### Sombras
@@ -129,11 +110,13 @@ Sistema de espaçamento baseado em 4px:
 ### Botões
 
 **Tamanhos:**
+
 - Small: 32px altura
 - Medium: 40px altura
 - Large: 48px altura
 
 **Variantes:**
+
 - Primary: Ação principal
 - Secondary: Ação secundária
 - Outline: Ação terciária
@@ -163,10 +146,7 @@ border-radius: var(--radius-md);
 ### Breakpoints
 
 ```css
---mobile: 320px
---tablet: 768px
---desktop: 1024px
---wide: 1280px
+--mobile: 320px --tablet: 768px --desktop: 1024px --wide: 1280px;
 ```
 
 ### Grid
@@ -178,6 +158,7 @@ Sistema de grid de 12 colunas com gap de 16px.
 ### Contraste
 
 Todas as combinações de cores devem ter no mínimo:
+
 - **AA** para texto normal (4.5:1)
 - **AA** para texto grande (3:1)
 
@@ -198,17 +179,14 @@ Elementos clicáveis devem ter no mínimo 44x44px.
 ### Durações
 
 ```css
---duration-fast: 150ms
---duration-normal: 300ms
---duration-slow: 500ms
+--duration-fast: 150ms --duration-normal: 300ms --duration-slow: 500ms;
 ```
 
 ### Easings
 
 ```css
---ease-in: cubic-bezier(0.4, 0, 1, 1)
---ease-out: cubic-bezier(0, 0, 0.2, 1)
---ease-in-out: cubic-bezier(0.4, 0, 0.2, 1)
+--ease-in: cubic-bezier(0.4, 0, 1, 1) --ease-out: cubic-bezier(0, 0, 0.2, 1)
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
 ```
 
 ## 📐 Ícones
@@ -216,6 +194,7 @@ Elementos clicáveis devem ter no mínimo 44x44px.
 **Biblioteca**: Ionicons
 
 **Tamanhos padrão:**
+
 - Small: 16px
 - Medium: 24px
 - Large: 32px

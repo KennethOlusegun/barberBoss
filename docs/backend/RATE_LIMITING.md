@@ -30,6 +30,7 @@ A configuração global está definida no `app.module.ts` com três níveis de t
 Criamos decorators para facilitar a aplicação de rate limiting:
 
 ### `@SkipThrottle()`
+
 Desabilita o rate limiting em rotas específicas.
 
 ```typescript
@@ -41,6 +42,7 @@ getPublicData() {
 ```
 
 ### `@Throttle(limit, ttl)`
+
 Aplica rate limiting customizado.
 
 ```typescript
@@ -52,9 +54,11 @@ customEndpoint() {
 ```
 
 ### `@ThrottleStrict()`
+
 Rate limiting estrito para operações sensíveis (5 requisições por minuto).
 
 **Uso recomendado:**
+
 - Login
 - Registro
 - Redefinição de senha
@@ -69,9 +73,11 @@ login(@Body() loginDto: LoginDto) {
 ```
 
 ### `@ThrottleModerate()`
+
 Rate limiting moderado para operações comuns (30 requisições por minuto).
 
 **Uso recomendado:**
+
 - Criação de recursos
 - Atualização de dados
 - Operações de escrita
@@ -85,9 +91,11 @@ create(@Body() createDto: CreateDto) {
 ```
 
 ### `@ThrottleRelaxed()`
+
 Rate limiting relaxado para leitura (100 requisições por minuto).
 
 **Uso recomendado:**
+
 - Listagem de recursos
 - Consultas
 - Operações de leitura
@@ -103,22 +111,26 @@ findAll() {
 ## Implementação por Módulo
 
 ### Auth Module
+
 - **Login**: `@ThrottleStrict()` - 5 req/min
 - **Registro**: `@ThrottleStrict()` - 5 req/min
 - **Me**: Rate limiting padrão
 
 ### Appointment Module
+
 - **Criar**: `@ThrottleModerate()` - 30 req/min
 - **Listar**: `@ThrottleRelaxed()` - 100 req/min
 - **Buscar por ID**: Rate limiting padrão
 - **Atualizar/Deletar**: Rate limiting padrão
 
 ### User Module
+
 - **Criar**: `@ThrottleModerate()` - 30 req/min (apenas ADMIN)
 - **Listar**: `@ThrottleRelaxed()` - 100 req/min (apenas ADMIN)
 - **Outros**: Rate limiting padrão
 
 ### Service Module
+
 - **Criar**: `@ThrottleModerate()` - 30 req/min (apenas ADMIN)
 - **Listar**: `@ThrottleRelaxed()` - 100 req/min (público)
 - **Outros**: Rate limiting padrão
@@ -130,6 +142,7 @@ Quando o limite de rate é excedido, a API retorna:
 **Status Code:** `429 Too Many Requests`
 
 **Headers:**
+
 ```
 X-RateLimit-Limit: 100
 X-RateLimit-Remaining: 0
@@ -137,6 +150,7 @@ X-RateLimit-Reset: 1639584000
 ```
 
 **Body:**
+
 ```json
 {
   "statusCode": 429,

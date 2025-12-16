@@ -103,6 +103,7 @@ npm run test:cov
 Todas as rotas (exceto `/auth/login` e `/auth/register`) requerem autenticação JWT.
 
 **Header necessário:**
+
 ```
 Authorization: Bearer <seu_token_jwt>
 ```

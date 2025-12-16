@@ -5,8 +5,8 @@ Referência rápida para uso diário do sistema de configuração.
 ## 📦 Import
 
 ```typescript
-import { ConfigService } from './core/services';
-import { API_ENDPOINTS, STORAGE_KEYS } from './core/constants';
+import { ConfigService } from "./core/services";
+import { API_ENDPOINTS, STORAGE_KEYS } from "./core/constants";
 ```
 
 ## 🔧 Injeção
@@ -19,19 +19,19 @@ constructor(private config: ConfigService) {}
 
 ```typescript
 // URL completa da API
-this.config.getApiUrl()
+this.config.getApiUrl();
 // => 'http://localhost:3000/api/v1'
 
 // Base URL
-this.config.getApiBaseUrl()
+this.config.getApiBaseUrl();
 // => 'http://localhost:3000'
 
 // Construir endpoint
-this.config.buildEndpointUrl('/users')
+this.config.buildEndpointUrl("/users");
 // => 'http://localhost:3000/api/v1/users'
 
 // Timeout
-this.config.getApiTimeout()
+this.config.getApiTimeout();
 // => 30000
 ```
 
@@ -39,14 +39,14 @@ this.config.getApiTimeout()
 
 ```typescript
 // Chaves de storage
-this.config.getTokenKey()
+this.config.getTokenKey();
 // => 'barber_boss_token'
 
-this.config.getRefreshTokenKey()
+this.config.getRefreshTokenKey();
 // => 'barber_boss_refresh_token'
 
 // Tempo de expiração
-this.config.getTokenExpirationTime()
+this.config.getTokenExpirationTime();
 // => 3600 (segundos)
 ```
 
@@ -54,19 +54,19 @@ this.config.getTokenExpirationTime()
 
 ```typescript
 // Nome
-this.config.getAppName()
+this.config.getAppName();
 // => 'Barber Boss'
 
 // Versão
-this.config.getAppVersion()
+this.config.getAppVersion();
 // => '0.0.1'
 
 // Idioma
-this.config.getDefaultLanguage()
+this.config.getDefaultLanguage();
 // => 'pt-BR'
 
 // Idiomas suportados
-this.config.getSupportedLanguages()
+this.config.getSupportedLanguages();
 // => ['pt-BR', 'en-US']
 ```
 
@@ -74,23 +74,23 @@ this.config.getSupportedLanguages()
 
 ```typescript
 // Debug
-this.config.isDebugModeEnabled()
+this.config.isDebugModeEnabled();
 // => true (dev) / false (prod)
 
 // Analytics
-this.config.isAnalyticsEnabled()
+this.config.isAnalyticsEnabled();
 // => false (dev) / true (prod)
 
 // Push Notifications
-this.config.arePushNotificationsEnabled()
+this.config.arePushNotificationsEnabled();
 // => false (dev) / true (prod)
 
 // Offline Mode
-this.config.isOfflineModeEnabled()
+this.config.isOfflineModeEnabled();
 // => true
 
 // Genérico
-this.config.isFeatureEnabled('enableDebugMode')
+this.config.isFeatureEnabled("enableDebugMode");
 // => boolean
 ```
 
@@ -98,19 +98,19 @@ this.config.isFeatureEnabled('enableDebugMode')
 
 ```typescript
 // Console logging
-this.config.isConsoleLoggingEnabled()
+this.config.isConsoleLoggingEnabled();
 // => true (dev) / false (prod)
 
 // Log level
-this.config.getLogLevel()
+this.config.getLogLevel();
 // => 'debug' (dev) / 'error' (prod)
 
 // Remote logging
-this.config.isRemoteLoggingEnabled()
+this.config.isRemoteLoggingEnabled();
 // => false (dev) / true (prod)
 
 // Log com debug
-this.config.log('Message', data)
+this.config.log("Message", data);
 // Só loga se debug mode estiver ativo
 ```
 
@@ -118,15 +118,15 @@ this.config.log('Message', data)
 
 ```typescript
 // Prefixo
-this.config.getStoragePrefix()
+this.config.getStoragePrefix();
 // => 'bb_'
 
 // Tipo
-this.config.getStorageType()
+this.config.getStorageType();
 // => 'localStorage' (dev) / 'indexedDB' (prod)
 
 // Chave com prefixo
-this.config.getStorageKey('user')
+this.config.getStorageKey("user");
 // => 'bb_user'
 
 // Uso completo
@@ -138,19 +138,19 @@ localStorage.setItem(key, JSON.stringify(user));
 
 ```typescript
 // Duração padrão do agendamento (minutos)
-this.config.getDefaultAppointmentDuration()
+this.config.getDefaultAppointmentDuration();
 // => 60
 
 // Antecedência mínima (horas)
-this.config.getMinAdvanceBooking()
+this.config.getMinAdvanceBooking();
 // => 1
 
 // Antecedência máxima (dias)
-this.config.getMaxAdvanceBooking()
+this.config.getMaxAdvanceBooking();
 // => 30
 
 // Prazo de cancelamento (horas)
-this.config.getCancellationDeadline()
+this.config.getCancellationDeadline();
 // => 2
 ```
 
@@ -158,15 +158,15 @@ this.config.getCancellationDeadline()
 
 ```typescript
 // Tema padrão
-this.config.getDefaultTheme()
+this.config.getDefaultTheme();
 // => 'auto' | 'light' | 'dark'
 
 // Animações
-this.config.areAnimationsEnabled()
+this.config.areAnimationsEnabled();
 // => true
 
 // Items por página
-this.config.getItemsPerPage()
+this.config.getItemsPerPage();
 // => 10
 ```
 
@@ -174,39 +174,39 @@ this.config.getItemsPerPage()
 
 ```typescript
 // Config completa
-this.config.getConfig()
+this.config.getConfig();
 // => Environment object
 
 // Modo produção
-this.config.isProduction()
+this.config.isProduction();
 // => false (dev) / true (prod)
 
 // Acesso por path
-this.config.get('api.baseUrl')
+this.config.get("api.baseUrl");
 // => 'http://localhost:3000'
 
-this.config.get('logging.logLevel')
+this.config.get("logging.logLevel");
 // => 'debug'
 ```
 
 ## 📍 Constantes de API
 
 ```typescript
-import { API_ENDPOINTS } from './core/constants';
+import { API_ENDPOINTS } from "./core/constants";
 
 // Auth
-API_ENDPOINTS.AUTH.LOGIN              // '/auth/login'
-API_ENDPOINTS.AUTH.REGISTER           // '/auth/register'
-API_ENDPOINTS.AUTH.REFRESH            // '/auth/refresh'
+API_ENDPOINTS.AUTH.LOGIN; // '/auth/login'
+API_ENDPOINTS.AUTH.REGISTER; // '/auth/register'
+API_ENDPOINTS.AUTH.REFRESH; // '/auth/refresh'
 
 // Users
-API_ENDPOINTS.USERS.BASE              // '/users'
-API_ENDPOINTS.USERS.PROFILE           // '/users/profile'
+API_ENDPOINTS.USERS.BASE; // '/users'
+API_ENDPOINTS.USERS.PROFILE; // '/users/profile'
 
 // Appointments
-API_ENDPOINTS.APPOINTMENTS.BASE       // '/appointments'
-API_ENDPOINTS.APPOINTMENTS.BY_ID(1)   // '/appointments/1'
-API_ENDPOINTS.APPOINTMENTS.CANCEL(1)  // '/appointments/1/cancel'
+API_ENDPOINTS.APPOINTMENTS.BASE; // '/appointments'
+API_ENDPOINTS.APPOINTMENTS.BY_ID(1); // '/appointments/1'
+API_ENDPOINTS.APPOINTMENTS.CANCEL(1); // '/appointments/1/cancel'
 
 // Usage
 const url = this.config.buildEndpointUrl(API_ENDPOINTS.AUTH.LOGIN);
@@ -215,13 +215,13 @@ const url = this.config.buildEndpointUrl(API_ENDPOINTS.AUTH.LOGIN);
 ## 🔑 Constantes de Storage
 
 ```typescript
-import { STORAGE_KEYS } from './core/constants';
+import { STORAGE_KEYS } from "./core/constants";
 
-STORAGE_KEYS.USER           // 'user'
-STORAGE_KEYS.TOKEN          // 'token'
-STORAGE_KEYS.REFRESH_TOKEN  // 'refresh_token'
-STORAGE_KEYS.LANGUAGE       // 'language'
-STORAGE_KEYS.THEME          // 'theme'
+STORAGE_KEYS.USER; // 'user'
+STORAGE_KEYS.TOKEN; // 'token'
+STORAGE_KEYS.REFRESH_TOKEN; // 'refresh_token'
+STORAGE_KEYS.LANGUAGE; // 'language'
+STORAGE_KEYS.THEME; // 'theme'
 
 // Usage
 const key = this.config.getStorageKey(STORAGE_KEYS.USER);
@@ -230,14 +230,14 @@ const key = this.config.getStorageKey(STORAGE_KEYS.USER);
 ## 📅 Formatos de Data
 
 ```typescript
-import { DATE_FORMATS } from './core/constants';
+import { DATE_FORMATS } from "./core/constants";
 
-DATE_FORMATS.DATE_SHORT     // 'DD/MM/YYYY'
-DATE_FORMATS.DATE_LONG      // 'DD [de] MMMM [de] YYYY'
-DATE_FORMATS.TIME           // 'HH:mm'
-DATE_FORMATS.DATETIME       // 'DD/MM/YYYY HH:mm'
-DATE_FORMATS.API_DATE       // 'YYYY-MM-DD'
-DATE_FORMATS.API_ISO        // 'YYYY-MM-DDTHH:mm:ss.SSSZ'
+DATE_FORMATS.DATE_SHORT; // 'DD/MM/YYYY'
+DATE_FORMATS.DATE_LONG; // 'DD [de] MMMM [de] YYYY'
+DATE_FORMATS.TIME; // 'HH:mm'
+DATE_FORMATS.DATETIME; // 'DD/MM/YYYY HH:mm'
+DATE_FORMATS.API_DATE; // 'YYYY-MM-DD'
+DATE_FORMATS.API_ISO; // 'YYYY-MM-DDTHH:mm:ss.SSSZ'
 
 // Usage com dayjs
 dayjs(date).format(DATE_FORMATS.DATE_SHORT);
@@ -246,10 +246,10 @@ dayjs(date).format(DATE_FORMATS.DATE_SHORT);
 ## 📊 Status de Agendamento
 
 ```typescript
-import { 
-  APPOINTMENT_STATUS, 
+import {
+  APPOINTMENT_STATUS,
   APPOINTMENT_STATUS_LABELS,
-  APPOINTMENT_STATUS_COLORS 
+  APPOINTMENT_STATUS_COLORS
 } from './core/constants';
 
 APPOINTMENT_STATUS.PENDING          // 'pending'
@@ -267,17 +267,17 @@ APPOINTMENT_STATUS_COLORS.PENDING   // 'warning'
 ## ✅ Validação
 
 ```typescript
-import { VALIDATION, REGEX_PATTERNS } from './core/constants';
+import { VALIDATION, REGEX_PATTERNS } from "./core/constants";
 
 // Limites
-VALIDATION.PASSWORD_MIN_LENGTH      // 8
-VALIDATION.NAME_MIN_LENGTH          // 2
-VALIDATION.PHONE_LENGTH             // 11
+VALIDATION.PASSWORD_MIN_LENGTH; // 8
+VALIDATION.NAME_MIN_LENGTH; // 2
+VALIDATION.PHONE_LENGTH; // 11
 
 // Regex
-REGEX_PATTERNS.EMAIL                // /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-REGEX_PATTERNS.PHONE                // /^\(\d{2}\)\s?\d{4,5}-?\d{4}$/
-REGEX_PATTERNS.PASSWORD             // Senha forte
+REGEX_PATTERNS.EMAIL; // /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+REGEX_PATTERNS.PHONE; // /^\(\d{2}\)\s?\d{4,5}-?\d{4}$/
+REGEX_PATTERNS.PASSWORD; // Senha forte
 
 // Usage
 if (password.length < VALIDATION.PASSWORD_MIN_LENGTH) {
@@ -292,15 +292,15 @@ if (!REGEX_PATTERNS.EMAIL.test(email)) {
 ## 💬 Mensagens
 
 ```typescript
-import { ERROR_MESSAGES, SUCCESS_MESSAGES } from './core/constants';
+import { ERROR_MESSAGES, SUCCESS_MESSAGES } from "./core/constants";
 
 // Erros
-ERROR_MESSAGES.NETWORK_ERROR        // 'Erro de conexão...'
-ERROR_MESSAGES.UNAUTHORIZED         // 'Sessão expirada...'
+ERROR_MESSAGES.NETWORK_ERROR; // 'Erro de conexão...'
+ERROR_MESSAGES.UNAUTHORIZED; // 'Sessão expirada...'
 
 // Sucesso
-SUCCESS_MESSAGES.LOGIN              // 'Login realizado...'
-SUCCESS_MESSAGES.APPOINTMENT_CREATED // 'Agendamento criado...'
+SUCCESS_MESSAGES.LOGIN; // 'Login realizado...'
+SUCCESS_MESSAGES.APPOINTMENT_CREATED; // 'Agendamento criado...'
 
 // Usage
 this.toastService.show(SUCCESS_MESSAGES.LOGIN);
@@ -322,27 +322,28 @@ THEME_COLORS.DANGER     // 'danger'
 ## 📆 Dias da Semana
 
 ```typescript
-import { 
-  DAYS_OF_WEEK, 
+import {
+  DAYS_OF_WEEK,
   DAYS_OF_WEEK_LABELS,
-  DAYS_OF_WEEK_SHORT 
-} from './core/constants';
+  DAYS_OF_WEEK_SHORT,
+} from "./core/constants";
 
-DAYS_OF_WEEK.MONDAY             // 1
-DAYS_OF_WEEK_LABELS.MONDAY      // 'Segunda-feira'
-DAYS_OF_WEEK_SHORT.MONDAY       // 'Seg'
+DAYS_OF_WEEK.MONDAY; // 1
+DAYS_OF_WEEK_LABELS.MONDAY; // 'Segunda-feira'
+DAYS_OF_WEEK_SHORT.MONDAY; // 'Seg'
 ```
 
 ## 🔄 Padrões Comuns
 
 ### HTTP Interceptor
+
 ```typescript
 @Injectable()
 export class ApiInterceptor implements HttpInterceptor {
   constructor(private config: ConfigService) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler) {
-    if (!req.url.startsWith('http')) {
+    if (!req.url.startsWith("http")) {
       const apiUrl = this.config.getApiUrl();
       req = req.clone({ url: `${apiUrl}${req.url}` });
     }
@@ -352,6 +353,7 @@ export class ApiInterceptor implements HttpInterceptor {
 ```
 
 ### Auth Guard
+
 ```typescript
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -366,6 +368,7 @@ export class AuthGuard implements CanActivate {
 ```
 
 ### Feature Guard
+
 ```typescript
 @Injectable()
 export class AnalyticsGuard implements CanActivate {
@@ -378,6 +381,7 @@ export class AnalyticsGuard implements CanActivate {
 ```
 
 ### Conditional Feature
+
 ```typescript
 ngOnInit() {
   if (this.config.isAnalyticsEnabled()) {
@@ -391,17 +395,18 @@ ngOnInit() {
 ```
 
 ### Date Validation
+
 ```typescript
 validateBookingDate(date: Date): boolean {
   const minHours = this.config.getMinAdvanceBooking();
   const maxDays = this.config.getMaxAdvanceBooking();
-  
+
   const now = dayjs();
   const selected = dayjs(date);
-  
+
   const hoursDiff = selected.diff(now, 'hours');
   const daysDiff = selected.diff(now, 'days');
-  
+
   return hoursDiff >= minHours && daysDiff <= maxDays;
 }
 ```
@@ -418,21 +423,25 @@ validateBookingDate(date: Date): boolean {
 ## 🚨 Anti-patterns (Evite)
 
 ❌ **Não faça:**
+
 ```typescript
 // Importar environment diretamente
-import { environment } from '../environments/environment';
+import { environment } from "../environments/environment";
 
 // Hardcode de URLs
-const url = 'http://localhost:3000/api/v1/users';
+const url = "http://localhost:3000/api/v1/users";
 
 // Strings mágicas
-localStorage.setItem('token', token);
+localStorage.setItem("token", token);
 
 // Código não configurável
-if (true) { /* debug code */ }
+if (true) {
+  /* debug code */
+}
 ```
 
 ✅ **Faça:**
+
 ```typescript
 // Use ConfigService
 constructor(private config: ConfigService) {}
