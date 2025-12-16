@@ -83,7 +83,12 @@ async function main() {
       role: Role.CLIENT,
     },
   });
-  console.log('✅ Clientes criados:', cliente1.name, cliente2.name, cliente3.name);
+  console.log(
+    '✅ Clientes criados:',
+    cliente1.name,
+    cliente2.name,
+    cliente3.name,
+  );
 
   // ==========================================
   // 2. CRIAR SERVIÇOS
@@ -133,7 +138,12 @@ async function main() {
     },
   });
 
-  console.log('✅ Serviços criados:', servicoCorte.name, servicoBarba.name, servicoCorteBarba.name);
+  console.log(
+    '✅ Serviços criados:',
+    servicoCorte.name,
+    servicoBarba.name,
+    servicoCorteBarba.name,
+  );
 
   // ==========================================
   // 3. CRIAR AGENDAMENTOS

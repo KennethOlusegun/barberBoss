@@ -1,19 +1,9 @@
-  async create(dto: CreateUserDto): Promise<User> {
-    return this.prisma.user.create({ data: dto });
-  }
-
-  async update(id: string, dto: UpdateUserDto): Promise<User> {
-    return this.prisma.user.update({ where: { id }, data: dto });
-  }
-
-  async remove(id: string): Promise<User> {
-    return this.prisma.user.delete({ where: { id } });
-  }
+// ...existing code...
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { Role, User } from '@prisma/client';
-import { CreateUserDto } from '../user/dto/create-user.dto';
-import { UpdateUserDto } from '../user/dto/update-user.dto';
+import { CreateUserDto } from '../users/dto/create-user.dto';
+import { UpdateUserDto } from '../users/dto/update-user.dto';
 
 @Injectable()
 export class UsersService {

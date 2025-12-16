@@ -18,7 +18,6 @@ import { AppointmentStatus } from '@prisma/client';
  */
 @ValidatorConstraint({ name: 'IsUserIdXorClientName', async: false })
 export class IsUserIdXorClientNameConstraint implements ValidatorConstraintInterface {
-
   validate(value: unknown, args: ValidationArguments) {
     const object = args.object as { userId?: string; clientName?: string };
     const hasUserId = !!object.userId;

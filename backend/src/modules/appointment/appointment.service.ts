@@ -875,7 +875,7 @@ export class AppointmentService {
       );
     }
 
-    const whereConditions: Record<string, unknown> = {
+    const whereConditions: { OR: any[] } = {
       OR: [],
     };
 

@@ -10,14 +10,15 @@ import { Service } from '@prisma/client';
 export class ServiceService {
   constructor(private readonly prisma: PrismaService) {}
 
-
   async create(createServiceDto: CreateServiceDto): Promise<Service> {
     return await this.prisma.service.create({
       data: createServiceDto,
     });
   }
 
-  async findAll(paginationDto?: PaginationDto): Promise<PaginatedResult> {
+  async findAll(
+    paginationDto?: PaginationDto,
+  ): Promise<PaginatedResult<Service>> {
     const page = paginationDto?.page || 1;
     const limit = paginationDto?.limit || 10;
     const skip = (page - 1) * limit;
@@ -58,7 +59,10 @@ export class ServiceService {
     return service;
   }
 
-  async update(id: string, updateServiceDto: UpdateServiceDto): Promise<Service> {
+  async update(
+    id: string,
+    updateServiceDto: UpdateServiceDto,
+  ): Promise<Service> {
     await this.findOne(id); // Verifica se existe e está ativo
 
     return await this.prisma.service.update({

@@ -87,7 +87,7 @@ export class FilterExamplesController {
     // Este erro não é uma HttpException nem um erro do Prisma
     // O AllExceptionsFilter capturará e formatará como erro 500
     const obj: { property?: string } | null = null;
-    return obj.property; // TypeError: Cannot read property of null
+    return (obj as { property?: string } | null)?.property; // Safe access
   }
 
   /**

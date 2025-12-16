@@ -3,6 +3,7 @@ import {
   CanActivate,
   ExecutionContext,
   ForbiddenException,
+  Logger,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { ROLES_KEY } from '../../../decorators/roles.decorator';
@@ -16,6 +17,8 @@ interface AuthenticatedUser {
 
 @Injectable()
 export class RolesGuard implements CanActivate {
+  private readonly logger = new Logger(RolesGuard.name);
+
   constructor(private reflector: Reflector) {}
 
   canActivate(context: ExecutionContext): boolean {
@@ -41,8 +44,14 @@ export class RolesGuard implements CanActivate {
       throw new ForbiddenException('User role is undefined');
     }
 
-    // Check if the user's role is allowed
-    const hasRequiredRole = requiredRoles.includes(user.role);
+    // ✅ LOG para debug
+    this.logger.debug(`Required roles: ${requiredRoles.join(', ')}`);
+    this.logger.debug(`User role: ${user.role}`);
+
+    // Check if the user's role is allowed (case-insensitive)
+    const hasRequiredRole = requiredRoles
+      .map((r) => r.toUpperCase()) // ✅ MUDOU: para uppercase
+      .includes(user.role.toUpperCase()); // ✅ MUDOU: para uppercase
 
     if (!hasRequiredRole) {
       throw new ForbiddenException(

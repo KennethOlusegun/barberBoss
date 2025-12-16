@@ -62,7 +62,9 @@ describe('AppointmentService', () => {
       jest
         .spyOn(prisma.service, 'findUnique')
         .mockResolvedValue(mockService as unknown);
-      jest.spyOn(prisma.user, 'findUnique').mockResolvedValue(mockUser as unknown);
+      jest
+        .spyOn(prisma.user, 'findUnique')
+        .mockResolvedValue(mockUser as unknown);
       jest.spyOn(prisma.appointment, 'findMany').mockResolvedValue([]);
       jest
         .spyOn(prisma.appointment, 'create')

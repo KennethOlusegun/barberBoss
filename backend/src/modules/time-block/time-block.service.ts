@@ -235,7 +235,10 @@ export class TimeBlockService {
         },
       ],
     };
-    const blocks = await this.prisma.timeBlock.findMany({ where, orderBy: { createdAt: 'asc' } });
+    const blocks = await this.prisma.timeBlock.findMany({
+      where,
+      orderBy: { createdAt: 'asc' },
+    });
 
     // Para bloqueios recorrentes, verificar se o horário do dia conflita
     for (const block of blocks) {

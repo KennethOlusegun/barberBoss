@@ -48,7 +48,9 @@ describe('AppointmentController', () => {
         ...createDto,
       };
 
-      jest.spyOn(service, 'create').mockResolvedValue(mockAppointment as unknown);
+      jest
+        .spyOn(service, 'create')
+        .mockResolvedValue(mockAppointment as unknown);
 
       const result = await controller.create(createDto);
 
@@ -61,7 +63,9 @@ describe('AppointmentController', () => {
     it('should return all appointments', async () => {
       const mockAppointments = [{ id: 'appointment-1' }];
 
-      jest.spyOn(service, 'findAll').mockResolvedValue(mockAppointments as unknown);
+      jest
+        .spyOn(service, 'findAll')
+        .mockResolvedValue(mockAppointments as unknown);
 
       const result = await controller.findAll();
 
@@ -117,7 +121,9 @@ describe('AppointmentController', () => {
       const id = 'appointment-id';
       const mockAppointment = { id };
 
-      jest.spyOn(service, 'findOne').mockResolvedValue(mockAppointment as unknown);
+      jest
+        .spyOn(service, 'findOne')
+        .mockResolvedValue(mockAppointment as unknown);
 
       const result = await controller.findOne(id);
 
@@ -132,7 +138,9 @@ describe('AppointmentController', () => {
       const updateDto = { status: 'COMPLETED' as string };
       const mockAppointment = { id, ...updateDto };
 
-      jest.spyOn(service, 'update').mockResolvedValue(mockAppointment as unknown);
+      jest
+        .spyOn(service, 'update')
+        .mockResolvedValue(mockAppointment as unknown);
 
       const result = await controller.update(id, updateDto);
 
@@ -146,7 +154,9 @@ describe('AppointmentController', () => {
       const id = 'appointment-id';
       const mockAppointment = { id };
 
-      jest.spyOn(service, 'remove').mockResolvedValue(mockAppointment as unknown);
+      jest
+        .spyOn(service, 'remove')
+        .mockResolvedValue(mockAppointment as unknown);
 
       const result = await controller.remove(id);
 
