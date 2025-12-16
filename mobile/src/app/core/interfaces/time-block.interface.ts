@@ -73,5 +73,5 @@ export const BLOCK_TYPE_LABELS: Record<BlockType, string> = {
   [BlockType.BREAK]: 'Pausa',
   [BlockType.DAY_OFF]: 'Folga',
   [BlockType.VACATION]: 'Férias',
-  [BlockType.CUSTOM]: 'Personalizado'
+  [BlockType.CUSTOM]: 'Personalizado',
 };

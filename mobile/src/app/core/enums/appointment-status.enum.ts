@@ -8,5 +8,5 @@ export enum AppointmentStatus {
   CONFIRMED = 'CONFIRMED',
   CANCELED = 'CANCELED',
   COMPLETED = 'COMPLETED',
-  NO_SHOW = 'NO_SHOW'
+  NO_SHOW = 'NO_SHOW',
 }

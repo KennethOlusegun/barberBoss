@@ -17,5 +17,9 @@
   <div *ngIf="!loading && !history.length" class="empty-state">
     Nenhum histórico encontrado.
   </div>
-  <ion-spinner *ngIf="loading" name="crescent" style="margin-top: 16px;"></ion-spinner>
+  <ion-spinner
+    *ngIf="loading"
+    name="crescent"
+    style="margin-top: 16px"
+  ></ion-spinner>
 </ion-content>

@@ -4,8 +4,11 @@
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  <div style="padding: 16px;">
-    <ion-card (click)="goToBarbers()" style="cursor:pointer; margin-bottom: 16px;">
+  <div style="padding: 16px">
+    <ion-card
+      (click)="goToBarbers()"
+      style="cursor: pointer; margin-bottom: 16px"
+    >
       <ion-card-header>
         <ion-card-title>Barbeiros</ion-card-title>
       </ion-card-header>
@@ -14,16 +17,17 @@
           <ion-spinner name="crescent"></ion-spinner>
         </div>
         <div *ngIf="!loading">
-          <b>Total:</b> {{ barbers.length }}<br>
+          <b>Total:</b> {{ barbers.length }}<br />
           <span *ngIf="barbers.length > 0">
-            <b>Exemplo:</b> {{ barbers[0].name }} <span *ngIf="barbers[0].email">({{ barbers[0].email }})</span>
+            <b>Exemplo:</b> {{ barbers[0].name }}
+            <span *ngIf="barbers[0].email">({{ barbers[0].email }})</span>
             <span *ngIf="barbers.length > 1">, ...</span>
           </span>
         </div>
       </ion-card-content>
     </ion-card>
 
-    <ion-card (click)="goToSettings()" style="cursor:pointer;">
+    <ion-card (click)="goToSettings()" style="cursor: pointer">
       <ion-card-header>
         <ion-card-title>Configurações Gerais</ion-card-title>
       </ion-card-header>

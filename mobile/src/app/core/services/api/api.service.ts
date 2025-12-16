@@ -1,7 +1,20 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams, HttpErrorResponse } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpHeaders,
+  HttpParams,
+  HttpErrorResponse,
+} from '@angular/common/http';
 import { Observable, throwError, timer } from 'rxjs';
-import { catchError, retry, timeout, map, retryWhen, mergeMap, finalize } from 'rxjs/operators';
+import {
+  catchError,
+  retry,
+  timeout,
+  map,
+  retryWhen,
+  mergeMap,
+  finalize,
+} from 'rxjs/operators';
 import { ConfigService } from '../config.service';
 import {
   ApiRequestOptions,
@@ -49,7 +62,7 @@ export class ApiService {
 
   constructor(
     private http: HttpClient,
-    private configService: ConfigService
+    private configService: ConfigService,
   ) {
     this.baseUrl = this.configService.getApiUrl();
     this.defaultTimeout = this.configService.getApiTimeout();
@@ -86,7 +99,11 @@ export class ApiService {
    * @param body Request body
    * @param options Request options
    */
-  post<T = any>(endpoint: string, body?: any, options?: ApiRequestOptions): Observable<T> {
+  post<T = any>(
+    endpoint: string,
+    body?: any,
+    options?: ApiRequestOptions,
+  ): Observable<T> {
     return this.request<T>(HttpMethod.POST, endpoint, body, options);
   }
 
@@ -96,7 +113,11 @@ export class ApiService {
    * @param body Request body
    * @param options Request options
    */
-  put<T = any>(endpoint: string, body?: any, options?: ApiRequestOptions): Observable<T> {
+  put<T = any>(
+    endpoint: string,
+    body?: any,
+    options?: ApiRequestOptions,
+  ): Observable<T> {
     return this.request<T>(HttpMethod.PUT, endpoint, body, options);
   }
 
@@ -106,7 +127,11 @@ export class ApiService {
    * @param body Request body
    * @param options Request options
    */
-  patch<T = any>(endpoint: string, body?: any, options?: ApiRequestOptions): Observable<T> {
+  patch<T = any>(
+    endpoint: string,
+    body?: any,
+    options?: ApiRequestOptions,
+  ): Observable<T> {
     return this.request<T>(HttpMethod.PATCH, endpoint, body, options);
   }
 
@@ -115,7 +140,10 @@ export class ApiService {
    * @param endpoint API endpoint (relative to base URL)
    * @param options Request options
    */
-  delete<T = any>(endpoint: string, options?: ApiRequestOptions): Observable<T> {
+  delete<T = any>(
+    endpoint: string,
+    options?: ApiRequestOptions,
+  ): Observable<T> {
     return this.request<T>(HttpMethod.DELETE, endpoint, undefined, options);
   }
 
@@ -129,7 +157,7 @@ export class ApiService {
     method: HttpMethod,
     endpoint: string,
     body?: any,
-    options: ApiRequestOptions = {}
+    options: ApiRequestOptions = {},
   ): Observable<T> {
     const url = this.buildUrl(endpoint);
     const headers = this.buildHeaders(options);
@@ -167,7 +195,13 @@ export class ApiService {
         request$ = this.http.delete(url, httpOptions);
         break;
       default:
-        return throwError(() => this.createError('Invalid HTTP method', 400, ApiErrorCode.BAD_REQUEST));
+        return throwError(() =>
+          this.createError(
+            'Invalid HTTP method',
+            400,
+            ApiErrorCode.BAD_REQUEST,
+          ),
+        );
     }
 
     // Apply operators
@@ -178,7 +212,7 @@ export class ApiService {
       catchError((error: any) => this.handleError(error, options)),
       finalize(() => {
         this.activeRequests--;
-      })
+      }),
     ) as Observable<T>;
   }
 
@@ -190,7 +224,9 @@ export class ApiService {
    */
   private buildUrl(endpoint: string): string {
     // Remove leading slash if present
-    const cleanEndpoint = endpoint.startsWith('/') ? endpoint.substring(1) : endpoint;
+    const cleanEndpoint = endpoint.startsWith('/')
+      ? endpoint.substring(1)
+      : endpoint;
     return `${this.baseUrl}/${cleanEndpoint}`;
   }
 
@@ -270,7 +306,8 @@ export class ApiService {
       return (source: Observable<any>) => source;
     }
 
-    const retryAttempts = options.retryAttempts || API_CONFIG.DEFAULT_RETRY_ATTEMPTS;
+    const retryAttempts =
+      options.retryAttempts || API_CONFIG.DEFAULT_RETRY_ATTEMPTS;
     const retryDelay = options.retryDelay || API_CONFIG.DEFAULT_RETRY_DELAY;
 
     // Only retry safe HTTP methods
@@ -284,18 +321,17 @@ export class ApiService {
           const attempt = index + 1;
 
           // Check if we should retry
-          if (
-            attempt <= retryAttempts &&
-            this.isRetryableError(error)
-          ) {
-            console.log(`Retrying request (attempt ${attempt}/${retryAttempts})...`);
+          if (attempt <= retryAttempts && this.isRetryableError(error)) {
+            console.log(
+              `Retrying request (attempt ${attempt}/${retryAttempts})...`,
+            );
             return timer(retryDelay * attempt);
           }
 
           // Max retries exceeded or non-retryable error
           return throwError(() => error);
-        })
-      )
+        }),
+      ),
     );
   }
 
@@ -314,7 +350,10 @@ export class ApiService {
    * Handle HTTP errors
    * @private
    */
-  private handleError(error: any, options: ApiRequestOptions): Observable<never> {
+  private handleError(
+    error: any,
+    options: ApiRequestOptions,
+  ): Observable<never> {
     let apiError: ApiError;
 
     if (error.error instanceof ErrorEvent) {
@@ -323,19 +362,23 @@ export class ApiService {
         error.error.message,
         0,
         ApiErrorCode.NETWORK_ERROR,
-        error
+        error,
       );
-    } else if (error.name === 'TimeoutError' || error.message?.includes('Timeout')) {
+    } else if (
+      error.name === 'TimeoutError' ||
+      error.message?.includes('Timeout')
+    ) {
       // Timeout error
       apiError = this.createError(
         'Request timeout',
         0,
         ApiErrorCode.TIMEOUT,
-        error
+        error,
       );
     } else {
       // Backend error
-      const message = error.error?.message || error.message || 'An error occurred';
+      const message =
+        error.error?.message || error.message || 'An error occurred';
       const code = this.getErrorCodeFromStatus(error.status);
 
       apiError = this.createError(
@@ -343,7 +386,7 @@ export class ApiService {
         error.status,
         code,
         error,
-        error.error?.details
+        error.error?.details,
       );
     }
 
@@ -369,7 +412,7 @@ export class ApiService {
     status: number,
     code: ApiErrorCode,
     originalError?: any,
-    details?: any
+    details?: any,
   ): ApiError {
     return {
       message,
@@ -431,7 +474,10 @@ export class ApiService {
     const url = this.buildUrl(endpoint);
     const queryString = Object.keys(params)
       .filter((key) => params[key] !== null && params[key] !== undefined)
-      .map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`)
+      .map(
+        (key) =>
+          `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`,
+      )
       .join('&');
 
     return queryString ? `${url}?${queryString}` : url;
@@ -448,7 +494,7 @@ export class ApiService {
     endpoint: string,
     file: File,
     fieldName: string = 'file',
-    additionalData?: Record<string, any>
+    additionalData?: Record<string, any>,
   ): Observable<T> {
     const formData = new FormData();
     formData.append(fieldName, file);
@@ -484,7 +530,7 @@ export class ApiService {
           window.URL.revokeObjectURL(url);
         }
         return blob;
-      })
+      }),
     );
   }
 }

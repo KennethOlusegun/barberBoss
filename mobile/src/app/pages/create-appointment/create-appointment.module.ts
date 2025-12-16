@@ -12,7 +12,7 @@ import { RouterModule } from '@angular/router';
     ReactiveFormsModule,
     IonicModule,
     CreateAppointmentPage,
-    RouterModule.forChild([{ path: '', component: CreateAppointmentPage }])
-  ]
+    RouterModule.forChild([{ path: '', component: CreateAppointmentPage }]),
+  ],
 })
 export class CreateAppointmentPageModule {}

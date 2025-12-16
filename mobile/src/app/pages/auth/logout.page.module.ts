@@ -11,10 +11,10 @@ import { RouterModule } from '@angular/router';
     RouterModule.forChild([
       {
         path: '',
-        component: LogoutPage
-      }
-    ])
+        component: LogoutPage,
+      },
+    ]),
   ],
-  imports: [LogoutPage]
+  imports: [LogoutPage],
 })
 export class LogoutPageModule {}

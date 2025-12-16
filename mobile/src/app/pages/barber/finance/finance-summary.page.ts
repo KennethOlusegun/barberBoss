@@ -10,7 +10,7 @@ import { RouterModule } from '@angular/router';
   templateUrl: './finance-summary.page.html',
   styleUrls: ['./finance-summary.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, RouterModule]
+  imports: [IonicModule, CommonModule, RouterModule],
 })
 export class FinanceSummaryPage implements OnInit {
   total: number = 0;
@@ -20,7 +20,10 @@ export class FinanceSummaryPage implements OnInit {
   loading = false;
   error = '';
 
-  constructor(private apiService: ApiService, private authService: AuthService) {}
+  constructor(
+    private apiService: ApiService,
+    private authService: AuthService,
+  ) {}
 
   ngOnInit() {
     this.fetchFinanceSummary();
@@ -30,7 +33,11 @@ export class FinanceSummaryPage implements OnInit {
     this.loading = true;
     this.authService.getCurrentUser().subscribe({
       next: (user) => {
-        this.apiService.get<any>('/appointments', { params: { barberId: user.id, limit: 100 }, requiresAuth: true })
+        this.apiService
+          .get<any>('/appointments', {
+            params: { barberId: user.id, limit: 100 },
+            requiresAuth: true,
+          })
           .subscribe({
             next: (result) => {
               let ags: any[] = [];
@@ -40,21 +47,27 @@ export class FinanceSummaryPage implements OnInit {
                 ags = result.data;
               }
               this.appointments = ags;
-              this.completed = ags.filter(a => a.status === 'COMPLETED').reduce((sum, a) => sum + (a.service?.price || 0), 0);
-              this.pending = ags.filter(a => a.status === 'CONFIRMED' || a.status === 'PENDING').reduce((sum, a) => sum + (a.service?.price || 0), 0);
+              this.completed = ags
+                .filter((a) => a.status === 'COMPLETED')
+                .reduce((sum, a) => sum + (a.service?.price || 0), 0);
+              this.pending = ags
+                .filter(
+                  (a) => a.status === 'CONFIRMED' || a.status === 'PENDING',
+                )
+                .reduce((sum, a) => sum + (a.service?.price || 0), 0);
               this.total = this.completed + this.pending;
               this.loading = false;
             },
             error: () => {
               this.error = 'Erro ao buscar dados financeiros';
               this.loading = false;
-            }
+            },
           });
       },
       error: () => {
         this.error = 'Erro ao buscar usuário';
         this.loading = false;
-      }
+      },
     });
   }
 }

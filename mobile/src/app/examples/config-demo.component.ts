@@ -212,15 +212,17 @@ import { ConfigService } from '../core/services/config.service';
       </ion-card>
     </ion-content>
   `,
-  styles: [`
-    ion-card {
-      margin-bottom: 16px;
-    }
+  styles: [
+    `
+      ion-card {
+        margin-bottom: 16px;
+      }
 
-    ion-badge {
-      margin-left: auto;
-    }
-  `]
+      ion-badge {
+        margin-left: auto;
+      }
+    `,
+  ],
 })
 export class ConfigDemoComponent implements OnInit {
   // Application Info
@@ -278,7 +280,8 @@ export class ConfigDemoComponent implements OnInit {
     this.isOfflineMode = this.configService.isOfflineModeEnabled();
 
     // Business Rules
-    this.appointmentDuration = this.configService.getDefaultAppointmentDuration();
+    this.appointmentDuration =
+      this.configService.getDefaultAppointmentDuration();
     this.minAdvanceBooking = this.configService.getMinAdvanceBooking();
     this.maxAdvanceBooking = this.configService.getMaxAdvanceBooking();
     this.cancellationDeadline = this.configService.getCancellationDeadline();
@@ -294,12 +297,16 @@ export class ConfigDemoComponent implements OnInit {
    */
   testEndpointBuilder(): void {
     const usersEndpoint = this.configService.buildEndpointUrl('/users');
-    const appointmentsEndpoint = this.configService.buildEndpointUrl('appointments');
+    const appointmentsEndpoint =
+      this.configService.buildEndpointUrl('appointments');
 
-    this.addTestResult('Endpoint Builder', `
+    this.addTestResult(
+      'Endpoint Builder',
+      `
       /users => ${usersEndpoint}
       appointments => ${appointmentsEndpoint}
-    `);
+    `,
+    );
   }
 
   /**
@@ -309,10 +316,13 @@ export class ConfigDemoComponent implements OnInit {
     const userKey = this.configService.getStorageKey('user');
     const tokenKey = this.configService.getStorageKey('token');
 
-    this.addTestResult('Storage Key Generator', `
+    this.addTestResult(
+      'Storage Key Generator',
+      `
       user => ${userKey}
       token => ${tokenKey}
-    `);
+    `,
+    );
   }
 
   /**
@@ -323,11 +333,14 @@ export class ConfigDemoComponent implements OnInit {
     const logLevel = this.configService.get('logging.logLevel');
     const invalidPath = this.configService.get('invalid.path');
 
-    this.addTestResult('Config Path Access', `
+    this.addTestResult(
+      'Config Path Access',
+      `
       api.baseUrl => ${baseUrl}
       logging.logLevel => ${logLevel}
       invalid.path => ${invalidPath || 'undefined'}
-    `);
+    `,
+    );
   }
 
   /**
@@ -335,7 +348,10 @@ export class ConfigDemoComponent implements OnInit {
    */
   testLogging(): void {
     this.configService.log('This is a test log message', { test: true });
-    this.addTestResult('Logging', 'Check console for log output (if debug mode is enabled)');
+    this.addTestResult(
+      'Logging',
+      'Check console for log output (if debug mode is enabled)',
+    );
   }
 
   /**

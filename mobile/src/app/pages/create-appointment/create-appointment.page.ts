@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { NavController, ToastController, LoadingController } from '@ionic/angular';
+import {
+  NavController,
+  ToastController,
+  LoadingController,
+} from '@ionic/angular';
 import { ApiService } from 'src/app/core/services/api/api.service';
 import { Service } from 'src/app/core/models/service.model';
 import { User } from 'src/app/core/models/user.model';
@@ -14,12 +18,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
   templateUrl: './create-appointment.page.html',
   styleUrls: ['./create-appointment.page.scss'],
   standalone: true,
-  imports: [
-    IonicModule,
-    CommonModule,
-    ReactiveFormsModule,
-    FormsModule
-  ]
+  imports: [IonicModule, CommonModule, ReactiveFormsModule, FormsModule],
 })
 export class CreateAppointmentPage implements OnInit {
   appointmentForm: FormGroup;
@@ -32,14 +31,14 @@ export class CreateAppointmentPage implements OnInit {
     private navCtrl: NavController,
     private apiService: ApiService,
     private toastCtrl: ToastController,
-    private loadingCtrl: LoadingController
+    private loadingCtrl: LoadingController,
   ) {
     this.appointmentForm = this.fb.group({
       date: ['', Validators.required],
       time: ['', Validators.required],
       serviceId: ['', Validators.required],
       barberId: ['', Validators.required],
-      notes: ['']
+      notes: [''],
     });
   }
 
@@ -49,7 +48,12 @@ export class CreateAppointmentPage implements OnInit {
   }
   async fetchBarbers() {
     try {
-      const result = await this.apiService.get<any>('/users', { params: { role: 'BARBER', limit: 100 }, requiresAuth: false }).toPromise();
+      const result = await this.apiService
+        .get<any>('/users', {
+          params: { role: 'BARBER', limit: 100 },
+          requiresAuth: false,
+        })
+        .toPromise();
       if (Array.isArray(result)) {
         this.barbers = result.map((u: any) => new User(u));
       } else if (result && Array.isArray(result.data)) {
@@ -65,7 +69,9 @@ export class CreateAppointmentPage implements OnInit {
   async fetchServices() {
     this.loading = true;
     try {
-      const result = await this.apiService.get<any>('/services', { params: { limit: 100 }, requiresAuth: false }).toPromise();
+      const result = await this.apiService
+        .get<any>('/services', { params: { limit: 100 }, requiresAuth: false })
+        .toPromise();
       if (Array.isArray(result)) {
         this.services = result.map((s: any) => new Service(s));
       } else if (result && Array.isArray(result.data)) {
@@ -83,7 +89,8 @@ export class CreateAppointmentPage implements OnInit {
   async submit() {
     if (this.appointmentForm.invalid) return;
 
-    const { date, time, serviceId, barberId, notes } = this.appointmentForm.value;
+    const { date, time, serviceId, barberId, notes } =
+      this.appointmentForm.value;
 
     // Validar domingo ANTES de enviar para o backend
     const isDomingo = this.verificarDomingo(date);
@@ -91,7 +98,7 @@ export class CreateAppointmentPage implements OnInit {
       const toast = await this.toastCtrl.create({
         message: 'Não é possível agendar para domingo. Escolha outro dia.',
         color: 'danger',
-        duration: 2500
+        duration: 2500,
       });
       toast.present();
       return;
@@ -105,37 +112,39 @@ export class CreateAppointmentPage implements OnInit {
       barberId,
       startsAt,
       timezone: 'America/Sao_Paulo', // Sempre Brasília
-      notes: notes || undefined
+      notes: notes || undefined,
     };
 
     const loading = await this.loadingCtrl.create({ message: 'Agendando...' });
     await loading.present();
 
-    this.apiService.post('/appointments', payload, { requiresAuth: true }).subscribe({
-      next: async (res) => {
-        await loading.dismiss();
-        const toast = await this.toastCtrl.create({
-          message: 'Agendamento criado com sucesso!',
-          color: 'success',
-          duration: 2000
-        });
-        toast.present();
-        this.navCtrl.back();
-      },
-      error: async (err) => {
-        await loading.dismiss();
-        let msg = 'Erro ao criar agendamento';
-        if (err && err.message) {
-          msg = err.message;
-        }
-        const toast = await this.toastCtrl.create({
-          message: msg,
-          color: 'danger',
-          duration: 2500
-        });
-        toast.present();
-      }
-    });
+    this.apiService
+      .post('/appointments', payload, { requiresAuth: true })
+      .subscribe({
+        next: async (res) => {
+          await loading.dismiss();
+          const toast = await this.toastCtrl.create({
+            message: 'Agendamento criado com sucesso!',
+            color: 'success',
+            duration: 2000,
+          });
+          toast.present();
+          this.navCtrl.back();
+        },
+        error: async (err) => {
+          await loading.dismiss();
+          let msg = 'Erro ao criar agendamento';
+          if (err && err.message) {
+            msg = err.message;
+          }
+          const toast = await this.toastCtrl.create({
+            message: msg,
+            color: 'danger',
+            duration: 2500,
+          });
+          toast.present();
+        },
+      });
   }
 
   /**

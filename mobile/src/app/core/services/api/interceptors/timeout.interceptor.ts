@@ -23,7 +23,10 @@ import { timeout, catchError } from 'rxjs/operators';
 export class TimeoutInterceptor implements HttpInterceptor {
   private readonly DEFAULT_TIMEOUT = 30000; // 30 seconds
 
-  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+  intercept(
+    req: HttpRequest<any>,
+    next: HttpHandler,
+  ): Observable<HttpEvent<any>> {
     // Check if timeout should be skipped
     if (req.headers.get('X-Skip-Timeout') === 'true') {
       return next.handle(req);
@@ -36,15 +39,18 @@ export class TimeoutInterceptor implements HttpInterceptor {
       catchError((error) => {
         if (error instanceof TimeoutError) {
           console.error(`⏱️ Request timeout after ${timeoutValue}ms:`, req.url);
-          return throwError(() => new HttpErrorResponse({
-            error: 'Request timeout',
-            status: 408,
-            statusText: 'Request Timeout',
-            url: req.url,
-          }));
+          return throwError(
+            () =>
+              new HttpErrorResponse({
+                error: 'Request timeout',
+                status: 408,
+                statusText: 'Request Timeout',
+                url: req.url,
+              }),
+          );
         }
         return throwError(() => error);
-      })
+      }),
     );
   }
 

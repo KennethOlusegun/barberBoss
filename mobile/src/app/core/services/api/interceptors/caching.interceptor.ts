@@ -26,7 +26,10 @@ export class CachingInterceptor implements HttpInterceptor {
   private cache = new Map<string, CacheEntry>();
   private readonly DEFAULT_CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
-  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+  intercept(
+    req: HttpRequest<any>,
+    next: HttpHandler,
+  ): Observable<HttpEvent<any>> {
     // Only cache GET requests
     if (req.method !== 'GET') {
       return next.handle(req);
@@ -51,7 +54,7 @@ export class CachingInterceptor implements HttpInterceptor {
         if (event instanceof HttpResponse) {
           this.addToCache(req.url, event, cacheDuration);
         }
-      })
+      }),
     );
   }
 
@@ -79,7 +82,11 @@ export class CachingInterceptor implements HttpInterceptor {
     return entry.response;
   }
 
-  private addToCache(url: string, response: HttpResponse<any>, duration: number): void {
+  private addToCache(
+    url: string,
+    response: HttpResponse<any>,
+    duration: number,
+  ): void {
     const entry: CacheEntry = {
       url,
       response,

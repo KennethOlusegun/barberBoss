@@ -9,7 +9,7 @@ import { CommonModule } from '@angular/common';
   templateUrl: './client-history.page.html',
   styleUrls: ['./client-history.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule]
+  imports: [IonicModule, CommonModule],
 })
 export class ClientHistoryPage implements OnInit {
   clientId: string | null = null;
@@ -17,7 +17,10 @@ export class ClientHistoryPage implements OnInit {
   loading = false;
   error = '';
 
-  constructor(private apiService: ApiService, private route: ActivatedRoute) {}
+  constructor(
+    private apiService: ApiService,
+    private route: ActivatedRoute,
+  ) {}
 
   ngOnInit() {
     this.clientId = this.route.snapshot.paramMap.get('id');
@@ -28,7 +31,11 @@ export class ClientHistoryPage implements OnInit {
 
   fetchHistory() {
     this.loading = true;
-    this.apiService.get<any>(`/appointments`, { params: { clientId: this.clientId, limit: 100 }, requiresAuth: true })
+    this.apiService
+      .get<any>(`/appointments`, {
+        params: { clientId: this.clientId, limit: 100 },
+        requiresAuth: true,
+      })
       .subscribe({
         next: (result) => {
           if (Array.isArray(result)) {
@@ -43,7 +50,7 @@ export class ClientHistoryPage implements OnInit {
         error: () => {
           this.error = 'Erro ao buscar histórico';
           this.loading = false;
-        }
+        },
       });
   }
 }

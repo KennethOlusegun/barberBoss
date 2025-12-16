@@ -63,21 +63,23 @@ export class AuthService {
   /**
    * Observable authenticated user
    */
-  public user$ = this.authState$.pipe(map(state => state.user));
+  public user$ = this.authState$.pipe(map((state) => state.user));
 
   /**
    * Observable authentication status
    */
-  public isAuthenticated$ = this.authState$.pipe(map(state => state.isAuthenticated));
+  public isAuthenticated$ = this.authState$.pipe(
+    map((state) => state.isAuthenticated),
+  );
 
   /**
    * Observable loading state
    */
-  public loading$ = this.authState$.pipe(map(state => state.loading));
+  public loading$ = this.authState$.pipe(map((state) => state.loading));
 
   constructor(
     private apiService: ApiService,
-    private configService: ConfigService
+    private configService: ConfigService,
   ) {
     this.initializeAuthState();
   }
@@ -113,14 +115,16 @@ export class AuthService {
   login(credentials: LoginCredentials): Observable<User> {
     this.updateLoadingState(true);
 
-    return this.apiService.post<AuthResponse>(AUTH_ENDPOINTS.LOGIN, credentials).pipe(
-      tap(response => this.handleAuthResponse(response)),
-      map(response => response.user),
-      catchError(error => {
-        this.updateLoadingState(false);
-        return throwError(() => error);
-      })
-    );
+    return this.apiService
+      .post<AuthResponse>(AUTH_ENDPOINTS.LOGIN, credentials)
+      .pipe(
+        tap((response) => this.handleAuthResponse(response)),
+        map((response) => response.user),
+        catchError((error) => {
+          this.updateLoadingState(false);
+          return throwError(() => error);
+        }),
+      );
   }
 
   /**
@@ -131,14 +135,16 @@ export class AuthService {
   register(data: RegisterData): Observable<User> {
     this.updateLoadingState(true);
 
-    return this.apiService.post<AuthResponse>(AUTH_ENDPOINTS.REGISTER, data).pipe(
-      tap(response => this.handleAuthResponse(response)),
-      map(response => response.user),
-      catchError(error => {
-        this.updateLoadingState(false);
-        return throwError(() => error);
-      })
-    );
+    return this.apiService
+      .post<AuthResponse>(AUTH_ENDPOINTS.REGISTER, data)
+      .pipe(
+        tap((response) => this.handleAuthResponse(response)),
+        map((response) => response.user),
+        catchError((error) => {
+          this.updateLoadingState(false);
+          return throwError(() => error);
+        }),
+      );
   }
 
   /**
@@ -177,14 +183,16 @@ export class AuthService {
     }
 
     return this.apiService
-      .post<AuthResponse>(AUTH_ENDPOINTS.REFRESH, { refresh_token: refreshToken })
+      .post<AuthResponse>(AUTH_ENDPOINTS.REFRESH, {
+        refresh_token: refreshToken,
+      })
       .pipe(
-        tap(response => this.handleAuthResponse(response)),
-        map(response => response.access_token),
-        catchError(error => {
+        tap((response) => this.handleAuthResponse(response)),
+        map((response) => response.access_token),
+        catchError((error) => {
           this.clearAuthState();
           return throwError(() => error);
-        })
+        }),
       );
   }
 
@@ -195,15 +203,17 @@ export class AuthService {
    * @returns Observable of user profile
    */
   getCurrentUser(): Observable<User> {
-    return this.apiService.get<User>(AUTH_ENDPOINTS.ME, { requiresAuth: true }).pipe(
-      tap(user => {
-        this.updateAuthState({
-          ...this.authStateSubject.value,
-          user,
-        });
-        this.storeUser(user);
-      })
-    );
+    return this.apiService
+      .get<User>(AUTH_ENDPOINTS.ME, { requiresAuth: true })
+      .pipe(
+        tap((user) => {
+          this.updateAuthState({
+            ...this.authStateSubject.value,
+            user,
+          });
+          this.storeUser(user);
+        }),
+      );
   }
 
   /**
@@ -212,15 +222,17 @@ export class AuthService {
    * @returns Observable of updated user
    */
   updateProfile(data: Partial<User>): Observable<User> {
-    return this.apiService.put<User>('/users/profile', data, { requiresAuth: true }).pipe(
-      tap(user => {
-        this.updateAuthState({
-          ...this.authStateSubject.value,
-          user,
-        });
-        this.storeUser(user);
-      })
-    );
+    return this.apiService
+      .put<User>('/users/profile', data, { requiresAuth: true })
+      .pipe(
+        tap((user) => {
+          this.updateAuthState({
+            ...this.authStateSubject.value,
+            user,
+          });
+          this.storeUser(user);
+        }),
+      );
   }
 
   // ==================== Password Management ====================
@@ -235,7 +247,7 @@ export class AuthService {
       .post<void>(AUTH_ENDPOINTS.CHANGE_PASSWORD, data, { requiresAuth: true })
       .pipe(
         tap(() => console.log('Password changed successfully')),
-        catchError(error => throwError(() => error))
+        catchError((error) => throwError(() => error)),
       );
   }
 
@@ -247,7 +259,7 @@ export class AuthService {
   requestPasswordReset(data: ResetPasswordRequest): Observable<void> {
     return this.apiService.post<void>(AUTH_ENDPOINTS.RESET_PASSWORD, data).pipe(
       tap(() => console.log('Password reset requested')),
-      catchError(error => throwError(() => error))
+      catchError((error) => throwError(() => error)),
     );
   }
 
@@ -257,10 +269,12 @@ export class AuthService {
    * @returns Observable of confirmation result
    */
   confirmPasswordReset(data: ResetPasswordConfirm): Observable<void> {
-    return this.apiService.post<void>(AUTH_ENDPOINTS.RESET_PASSWORD_CONFIRM, data).pipe(
-      tap(() => console.log('Password reset confirmed')),
-      catchError(error => throwError(() => error))
-    );
+    return this.apiService
+      .post<void>(AUTH_ENDPOINTS.RESET_PASSWORD_CONFIRM, data)
+      .pipe(
+        tap(() => console.log('Password reset confirmed')),
+        catchError((error) => throwError(() => error)),
+      );
   }
 
   // ==================== Token Management ====================

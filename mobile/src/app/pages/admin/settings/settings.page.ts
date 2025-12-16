@@ -7,6 +7,6 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [IonicModule, CommonModule],
   templateUrl: './settings.page.html',
-  styleUrls: ['./settings.page.scss']
+  styleUrls: ['./settings.page.scss'],
 })
 export class AdminSettingsPage {}

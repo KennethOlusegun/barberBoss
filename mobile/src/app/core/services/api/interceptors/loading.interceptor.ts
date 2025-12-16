@@ -27,7 +27,10 @@ export class LoadingInterceptor implements HttpInterceptor {
 
   constructor(private loadingService: LoadingService) {}
 
-  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+  intercept(
+    req: HttpRequest<any>,
+    next: HttpHandler,
+  ): Observable<HttpEvent<any>> {
     // Check if loading should be skipped for this request
     if (req.headers.get('X-Skip-Loading') === 'true') {
       return next.handle(req);
@@ -60,7 +63,7 @@ export class LoadingInterceptor implements HttpInterceptor {
       finalize(() => {
         // Ensure loading is hidden even if tap doesn't catch it
         this.decrementRequests();
-      })
+      }),
     );
   }
 

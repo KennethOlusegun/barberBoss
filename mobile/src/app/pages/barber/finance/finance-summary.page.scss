@@ -2,7 +2,8 @@ ion-content {
   --padding-top: 16px;
 }
 
-.loading-container, .error-container {
+.loading-container,
+.error-container {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -21,13 +22,13 @@ ion-content {
     h3 {
       margin: 0;
       font-size: 1.3rem;
-      color: #3B82F6;
+      color: #3b82f6;
       font-weight: bold;
     }
     p {
       margin: 0.5rem 0 0 0;
       font-size: 0.9rem;
-      color: #94A3B8;
+      color: #94a3b8;
     }
   }
 }

@@ -18,9 +18,17 @@
       <ion-label position="floating">Telefone</ion-label>
       <ion-input type="tel" formControlName="phone"></ion-input>
     </ion-item>
-    <ion-button expand="block" type="submit" [disabled]="!profileForm.valid || loading">
+    <ion-button
+      expand="block"
+      type="submit"
+      [disabled]="!profileForm.valid || loading"
+    >
       Salvar
     </ion-button>
   </form>
-  <ion-spinner *ngIf="loading" name="crescent" style="margin-top: 16px;"></ion-spinner>
+  <ion-spinner
+    *ngIf="loading"
+    name="crescent"
+    style="margin-top: 16px"
+  ></ion-spinner>
 </ion-content>

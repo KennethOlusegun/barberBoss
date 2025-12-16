@@ -23,7 +23,10 @@ export const routes: Routes = [
       },
       {
         path: 'dashboard',
-        loadComponent: () => import('../tab-dashboard/tab-dashboard.page').then(m => m.TabDashboardPage),
+        loadComponent: () =>
+          import('../tab-dashboard/tab-dashboard.page').then(
+            (m) => m.TabDashboardPage,
+          ),
       },
       {
         path: '',

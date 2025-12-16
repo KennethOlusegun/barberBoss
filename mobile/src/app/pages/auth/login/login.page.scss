@@ -6,12 +6,12 @@
 // 1. VARIÁVEIS LOCAIS DO DESIGN SYSTEM
 // ============================================================================
 
-$barber-midnight-navy: #0B1120;
-$barber-slate-grey: #1E293B;
-$barber-royal-blue: #3B82F6;
-$barber-vintage-red: #EF4444;
-$barber-white-pure: #FFFFFF;
-$barber-grey-steel: #94A3B8;
+$barber-midnight-navy: #0b1120;
+$barber-slate-grey: #1e293b;
+$barber-royal-blue: #3b82f6;
+$barber-vintage-red: #ef4444;
+$barber-white-pure: #ffffff;
+$barber-grey-steel: #94a3b8;
 
 // ============================================================================
 // 2. CONTAINER PRINCIPAL
@@ -31,7 +31,11 @@ $barber-grey-steel: #94A3B8;
   flex-direction: column;
   min-height: 100vh;
   padding: 2rem 1.5rem;
-  background: linear-gradient(135deg, rgba(11, 17, 32, 0.95) 0%, rgba(30, 41, 59, 0.5) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(11, 17, 32, 0.95) 0%,
+    rgba(30, 41, 59, 0.5) 100%
+  );
 
   @media (max-width: 768px) {
     padding: 1.5rem 1rem;
@@ -67,7 +71,11 @@ $barber-grey-steel: #94A3B8;
   align-items: center;
   justify-content: center;
   border-radius: 12px;
-  background: linear-gradient(135deg, $barber-royal-blue 0%, rgba(59, 130, 246, 0.8) 100%);
+  background: linear-gradient(
+    135deg,
+    $barber-royal-blue 0%,
+    rgba(59, 130, 246, 0.8) 100%
+  );
   box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
   transition: all 300ms ease-in-out;
 
@@ -93,7 +101,14 @@ $barber-grey-steel: #94A3B8;
 }
 
 .app-subtitle {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    "Helvetica Neue",
+    sans-serif;
   font-size: 1.125rem;
   color: $barber-grey-steel;
   text-align: center;
@@ -140,7 +155,14 @@ $barber-grey-steel: #94A3B8;
   overflow: hidden;
 
   ion-input {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+    font-family:
+      "Inter",
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      Roboto,
+      "Helvetica Neue",
+      sans-serif;
     font-size: 1rem;
     color: $barber-white-pure;
 
@@ -188,7 +210,14 @@ $barber-grey-steel: #94A3B8;
 }
 
 .error-message {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    "Helvetica Neue",
+    sans-serif;
   font-size: 0.75rem;
   color: $barber-vintage-red;
   padding: 0 0.5rem;
@@ -208,7 +237,14 @@ $barber-grey-steel: #94A3B8;
 
 .forgot-password-btn {
   --color: $barber-royal-blue;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    "Helvetica Neue",
+    sans-serif;
   font-size: 0.875rem;
   font-weight: 600;
   text-transform: none;
@@ -221,7 +257,7 @@ $barber-grey-steel: #94A3B8;
   letter-spacing: 0;
 
   &:hover {
-    --color: #4F8CFF;
+    --color: #4f8cff;
     text-decoration: underline;
   }
 }
@@ -243,14 +279,58 @@ $barber-grey-steel: #94A3B8;
   background-color: rgba(239, 68, 68, 0.1);
   border: 1px solid rgba(239, 68, 68, 0.3);
   color: $barber-vintage-red;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    "Helvetica Neue",
+    sans-serif;
   font-size: 0.95rem;
   font-weight: 500;
   animation: slide-up 300ms ease-out;
 
-  ion-icon {
+  mat-icon {
     font-size: 1.5rem;
+    width: 1.5rem;
+    height: 1.5rem;
     flex-shrink: 0;
+    color: $barber-vintage-red;
+  }
+  // Estilo para botão do olho de senha
+  .password-field-wrapper {
+    position: relative;
+  }
+
+  .eye-icon-btn {
+    position: absolute;
+    top: 50%;
+    right: 1.5rem;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    padding: 0;
+    z-index: 1000;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 2.5rem;
+    width: 2.5rem;
+    outline: none;
+
+    mat-icon {
+      color: $barber-grey-steel;
+      font-size: 1.5rem;
+      width: 1.5rem;
+      height: 1.5rem;
+      transition: color 300ms;
+    }
+
+    &:hover mat-icon {
+      color: $barber-royal-blue;
+    }
   }
 }
 
@@ -260,9 +340,16 @@ $barber-grey-steel: #94A3B8;
 
 .login-btn {
   --background: #{$barber-royal-blue};
-  --background-activated: #2563EB;
+  --background-activated: #2563eb;
   --color: #{$barber-white-pure};
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    "Helvetica Neue",
+    sans-serif;
   font-size: 1.125rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -311,7 +398,7 @@ $barber-grey-steel: #94A3B8;
 
   &::before,
   &::after {
-    content: '';
+    content: "";
     flex: 1;
     height: 1px;
     background-color: rgba(148, 163, 184, 0.2);
@@ -319,7 +406,14 @@ $barber-grey-steel: #94A3B8;
 }
 
 .divider-text {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    "Helvetica Neue",
+    sans-serif;
   color: $barber-grey-steel;
   font-size: 0.875rem;
   font-weight: 500;
@@ -332,7 +426,14 @@ $barber-grey-steel: #94A3B8;
 .register-btn {
   --border-color: #{$barber-royal-blue};
   --color: #{$barber-royal-blue};
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    "Helvetica Neue",
+    sans-serif;
   font-size: 1.125rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -377,7 +478,14 @@ $barber-grey-steel: #94A3B8;
 }
 
 .footer-text {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    "Helvetica Neue",
+    sans-serif;
   font-size: 0.875rem;
   color: $barber-grey-steel;
   text-align: center;
@@ -392,7 +500,7 @@ $barber-grey-steel: #94A3B8;
   transition: all 200ms ease-in-out;
 
   &:hover {
-    color: #4F8CFF;
+    color: #4f8cff;
     text-decoration: underline;
   }
 }

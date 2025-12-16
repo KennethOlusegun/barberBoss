@@ -3,14 +3,14 @@ import { defineConfig } from 'vite';
 export default defineConfig({
   server: {
     fs: {
-      strict: false
+      strict: false,
     },
     watch: {
-      usePolling: true
-    }
+      usePolling: true,
+    },
   },
   optimizeDeps: {
-    disabled: true
+    disabled: true,
   },
-  cacheDir: 'node_modules/.vite-custom'
+  cacheDir: 'node_modules/.vite-custom',
 });

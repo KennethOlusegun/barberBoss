@@ -22,16 +22,24 @@ export class Appointment {
 
   constructor(data: any) {
     this.id = data.id;
-    this.startsAt = data.startsAt instanceof Date ? data.startsAt : new Date(data.startsAt);
-    this.endsAt = data.endsAt instanceof Date ? data.endsAt : new Date(data.endsAt);
+    this.startsAt =
+      data.startsAt instanceof Date ? data.startsAt : new Date(data.startsAt);
+    this.endsAt =
+      data.endsAt instanceof Date ? data.endsAt : new Date(data.endsAt);
     this.status = data.status as AppointmentStatus;
     this.userId = data.userId;
     this.user = data.user ? new User(data.user) : undefined;
     this.clientName = data.clientName;
     this.serviceId = data.serviceId;
     this.service = data.service ? new Service(data.service) : undefined;
-    this.createdAt = data.createdAt instanceof Date ? data.createdAt : new Date(data.createdAt);
-    this.updatedAt = data.updatedAt instanceof Date ? data.updatedAt : new Date(data.updatedAt);
+    this.createdAt =
+      data.createdAt instanceof Date
+        ? data.createdAt
+        : new Date(data.createdAt);
+    this.updatedAt =
+      data.updatedAt instanceof Date
+        ? data.updatedAt
+        : new Date(data.updatedAt);
   }
 
   /**
@@ -48,7 +56,7 @@ export class Appointment {
     return this.startsAt.toLocaleDateString('pt-BR', {
       day: '2-digit',
       month: '2-digit',
-      year: 'numeric'
+      year: 'numeric',
     });
   }
 
@@ -58,11 +66,11 @@ export class Appointment {
   getFormattedTimeRange(): string {
     const startTime = this.startsAt.toLocaleTimeString('pt-BR', {
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
     });
     const endTime = this.endsAt.toLocaleTimeString('pt-BR', {
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
     });
     return `${startTime} - ${endTime}`;
   }
@@ -71,7 +79,9 @@ export class Appointment {
    * Get duration in minutes
    */
   getDurationMinutes(): number {
-    return Math.round((this.endsAt.getTime() - this.startsAt.getTime()) / 60000);
+    return Math.round(
+      (this.endsAt.getTime() - this.startsAt.getTime()) / 60000,
+    );
   }
 
   /**
@@ -120,7 +130,7 @@ export class Appointment {
       [AppointmentStatus.CONFIRMED]: 'Confirmado',
       [AppointmentStatus.CANCELED]: 'Cancelado',
       [AppointmentStatus.COMPLETED]: 'Concluído',
-      [AppointmentStatus.NO_SHOW]: 'Cliente não compareceu'
+      [AppointmentStatus.NO_SHOW]: 'Cliente não compareceu',
     };
     return labels[this.status] || this.status;
   }
@@ -134,7 +144,7 @@ export class Appointment {
       [AppointmentStatus.CONFIRMED]: 'primary',
       [AppointmentStatus.CANCELED]: 'danger',
       [AppointmentStatus.COMPLETED]: 'success',
-      [AppointmentStatus.NO_SHOW]: 'medium'
+      [AppointmentStatus.NO_SHOW]: 'medium',
     };
     return colors[this.status] || 'medium';
   }

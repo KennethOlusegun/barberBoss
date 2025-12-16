@@ -30,8 +30,14 @@ export class Settings {
     this.minAdvanceHours = data.minAdvanceHours || 2;
     this.enableReminders = data.enableReminders ?? false;
     this.reminderHoursBefore = data.reminderHoursBefore || 24;
-    this.createdAt = data.createdAt instanceof Date ? data.createdAt : new Date(data.createdAt);
-    this.updatedAt = data.updatedAt instanceof Date ? data.updatedAt : new Date(data.updatedAt);
+    this.createdAt =
+      data.createdAt instanceof Date
+        ? data.createdAt
+        : new Date(data.createdAt);
+    this.updatedAt =
+      data.updatedAt instanceof Date
+        ? data.updatedAt
+        : new Date(data.updatedAt);
   }
 
   /**
@@ -45,9 +51,7 @@ export class Settings {
    * Get working days labels
    */
   getWorkingDaysLabels(): string[] {
-    return this.workingDays
-      .sort()
-      .map(day => WORKING_DAY_LABELS[day]);
+    return this.workingDays.sort().map((day) => WORKING_DAY_LABELS[day]);
   }
 
   /**

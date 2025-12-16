@@ -17,11 +17,18 @@ export class Service {
     this.id = data.id;
     this.name = data.name;
     this.description = data.description;
-    this.price = typeof data.price === 'string' ? parseFloat(data.price) : data.price;
+    this.price =
+      typeof data.price === 'string' ? parseFloat(data.price) : data.price;
     this.durationMin = data.durationMin;
     this.active = data.active ?? true;
-    this.createdAt = data.createdAt instanceof Date ? data.createdAt : new Date(data.createdAt);
-    this.updatedAt = data.updatedAt instanceof Date ? data.updatedAt : new Date(data.updatedAt);
+    this.createdAt =
+      data.createdAt instanceof Date
+        ? data.createdAt
+        : new Date(data.createdAt);
+    this.updatedAt =
+      data.updatedAt instanceof Date
+        ? data.updatedAt
+        : new Date(data.updatedAt);
   }
 
   /**

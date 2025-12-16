@@ -17,7 +17,11 @@
         <p *ngIf="service.price">Preço: R$ {{ service.price }}</p>
       </ion-label>
       <!-- Botão para editar -->
-      <ion-button fill="clear" slot="end" [routerLink]="['/barber/services', service.id]">
+      <ion-button
+        fill="clear"
+        slot="end"
+        [routerLink]="['/barber/services', service.id]"
+      >
         <ion-icon name="create-outline"></ion-icon>
       </ion-button>
     </ion-item>
@@ -27,5 +31,9 @@
     Nenhum serviço encontrado.
   </div>
 
-  <ion-spinner *ngIf="loading" name="crescent" style="margin-top: 16px;"></ion-spinner>
+  <ion-spinner
+    *ngIf="loading"
+    name="crescent"
+    style="margin-top: 16px"
+  ></ion-spinner>
 </ion-content>

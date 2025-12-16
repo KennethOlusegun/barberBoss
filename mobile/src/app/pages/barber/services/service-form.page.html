@@ -18,9 +18,17 @@
       <ion-label position="floating">Preço (R$)</ion-label>
       <ion-input type="number" formControlName="price"></ion-input>
     </ion-item>
-    <ion-button expand="block" type="submit" [disabled]="!serviceForm.valid || loading">
+    <ion-button
+      expand="block"
+      type="submit"
+      [disabled]="!serviceForm.valid || loading"
+    >
       {{ isEdit ? 'Salvar' : 'Cadastrar' }}
     </ion-button>
   </form>
-  <ion-spinner *ngIf="loading" name="crescent" style="margin-top: 16px;"></ion-spinner>
+  <ion-spinner
+    *ngIf="loading"
+    name="crescent"
+    style="margin-top: 16px"
+  ></ion-spinner>
 </ion-content>

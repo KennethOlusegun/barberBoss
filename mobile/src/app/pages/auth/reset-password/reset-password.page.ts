@@ -10,12 +10,12 @@ import { AuthService } from '@core/services/auth/auth.service';
   templateUrl: './reset-password.page.html',
   styleUrls: ['./reset-password.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, ReactiveFormsModule]
+  imports: [IonicModule, CommonModule, ReactiveFormsModule],
 })
 export class ResetPasswordPage {
   resetForm = this.fb.group({
     token: ['', Validators.required],
-    newPassword: ['', [Validators.required, Validators.minLength(6)]]
+    newPassword: ['', [Validators.required, Validators.minLength(6)]],
   });
   isLoading = false;
   successMessage = '';
@@ -24,7 +24,7 @@ export class ResetPasswordPage {
   constructor(
     private router: Router,
     private fb: FormBuilder,
-    private authService: AuthService
+    private authService: AuthService,
   ) {}
 
   submit(): void {
@@ -42,7 +42,7 @@ export class ResetPasswordPage {
       error: (err) => {
         this.errorMessage = err?.error?.message || 'Erro ao redefinir senha.';
         this.isLoading = false;
-      }
+      },
     });
   }
 

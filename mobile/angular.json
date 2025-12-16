@@ -23,9 +23,7 @@
               "browser": ""
             },
             "index": "src/index.html",
-            "polyfills": [
-              "src/polyfills.ts"
-            ],
+            "polyfills": ["src/polyfills.ts"],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
@@ -38,9 +36,7 @@
             "styles": ["src/global.scss", "src/theme/variables.scss"],
             "scripts": [],
             "browser": "src/main.ts",
-            "externalDependencies": [
-              "@stencil/core"
-            ]
+            "externalDependencies": ["@stencil/core"]
           },
           "configurations": {
             "production": {
@@ -137,9 +133,7 @@
     }
   },
   "cli": {
-    "schematicCollections": [
-      "@ionic/angular-toolkit"
-    ],
+    "schematicCollections": ["@ionic/angular-toolkit"],
     "analytics": "ed9185a0-f52d-4d3d-8523-77a651e2c75a"
   },
   "schematics": {

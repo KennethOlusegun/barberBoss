@@ -16,7 +16,7 @@
 // 0. IMPORTAÇÕES SASS (@use deve ser primeiro)
 // ============================================================================
 
-@use './theme/variables.scss' as *;
+@use "./theme/variables.scss" as *;
 
 // ============================================================================
 // 1. CORE CSS IONIC
@@ -43,7 +43,7 @@
  * For more info, please see:
  * https://ionicframework.com/docs/theming/dark-mode
  */
-@import '@ionic/angular/css/palettes/dark.system.css';
+@import "@ionic/angular/css/palettes/dark.system.css";
 
 // ============================================================================
 // 2. IMPORTAÇÕES DAS VARIÁVEIS CUSTOMIZADAS
@@ -104,7 +104,9 @@ ion-card {
   --background: #{$barber-slate-grey};
   background-color: $barber-slate-grey;
   border-radius: 12px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.12),
+    0 1px 2px rgba(0, 0, 0, 0.24);
   border: none;
   margin: 0;
   overflow: hidden;
@@ -120,7 +122,7 @@ ion-header {
 
     ion-title {
       color: $barber-white-pure;
-      font-family: 'Oswald', sans-serif;
+      font-family: "Oswald", sans-serif;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 1px;
@@ -140,7 +142,7 @@ ion-footer {
 // FAB Button Customizado
 ion-fab-button {
   --background: #{$barber-royal-blue};
-  --background-activated: #2563EB;
+  --background-activated: #2563eb;
   --color: #{$barber-white-pure};
   box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
   transition: all 300ms ease-in-out;
@@ -156,7 +158,14 @@ ion-fab-button {
 
 // Buttons
 ion-button {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    "Helvetica Neue",
+    sans-serif;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -165,7 +174,7 @@ ion-button {
 
   &.ion-color-primary {
     --background: #{$barber-royal-blue};
-    --background-activated: #2563EB;
+    --background-activated: #2563eb;
     --color: #{$barber-white-pure};
 
     &:hover {
@@ -175,7 +184,7 @@ ion-button {
 
   &.ion-color-danger {
     --background: #{$barber-vintage-red};
-    --background-activated: #DC2626;
+    --background-activated: #dc2626;
     --color: #{$barber-white-pure};
 
     &:hover {
@@ -194,7 +203,14 @@ ion-textarea {
 
   input,
   textarea {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+    font-family:
+      "Inter",
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      Roboto,
+      "Helvetica Neue",
+      sans-serif;
     color: $barber-white-pure;
 
     &::placeholder {
@@ -205,7 +221,14 @@ ion-textarea {
 
 // Label
 ion-label {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    "Helvetica Neue",
+    sans-serif;
   color: $barber-grey-steel;
   font-weight: 500;
 }
@@ -232,7 +255,7 @@ ion-badge {
 // ============================================================================
 
 .barber-header {
-  font-family: 'Oswald', sans-serif;
+  font-family: "Oswald", sans-serif;
   font-size: 3rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -259,7 +282,7 @@ ion-badge {
 
     &::before,
     &::after {
-      content: '✂';
+      content: "✂";
       display: inline-block;
       margin: 0 1rem;
       color: $barber-royal-blue;
@@ -278,13 +301,17 @@ ion-badge {
   border-radius: 12px;
   padding: 1.5rem;
   border: none;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.12),
+    0 1px 2px rgba(0, 0, 0, 0.24);
   transition: all 300ms ease-in-out;
   position: relative;
   overflow: hidden;
 
   &:hover {
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+    box-shadow:
+      0 3px 6px rgba(0, 0, 0, 0.16),
+      0 3px 6px rgba(0, 0, 0, 0.23);
     transform: translateY(-2px);
   }
 
@@ -298,7 +325,7 @@ ion-badge {
   }
 
   &.barber-card--success {
-    border-top: 4px solid #10B981;
+    border-top: 4px solid #10b981;
   }
 
   // Variante compacta
@@ -364,7 +391,7 @@ ion-badge {
 
   // Variante verde (para desconto/promoção)
   &.price-tag--success {
-    background-color: #10B981;
+    background-color: #10b981;
     box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
 
     &:hover {
@@ -383,7 +410,7 @@ ion-badge {
   padding-left: 1.5rem;
 
   &::before {
-    content: '';
+    content: "";
     position: absolute;
     left: 0;
     top: 0;
@@ -415,14 +442,14 @@ ion-badge {
   // Variante com cor success
   &.status-line--success {
     &::before {
-      background-color: #10B981;
+      background-color: #10b981;
     }
   }
 
   // Variante com cor warning
   &.status-line--warning {
     &::before {
-      background-color: #F59E0B;
+      background-color: #f59e0b;
     }
   }
 }
@@ -469,7 +496,7 @@ ion-badge {
 
   // Variante success
   &.glow-fab--success {
-    background-color: #10B981;
+    background-color: #10b981;
     box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
 
     &:hover {
@@ -487,7 +514,8 @@ ion-badge {
 // ============================================================================
 
 @keyframes pulse-glow {
-  0%, 100% {
+  0%,
+  100% {
     box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
   }
 
@@ -497,7 +525,8 @@ ion-badge {
 }
 
 @keyframes float {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0);
   }
 
@@ -565,20 +594,44 @@ ion-badge {
 }
 
 // Espaçamento
-.mt-1 { margin-top: 0.5rem !important; }
-.mt-2 { margin-top: 1rem !important; }
-.mt-3 { margin-top: 1.5rem !important; }
-.mt-4 { margin-top: 2rem !important; }
+.mt-1 {
+  margin-top: 0.5rem !important;
+}
+.mt-2 {
+  margin-top: 1rem !important;
+}
+.mt-3 {
+  margin-top: 1.5rem !important;
+}
+.mt-4 {
+  margin-top: 2rem !important;
+}
 
-.mb-1 { margin-bottom: 0.5rem !important; }
-.mb-2 { margin-bottom: 1rem !important; }
-.mb-3 { margin-bottom: 1.5rem !important; }
-.mb-4 { margin-bottom: 2rem !important; }
+.mb-1 {
+  margin-bottom: 0.5rem !important;
+}
+.mb-2 {
+  margin-bottom: 1rem !important;
+}
+.mb-3 {
+  margin-bottom: 1.5rem !important;
+}
+.mb-4 {
+  margin-bottom: 2rem !important;
+}
 
-.p-1 { padding: 0.5rem !important; }
-.p-2 { padding: 1rem !important; }
-.p-3 { padding: 1.5rem !important; }
-.p-4 { padding: 2rem !important; }
+.p-1 {
+  padding: 0.5rem !important;
+}
+.p-2 {
+  padding: 1rem !important;
+}
+.p-3 {
+  padding: 1.5rem !important;
+}
+.p-4 {
+  padding: 2rem !important;
+}
 
 // Flexbox
 .flex-center {
@@ -673,7 +726,7 @@ ion-tab-bar {
   width: calc(100% - 2.5rem);
   max-width: 420px;
   border-radius: 2rem;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.18);
   background: $barber-midnight-navy;
   border: 1px solid $barber-slate-grey;
   z-index: 100;

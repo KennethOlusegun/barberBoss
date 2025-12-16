@@ -23,10 +23,13 @@ import { ConfigService } from '../../config.service';
 export class ErrorInterceptor implements HttpInterceptor {
   constructor(
     private router: Router,
-    private configService: ConfigService
+    private configService: ConfigService,
   ) {}
 
-  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+  intercept(
+    req: HttpRequest<any>,
+    next: HttpHandler,
+  ): Observable<HttpEvent<any>> {
     return next.handle(req).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.error instanceof ErrorEvent) {
@@ -38,7 +41,7 @@ export class ErrorInterceptor implements HttpInterceptor {
         }
 
         return throwError(() => error);
-      })
+      }),
     );
   }
 

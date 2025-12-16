@@ -1,9 +1,17 @@
 import { TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import {
+  HttpClientTestingModule,
+  HttpTestingController,
+} from '@angular/common/http/testing';
 import { AuthService } from './auth.service';
 import { ApiService } from '../api/api.service';
 import { ConfigService } from '../config.service';
-import { UserRole, LoginCredentials, RegisterData, AuthResponse } from './auth.types';
+import {
+  UserRole,
+  LoginCredentials,
+  RegisterData,
+  AuthResponse,
+} from './auth.types';
 import { AUTH_ENDPOINTS } from './auth.config';
 
 describe('AuthService', () => {
@@ -69,7 +77,7 @@ describe('AuthService', () => {
       });
 
       const req = httpMock.expectOne(
-        `${configService.getApiUrl()}${AUTH_ENDPOINTS.LOGIN}`
+        `${configService.getApiUrl()}${AUTH_ENDPOINTS.LOGIN}`,
       );
       expect(req.request.method).toBe('POST');
       expect(req.request.body).toEqual(credentials);
@@ -88,7 +96,7 @@ describe('AuthService', () => {
       });
 
       const req = httpMock.expectOne(
-        `${configService.getApiUrl()}${AUTH_ENDPOINTS.LOGIN}`
+        `${configService.getApiUrl()}${AUTH_ENDPOINTS.LOGIN}`,
       );
       req.flush(mockAuthResponse);
     });
@@ -111,7 +119,7 @@ describe('AuthService', () => {
       });
 
       const req = httpMock.expectOne(
-        `${configService.getApiUrl()}${AUTH_ENDPOINTS.REGISTER}`
+        `${configService.getApiUrl()}${AUTH_ENDPOINTS.REGISTER}`,
       );
       expect(req.request.method).toBe('POST');
       expect(req.request.body).toEqual(registerData);
@@ -122,22 +130,24 @@ describe('AuthService', () => {
   describe('logout', () => {
     it('should clear authentication state', (done) => {
       // First login
-      service.login({ email: 'test@example.com', password: 'password' }).subscribe(() => {
-        // Then logout
-        service.logout().subscribe(() => {
-          expect(service.isAuthenticated()).toBeFalse();
-          expect(service.getToken()).toBeNull();
-          done();
+      service
+        .login({ email: 'test@example.com', password: 'password' })
+        .subscribe(() => {
+          // Then logout
+          service.logout().subscribe(() => {
+            expect(service.isAuthenticated()).toBeFalse();
+            expect(service.getToken()).toBeNull();
+            done();
+          });
         });
-      });
 
       const loginReq = httpMock.expectOne(
-        `${configService.getApiUrl()}${AUTH_ENDPOINTS.LOGIN}`
+        `${configService.getApiUrl()}${AUTH_ENDPOINTS.LOGIN}`,
       );
       loginReq.flush(mockAuthResponse);
 
       const logoutReq = httpMock.expectOne(
-        `${configService.getApiUrl()}${AUTH_ENDPOINTS.LOGOUT}`
+        `${configService.getApiUrl()}${AUTH_ENDPOINTS.LOGOUT}`,
       );
       logoutReq.flush({});
     });
@@ -145,12 +155,14 @@ describe('AuthService', () => {
 
   describe('role checks', () => {
     beforeEach((done) => {
-      service.login({ email: 'test@example.com', password: 'password' }).subscribe(() => {
-        done();
-      });
+      service
+        .login({ email: 'test@example.com', password: 'password' })
+        .subscribe(() => {
+          done();
+        });
 
       const req = httpMock.expectOne(
-        `${configService.getApiUrl()}${AUTH_ENDPOINTS.LOGIN}`
+        `${configService.getApiUrl()}${AUTH_ENDPOINTS.LOGIN}`,
       );
       req.flush(mockAuthResponse);
     });
@@ -180,7 +192,12 @@ describe('AuthService', () => {
     it('should check if token is valid', () => {
       // Mock a valid token (expires in future)
       const futureTimestamp = Math.floor(Date.now() / 1000) + 3600;
-      const payload = { sub: '123', email: 'test@test.com', role: UserRole.CLIENT, exp: futureTimestamp };
+      const payload = {
+        sub: '123',
+        email: 'test@test.com',
+        role: UserRole.CLIENT,
+        exp: futureTimestamp,
+      };
       const token = `header.${btoa(JSON.stringify(payload))}.signature`;
 
       localStorage.setItem('barber_boss_token', token);

@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-
 export interface Barber {
   id?: string;
   name: string;
@@ -31,7 +30,10 @@ export class BarberService {
   }
 
   updateBarber(id: string, barber: Barber): Observable<Barber> {
-    return this.http.put<Barber>(`${this.apiUrl}/${id}`, { ...barber, role: 'barber' });
+    return this.http.put<Barber>(`${this.apiUrl}/${id}`, {
+      ...barber,
+      role: 'barber',
+    });
   }
 
   deleteBarber(id: string): Observable<void> {

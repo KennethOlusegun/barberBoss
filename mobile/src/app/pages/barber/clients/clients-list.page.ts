@@ -10,12 +10,28 @@ import { RouterModule } from '@angular/router';
   templateUrl: './clients-list.page.html',
   styleUrls: ['./clients-list.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, RouterModule]
+  imports: [IonicModule, CommonModule, RouterModule],
 })
 export class ClientsListPage implements OnInit {
   clients: User[] = [];
   loading = false;
   error = '';
+
+  // Deleta um cliente
+  deleteClient(client: User) {
+    if (!confirm(`Deseja realmente deletar o cliente ${client.getFullName()}?`)) return;
+    this.loading = true;
+    this.apiService.delete(`/users/${client.id}`, { requiresAuth: true }).subscribe({
+      next: () => {
+        this.clients = this.clients.filter(c => c.id !== client.id);
+        this.loading = false;
+      },
+      error: () => {
+        this.error = 'Erro ao deletar cliente';
+        this.loading = false;
+      }
+    });
+  }
 
   constructor(private apiService: ApiService) {}
 
@@ -25,7 +41,11 @@ export class ClientsListPage implements OnInit {
 
   fetchClients() {
     this.loading = true;
-    this.apiService.get<any>('/users', { params: { role: 'CLIENT', limit: 100 }, requiresAuth: true })
+    this.apiService
+      .get<any>('/users', {
+        params: { role: 'CLIENT', limit: 100 },
+        requiresAuth: true,
+      })
       .subscribe({
         next: (result) => {
           if (Array.isArray(result)) {
@@ -40,7 +60,7 @@ export class ClientsListPage implements OnInit {
         error: (err) => {
           this.error = 'Erro ao buscar clientes';
           this.loading = false;
-        }
+        },
       });
   }
 }
