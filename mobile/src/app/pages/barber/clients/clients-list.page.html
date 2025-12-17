@@ -1,180 +1,175 @@
-
 <ion-header>
-  <ion-toolbar>
-    <ion-title>Clientes</ion-title>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/tab1"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Gestão de Clientes</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="fetchClients()">
+        <mat-icon>refresh</mat-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content class="clients-content">
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <!-- Mensagem de erro -->
+  <ion-card *ngIf="error" color="danger">
+    <ion-card-content>
+      <mat-icon>error_outline</mat-icon>
+      {{ error }}
+    </ion-card-content>
+  </ion-card>
+
   <ion-grid>
     <ion-row>
-      <!-- Card: Criar Usuário -->
+      <!-- Card 1: Criar Novo Cliente -->
       <ion-col size="12" size-md="6" size-lg="3">
-        <ion-card>
+        <ion-card class="action-card create-card">
           <ion-card-header>
+            <mat-icon class="card-icon">person_add</mat-icon>
             <ion-card-title>Criar Usuário</ion-card-title>
+            <ion-card-subtitle>Adicionar novo cliente</ion-card-subtitle>
           </ion-card-header>
           <ion-card-content>
-            <ion-button expand="block" color="primary" [routerLink]="['/barber/clients/form']">
+            <ion-button
+              expand="block"
+              color="primary"
+              [routerLink]="['/barber/clients/form']">
+              <mat-icon slot="start">add_circle</mat-icon>
               Novo Cliente
             </ion-button>
+            <p class="card-description">
+              Cadastre um novo cliente no sistema
+            </p>
           </ion-card-content>
         </ion-card>
       </ion-col>
 
-      <!-- Card: Atualizar Cadastro -->
+      <!-- Card 2: Atualizar Cadastro -->
       <ion-col size="12" size-md="6" size-lg="3">
-        <ion-card>
+        <ion-card class="action-card update-card">
           <ion-card-header>
+            <mat-icon class="card-icon">edit</mat-icon>
             <ion-card-title>Atualizar Cadastro</ion-card-title>
+            <ion-card-subtitle>{{ clients.length }} cliente(s)</ion-card-subtitle>
           </ion-card-header>
           <ion-card-content>
-            <ion-list *ngIf="!loading && clients.length">
-              <ion-item *ngFor="let client of clients">
-                <ion-label>
-                  <h2>{{ client.getFullName() }}</h2>
-                  <p>{{ client.email }}</p>
-                </ion-label>
-                <ion-buttons slot="end">
+            <div class="client-list-container">
+              <ion-list *ngIf="!loading && clients.length" lines="none">
+                <ion-item *ngFor="let client of clients" class="client-item">
+                  <ion-avatar slot="start">
+                    <mat-icon>person</mat-icon>
+                  </ion-avatar>
+                  <ion-label>
+                    <h3>{{ client.getFullName() }}</h3>
+                    <p>{{ client.email }}</p>
+                  </ion-label>
                   <ion-button
                     fill="clear"
                     color="primary"
+                    slot="end"
                     [routerLink]="['/barber/clients/form', client.id]"
-                    title="Editar"
-                  >
-                    <ion-icon name="create-outline"></ion-icon>
+                    class="action-button">
+                    <mat-icon>edit</mat-icon>
                   </ion-button>
-                  <ion-button
-                    fill="clear"
-                    color="danger"
-                    (click)="deleteClient(client)"
-                    title="Deletar"
-                  >
-                    <ion-icon name="trash"></ion-icon>
-                  </ion-button>
-                </ion-buttons>
-              </ion-item>
-            </ion-list>
-            <div *ngIf="!loading && !clients.length" class="empty-state">
-              Nenhum cliente encontrado.
+                </ion-item>
+              </ion-list>
+              <div *ngIf="!loading && !clients.length" class="empty-state">
+                <mat-icon>group</mat-icon>
+                <p>Nenhum cliente cadastrado</p>
+              </div>
+              <ion-spinner *ngIf="loading" name="crescent"></ion-spinner>
             </div>
-            <ion-spinner *ngIf="loading" name="crescent" style="margin-top: 16px"></ion-spinner>
           </ion-card-content>
         </ion-card>
       </ion-col>
 
-      <!-- Card: Deletar Usuário -->
+      <!-- Card 3: Deletar Usuário -->
       <ion-col size="12" size-md="6" size-lg="3">
-        <ion-card>
+        <ion-card class="action-card delete-card">
           <ion-card-header>
+            <mat-icon class="card-icon">delete</mat-icon>
             <ion-card-title>Deletar Usuário</ion-card-title>
+            <ion-card-subtitle>Remover clientes</ion-card-subtitle>
           </ion-card-header>
           <ion-card-content>
-            <ion-list *ngIf="!loading && clients.length">
-              <ion-item *ngFor="let client of clients">
-                <ion-label>
-                  <h2>{{ client.getFullName() }}</h2>
-                  <p>{{ client.email }}</p>
-                </ion-label>
-                <ion-buttons slot="end">
+            <div class="client-list-container">
+              <ion-list *ngIf="!loading && clients.length" lines="none">
+                <ion-item *ngFor="let client of clients" class="client-item">
+                  <ion-avatar slot="start">
+                    <mat-icon>person</mat-icon>
+                  </ion-avatar>
+                  <ion-label>
+                    <h3>{{ client.getFullName() }}</h3>
+                    <p>{{ client.email }}</p>
+                  </ion-label>
                   <ion-button
                     fill="clear"
                     color="danger"
+                    slot="end"
                     (click)="deleteClient(client)"
-                    title="Deletar"
-                  >
-                    <ion-icon name="trash"></ion-icon>
+                    class="action-button">
+                    <mat-icon>delete</mat-icon>
                   </ion-button>
-                  <ion-button
-                    fill="clear"
-                    color="primary"
-                    [routerLink]="['/barber/clients/form', client.id]"
-                    title="Editar"
-                  >
-                    <ion-icon name="create-outline"></ion-icon>
-                  </ion-button>
-                </ion-buttons>
-              </ion-item>
-            </ion-list>
-            <div *ngIf="!loading && !clients.length" class="empty-state">
-              Nenhum cliente encontrado.
+                </ion-item>
+              </ion-list>
+              <div *ngIf="!loading && !clients.length" class="empty-state">
+                <mat-icon>group</mat-icon>
+                <p>Nenhum cliente para remover</p>
+              </div>
+              <ion-spinner *ngIf="loading" name="crescent"></ion-spinner>
             </div>
-            <ion-spinner *ngIf="loading" name="crescent" style="margin-top: 16px"></ion-spinner>
           </ion-card-content>
         </ion-card>
       </ion-col>
 
-      <!-- Card: Visualizar Usuários Ativos -->
+      <!-- Card 4: Usuários Ativos -->
       <ion-col size="12" size-md="6" size-lg="3">
-        <ion-card>
+        <ion-card class="action-card view-card">
           <ion-card-header>
+            <mat-icon class="card-icon">group</mat-icon>
             <ion-card-title>Usuários Ativos</ion-card-title>
+            <ion-card-subtitle>Total: {{ clients.length }}</ion-card-subtitle>
           </ion-card-header>
           <ion-card-content>
-            <ion-list *ngIf="!loading && clients.length">
-              <ion-item *ngFor="let client of clients">
-                <ion-label>
-                  <h2>{{ client.getFullName() }}</h2>
-                  <p>{{ client.email }}</p>
-                </ion-label>
-                <ion-button
-                  fill="clear"
-                  color="medium"
-                  slot="end"
-                  [routerLink]="['/barber/clients', client.id]"
-                  title="Visualizar"
-                >
-                  <ion-icon name="eye-outline"></ion-icon>
-                </ion-button>
-              </ion-item>
-            </ion-list>
-            <div *ngIf="!loading && !clients.length" class="empty-state">
-              Nenhum cliente encontrado.
+            <div class="client-list-container">
+              <ion-list *ngIf="!loading && clients.length" lines="none">
+                <ion-item *ngFor="let client of clients" class="client-item">
+                  <ion-avatar slot="start">
+                    <mat-icon>person</mat-icon>
+                  </ion-avatar>
+                  <ion-label>
+                    <h3>{{ client.getFullName() }}</h3>
+                    <p>{{ client.email }}</p>
+                    <p class="client-phone" *ngIf="client.phone">
+                      <mat-icon>call</mat-icon>
+                      {{ client.phone }}
+                    </p>
+                  </ion-label>
+                  <ion-button
+                    fill="clear"
+                    color="medium"
+                    slot="end"
+                    [routerLink]="['/barber/clients', client.id]"
+                    class="action-button">
+                    <mat-icon>visibility</mat-icon>
+                  </ion-button>
+                </ion-item>
+              </ion-list>
+              <div *ngIf="!loading && !clients.length" class="empty-state">
+                <mat-icon>group</mat-icon>
+                <p>Nenhum cliente ativo</p>
+              </div>
+              <ion-spinner *ngIf="loading" name="crescent"></ion-spinner>
             </div>
-            <ion-spinner *ngIf="loading" name="crescent" style="margin-top: 16px"></ion-spinner>
           </ion-card-content>
         </ion-card>
       </ion-col>
     </ion-row>
   </ion-grid>
-
-  <ion-refresher slot="fixed" (ionRefresh)="fetchClients()">
-    <ion-refresher-content></ion-refresher-content>
-  </ion-refresher>
-
-  <ion-list *ngIf="!loading && clients.length">
-    <ion-item *ngFor="let client of clients">
-      <ion-label>
-        <h2>{{ client.getFullName() }}</h2>
-        <p>{{ client.email }}</p>
-      </ion-label>
-      <!-- Botão para editar/visualizar histórico -->
-      <ion-button
-        fill="clear"
-        slot="end"
-        [routerLink]="['/barber/clients', client.id]"
-      >
-        <ion-icon name="create-outline"></ion-icon>
-      </ion-button>
-      <!-- Botão para deletar usuário -->
-      <ion-button
-        fill="clear"
-        color="danger"
-        slot="end"
-        (click)="deleteClient(client)"
-      >
-        <ion-icon name="trash-outline"></ion-icon>
-      </ion-button>
-    </ion-item>
-  </ion-list>
-
-  <div *ngIf="!loading && !clients.length" class="empty-state">
-    Nenhum cliente encontrado.
-  </div>
-
-  <ion-spinner
-    *ngIf="loading"
-    name="crescent"
-    style="margin-top: 16px"
-  ></ion-spinner>
 </ion-content>
