@@ -21,7 +21,7 @@ export class ClientsListPage implements OnInit {
   constructor(
     private apiService: ApiService,
     private alertController: AlertController,
-    private toastController: ToastController
+    private toastController: ToastController,
   ) {}
 
   ngOnInit() {
@@ -98,7 +98,10 @@ export class ClientsListPage implements OnInit {
         next: () => {
           this.clients = this.clients.filter((c) => c.id !== client.id);
           this.loading = false;
-          this.showToast(`Cliente ${client.getFullName()} deletado com sucesso`, 'success');
+          this.showToast(
+            `Cliente ${client.getFullName()} deletado com sucesso`,
+            'success',
+          );
         },
         error: (err) => {
           console.error('Erro ao deletar cliente:', err);
@@ -122,7 +125,10 @@ export class ClientsListPage implements OnInit {
   /**
    * Exibe um toast de feedback
    */
-  private async showToast(message: string, color: 'success' | 'danger' | 'warning' = 'success') {
+  private async showToast(
+    message: string,
+    color: 'success' | 'danger' | 'warning' = 'success',
+  ) {
     const toast = await this.toastController.create({
       message,
       duration: 3000,

@@ -33,7 +33,6 @@ ion-content {
   }
 }
 
-
 .extrato-list {
   padding: 0;
   .extrato-item {
@@ -44,7 +43,9 @@ ion-content {
     border-radius: 8px;
     margin-bottom: 4px;
     border-left: 4px solid transparent;
-    transition: border-color 0.2s, opacity 0.2s;
+    transition:
+      border-color 0.2s,
+      opacity 0.2s;
     background: var(--ion-item-background, #181c24);
     .status-indicator {
       display: flex;

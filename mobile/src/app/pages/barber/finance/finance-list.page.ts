@@ -20,7 +20,7 @@ export class FinanceListPage implements OnInit {
   constructor(
     private apiService: ApiService,
     private authService: AuthService,
-    private toastController: ToastController
+    private toastController: ToastController,
   ) {}
 
   ngOnInit() {
@@ -64,7 +64,10 @@ export class FinanceListPage implements OnInit {
     }, 1000);
   }
 
-  private async showToast(message: string, color: 'success' | 'danger' | 'warning' = 'success') {
+  private async showToast(
+    message: string,
+    color: 'success' | 'danger' | 'warning' = 'success',
+  ) {
     const toast = await this.toastController.create({
       message,
       duration: 3000,

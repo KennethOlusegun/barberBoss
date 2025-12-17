@@ -56,7 +56,10 @@
       </ion-label>
     </ion-item>
   </ion-list>
-  <div *ngIf="!loading && financeSummary && !financeSummary.appointments.length" class="empty-state">
+  <div
+    *ngIf="!loading && financeSummary && !financeSummary.appointments.length"
+    class="empty-state"
+  >
     Nenhum agendamento encontrado.
   </div>
   <ion-spinner *ngIf="loading" name="crescent"></ion-spinner>

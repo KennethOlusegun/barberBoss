@@ -1,0 +1,204 @@
+@use "src/theme/variables.scss" as *;
+
+// Sidebar Rail (Desktop)
+.app-shell {
+  display: flex;
+  height: 100vh;
+
+  .rail-desktop {
+    background: $barber-midnight-navy;
+    width: 72px;
+    min-width: 72px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 12px 0;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.04);
+    z-index: 10;
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      width: 100%;
+
+      li {
+        margin: 8px 0;
+        display: flex;
+        justify-content: center;
+
+        a {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 48px;
+          height: 48px;
+          border-radius: 12px;
+          color: $barber-grey-steel;
+          transition:
+            background 0.2s,
+            color 0.2s;
+
+          ion-icon {
+            font-size: 24px;
+          }
+        }
+
+        &.active a,
+        a:hover {
+          background: rgba($barber-royal-blue, 0.12);
+          color: $barber-royal-blue;
+          position: relative;
+
+          &::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 8px;
+            bottom: 8px;
+            width: 4px;
+            border-radius: 4px;
+            background: $barber-royal-blue;
+          }
+        }
+      }
+    }
+  }
+
+  .main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    background: $barber-midnight-navy;
+  }
+}
+
+// Sidebar mobile (ion-menu)
+ion-menu.app-rail {
+  --background: #0b1120;
+  --width: 72px;
+  ion-content {
+    padding: 0;
+  }
+  ion-item {
+    --background: transparent;
+    --color: $barber-grey-steel;
+    --min-height: 56px;
+    justify-content: center;
+    ion-icon {
+      font-size: 24px;
+    }
+    &.active,
+    &:hover {
+      --color: $barber-royal-blue;
+      background: rgba($barber-royal-blue, 0.12);
+      position: relative;
+      &::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 8px;
+        bottom: 8px;
+        width: 4px;
+        border-radius: 4px;
+        background: $barber-royal-blue;
+      }
+    }
+  }
+}
+
+// Header
+.app-header {
+  ion-toolbar {
+    --background: #1e293b;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+
+    .search-container {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0 16px;
+
+      ion-searchbar {
+        --background: #232a36;
+        --color: #fff;
+        --border-radius: 24px;
+        --box-shadow: none;
+        --placeholder-color: #aaa;
+        width: 100%;
+        max-width: 340px;
+        margin: 0 auto;
+        font-size: 16px;
+      }
+    }
+
+    ion-buttons[slot="end"] {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      ion-button {
+        --background: transparent;
+        --color: #fff;
+        ion-icon {
+          font-size: 22px;
+        }
+      }
+      ion-avatar {
+        width: 32px;
+        height: 32px;
+        img {
+          width: 100%;
+          height: 100%;
+          border-radius: 50%;
+        }
+      }
+    }
+  }
+}
+
+// FAB
+.main-fab {
+  ion-fab-button {
+    --background: $barber-royal-blue;
+    --color: #fff;
+    width: 64px;
+    height: 64px;
+    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.25);
+    font-size: 28px;
+    border-radius: 50%;
+    transition: box-shadow 0.2s;
+    &:hover {
+      box-shadow: 0 8px 24px rgba(59, 130, 246, 0.35);
+    }
+  }
+}
+
+// Responsividade
+@media (max-width: 900px) {
+  .app-shell {
+    .rail-desktop {
+      display: none;
+    }
+  }
+  ion-menu.app-rail {
+    --width: 72px;
+    display: block;
+  }
+  .show-mobile {
+    display: flex !important;
+  }
+}
+@media (min-width: 901px) {
+  ion-menu.app-rail {
+    display: none !important;
+  }
+  .show-mobile {
+    display: none !important;
+  }
+}

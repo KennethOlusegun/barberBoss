@@ -2,6 +2,47 @@ import { Routes } from '@angular/router';
 import { AuthGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
+  // Dashboard principal
+  {
+    path: 'dashboard',
+    loadComponent: () =>
+      import('./pages/dashboard/dashboard.page').then((m) => m.DashboardPage),
+    canActivate: [AuthGuard],
+  },
+  // Lista de agendamentos
+  {
+    path: 'barber/appointments',
+    loadComponent: () =>
+      import('./pages/barber/appointments/appointments-list.page').then(
+        (m) => m.AppointmentsListPage,
+      ),
+    canActivate: [AuthGuard],
+  },
+  // Formulário de novo agendamento
+  {
+    path: 'barber/appointments/create',
+    loadComponent: () =>
+      import('./pages/barber/appointments/appointments-form.page').then(
+        (m) => m.AppointmentsFormPage,
+      ),
+    canActivate: [AuthGuard],
+  },
+  // Dashboard principal
+  {
+    path: 'dashboard',
+    loadComponent: () =>
+      import('./pages/dashboard/dashboard.page').then((m) => m.DashboardPage),
+    canActivate: [AuthGuard],
+  },
+  // Lista de agendamentos
+  {
+    path: 'barber/appointments',
+    loadComponent: () =>
+      import('./pages/barber/appointments/appointments-list.page').then(
+        (m) => m.AppointmentsListPage,
+      ),
+    canActivate: [AuthGuard],
+  },
   {
     path: '',
     redirectTo: 'auth/login',

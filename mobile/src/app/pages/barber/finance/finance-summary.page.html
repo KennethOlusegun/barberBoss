@@ -50,8 +50,20 @@
           }"
           slot="start"
         >
-          <mat-icon *ngIf="ag.status === 'CONFIRMED'" color="primary" fontIcon="check_circle" class="icon-status">check_circle</mat-icon>
-          <mat-icon *ngIf="ag.status === 'PENDING'" color="warn" fontIcon="schedule" class="icon-status">schedule</mat-icon>
+          <mat-icon
+            *ngIf="ag.status === 'CONFIRMED'"
+            color="primary"
+            fontIcon="check_circle"
+            class="icon-status"
+            >check_circle</mat-icon
+          >
+          <mat-icon
+            *ngIf="ag.status === 'PENDING'"
+            color="warn"
+            fontIcon="schedule"
+            class="icon-status"
+            >schedule</mat-icon
+          >
         </div>
 
         <!-- Informações do serviço -->
@@ -59,7 +71,9 @@
           <div class="servico-nome">{{ ag.service?.name }}</div>
           <div class="servico-detalhes">
             <span class="data">{{ ag.startsAt | date: 'dd MMM' }}</span>
-            <span class="cliente" *ngIf="ag.user?.name">• {{ ag.user.name }}</span>
+            <span class="cliente" *ngIf="ag.user?.name"
+              >• {{ ag.user.name }}</span
+            >
           </div>
         </div>
 
@@ -69,12 +83,8 @@
             class="comissao"
             [ngClass]="{ 'confirmado': ag.status === 'CONFIRMED', 'pendente': ag.status === 'PENDING' }"
           >
-            +R$ {{
-              (ag.service?.price
-                ? (ag.service.price * (ag.service.barberCommission ?? 0.5))
-                : 0
-              ) | number: '1.2-2'
-            }}
+            +R$ {{ (ag.service?.price ? (ag.service.price *
+            (ag.service.barberCommission ?? 0.5)) : 0 ) | number: '1.2-2' }}
           </div>
           <div class="valor-servico">
             <span>Serviço: R$ {{ ag.service?.price | number: '1.2-2' }}</span>
@@ -82,7 +92,10 @@
         </div>
       </ion-item>
     </ion-list>
-    <div *ngIf="financeSummary && !financeSummary.appointments.length" class="empty-state">
+    <div
+      *ngIf="financeSummary && !financeSummary.appointments.length"
+      class="empty-state"
+    >
       Nenhum agendamento encontrado.
     </div>
   </div>

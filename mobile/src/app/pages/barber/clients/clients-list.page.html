@@ -39,13 +39,12 @@
             <ion-button
               expand="block"
               color="primary"
-              [routerLink]="['/barber/clients/form']">
+              [routerLink]="['/barber/clients/form']"
+            >
               <mat-icon slot="start">add_circle</mat-icon>
               Novo Cliente
             </ion-button>
-            <p class="card-description">
-              Cadastre um novo cliente no sistema
-            </p>
+            <p class="card-description">Cadastre um novo cliente no sistema</p>
           </ion-card-content>
         </ion-card>
       </ion-col>
@@ -56,7 +55,9 @@
           <ion-card-header>
             <mat-icon class="card-icon">edit</mat-icon>
             <ion-card-title>Atualizar Cadastro</ion-card-title>
-            <ion-card-subtitle>{{ clients.length }} cliente(s)</ion-card-subtitle>
+            <ion-card-subtitle
+              >{{ clients.length }} cliente(s)</ion-card-subtitle
+            >
           </ion-card-header>
           <ion-card-content>
             <div class="client-list-container">
@@ -74,7 +75,8 @@
                     color="primary"
                     slot="end"
                     [routerLink]="['/barber/clients/form', client.id]"
-                    class="action-button">
+                    class="action-button"
+                  >
                     <mat-icon>edit</mat-icon>
                   </ion-button>
                 </ion-item>
@@ -113,7 +115,8 @@
                     color="danger"
                     slot="end"
                     (click)="deleteClient(client)"
-                    class="action-button">
+                    class="action-button"
+                  >
                     <mat-icon>delete</mat-icon>
                   </ion-button>
                 </ion-item>
@@ -156,7 +159,8 @@
                     color="medium"
                     slot="end"
                     [routerLink]="['/barber/clients', client.id]"
-                    class="action-button">
+                    class="action-button"
+                  >
                     <mat-icon>visibility</mat-icon>
                   </ion-button>
                 </ion-item>
