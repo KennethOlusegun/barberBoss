@@ -12,7 +12,8 @@ export const environment: Environment = {
   production: false,
 
   api: {
-    baseUrl: 'http://192.168.0.8:3000',
+    // 👇 URL ATUALIZADA PARA O SEU NGROK
+    baseUrl: 'https://5c8978c04be2.ngrok-free.app',
     apiPrefix: '',
     timeout: 30000,
   },
