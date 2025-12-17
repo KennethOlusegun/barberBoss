@@ -10,7 +10,7 @@ export const environment: Environment = {
   production: true,
 
   api: {
-    baseUrl: 'https://api.barberboss.com', // TODO: Update with your production API URL
+    baseUrl: 'https://5c8978c04be2.ngrok-free.app', // TODO: Update with your production API URL
     apiPrefix: '',
     timeout: 30000,
   },

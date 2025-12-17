@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!-- Permite tráfego cleartext para desenvolvimento -->
+    <base-config cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <!-- Confia em certificados do sistema e do usuário -->
+            <certificates src="system" />
+            <certificates src="user" />
+        </trust-anchors>
+    </base-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">ngrok-free.app</domain>
+        <domain includeSubdomains="true">ngrok.io</domain>
+        <domain>9deff88328ab.ngrok-free.app</domain>
+        <domain>localhost</domain>
+        <domain>127.0.0.1</domain>
+        <domain>10.0.2.2</domain>
+    </domain-config>
+</network-security-config>
