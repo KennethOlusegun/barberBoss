@@ -1,15 +1,15 @@
 {
-    "configurations": [
-        {
-            "name": "Containers: Node.js Launch",
-            "type": "docker",
-            "request": "launch",
-            "preLaunchTask": "docker-run: debug",
-            "platform": "node",
-            "node": {
-                "package": "${workspaceFolder}/mobile/package.json",
-                "localRoot": "${workspaceFolder}/mobile"
-            }
-        }
-    ]
+  "configurations": [
+    {
+      "name": "Containers: Node.js Launch",
+      "type": "docker",
+      "request": "launch",
+      "preLaunchTask": "docker-run: debug",
+      "platform": "node",
+      "node": {
+        "package": "${workspaceFolder}/mobile/package.json",
+        "localRoot": "${workspaceFolder}/mobile"
+      }
+    }
+  ]
 }
