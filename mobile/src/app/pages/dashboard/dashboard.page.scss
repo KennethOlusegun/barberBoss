@@ -1,4 +1,38 @@
-@use 'src/theme/variables.scss' as *;
+@use "src/theme/variables.scss" as *;
+// Estilo para o bloco de acesso rápido
+.acesso-rapido-btns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  justify-content: center;
+  margin: 18px 0 10px 0;
+}
+
+.acesso-rapido-btns ion-button {
+  --background: #fff;
+  --color: #0b1120;
+  --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --border-radius: 12px;
+  min-width: 140px;
+  min-height: 48px;
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: 0.5px;
+  border: 1.5px solid #3b82f6;
+  transition:
+    box-shadow 0.2s,
+    border 0.2s;
+}
+.acesso-rapido-btns ion-button:hover,
+.acesso-rapido-btns ion-button:focus {
+  --box-shadow: 0 4px 16px rgba(59, 130, 246, 0.12);
+  border: 2px solid #3b82f6;
+}
+.acesso-rapido-btns ion-icon {
+  color: #3b82f6 !important;
+  font-size: 1.3em;
+  margin-right: 6px;
+}
 
 ion-content {
   --background: #{$barber-midnight-navy};
@@ -16,7 +50,11 @@ ion-content {
   width: 100%;
   padding: 0 1.5rem;
   box-sizing: border-box;
-  background: linear-gradient(135deg, rgba(11, 17, 32, 0.95) 0%, rgba(30, 41, 59, 0.5) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(11, 17, 32, 0.95) 0%,
+    rgba(30, 41, 59, 0.5) 100%
+  );
 }
 
 .loading-container {
@@ -43,7 +81,7 @@ ion-content {
   h2 {
     color: $barber-vintage-red;
     margin: 0 0 10px 0;
-    font-family: 'Oswald', sans-serif;
+    font-family: "Oswald", sans-serif;
     text-transform: uppercase;
     letter-spacing: 1px;
   }
@@ -51,7 +89,7 @@ ion-content {
   p {
     color: $barber-vintage-red;
     margin: 0;
-    font-family: 'Inter', sans-serif;
+    font-family: "Inter", sans-serif;
   }
 }
 
@@ -75,7 +113,7 @@ ion-content {
       margin: 0;
       font-size: 2rem;
       color: $barber-royal-blue;
-      font-family: 'Oswald', sans-serif;
+      font-family: "Oswald", sans-serif;
       font-weight: bold;
       text-transform: uppercase;
       letter-spacing: 1px;
@@ -85,7 +123,7 @@ ion-content {
       margin: 0.5rem 0 0 0;
       font-size: 0.875rem;
       color: $barber-grey-steel;
-      font-family: 'Inter', sans-serif;
+      font-family: "Inter", sans-serif;
     }
   }
 }
@@ -94,7 +132,9 @@ ion-card {
   margin: 0 0 1.5rem 0;
   border-radius: 12px;
   background: $barber-slate-grey;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.12),
+    0 1px 2px rgba(0, 0, 0, 0.24);
 }
 
 .agendamento-card {
@@ -109,7 +149,7 @@ ion-card {
 
     ion-card-title {
       font-size: 1.125rem;
-      font-family: 'Oswald', sans-serif;
+      font-family: "Oswald", sans-serif;
       font-weight: bold;
       text-transform: uppercase;
       letter-spacing: 1px;
@@ -131,7 +171,7 @@ ion-card {
       .info-row {
         display: flex;
         justify-content: space-between;
-        font-family: 'Inter', sans-serif;
+        font-family: "Inter", sans-serif;
         color: $barber-grey-steel;
         font-size: 1rem;
         margin-bottom: 0.5rem;

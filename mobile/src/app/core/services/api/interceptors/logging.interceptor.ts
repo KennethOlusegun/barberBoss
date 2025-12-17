@@ -21,7 +21,10 @@ import { ConfigService } from '../../config.service';
 export class LoggingInterceptor implements HttpInterceptor {
   constructor(private configService: ConfigService) {}
 
-  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+  intercept(
+    req: HttpRequest<any>,
+    next: HttpHandler,
+  ): Observable<HttpEvent<any>> {
     // Only log in development mode
     if (this.configService.isProduction()) {
       return next.handle(req);
@@ -59,7 +62,7 @@ export class LoggingInterceptor implements HttpInterceptor {
           error: error.error,
         });
         return throwError(() => error);
-      })
+      }),
     );
   }
 

@@ -9,13 +9,16 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [IonicModule, CommonModule],
   templateUrl: './barbers.page.html',
-  styleUrls: ['./barbers.page.scss']
+  styleUrls: ['./barbers.page.scss'],
 })
 export class AdminBarbersPage implements OnInit {
   barbers: Barber[] = [];
   loading = false;
 
-  constructor(private barberService: BarberService, private router: Router) {}
+  constructor(
+    private barberService: BarberService,
+    private router: Router,
+  ) {}
 
   ngOnInit() {
     this.loadBarbers();
@@ -30,7 +33,7 @@ export class AdminBarbersPage implements OnInit {
       },
       error: () => {
         this.loading = false;
-      }
+      },
     });
   }
 

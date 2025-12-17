@@ -37,12 +37,14 @@ mobile/
 The environment files are pre-configured with sensible defaults:
 
 **Development (`environment.ts`):**
+
 - API URL: `http://localhost:3000`
 - Debug mode: `ON`
 - Analytics: `OFF`
 - Console logging: `ON`
 
 **Production (`environment.prod.ts`):**
+
 - API URL: `https://api.barberboss.com` (⚠️ UPDATE THIS!)
 - Debug mode: `OFF`
 - Analytics: `ON`
@@ -90,11 +92,11 @@ this.http.get(endpoint).subscribe(...);
 ```typescript
 // Check if feature is enabled
 if (this.config.isDebugModeEnabled()) {
-  console.log('Debug info:', data);
+  console.log("Debug info:", data);
 }
 
 if (this.config.isAnalyticsEnabled()) {
-  this.analytics.track('event');
+  this.analytics.track("event");
 }
 ```
 
@@ -113,7 +115,7 @@ const maxDays = this.config.getMaxAdvanceBooking();
 
 ```typescript
 // Get prefixed storage key
-const key = this.config.getStorageKey('user');
+const key = this.config.getStorageKey("user");
 
 // Store data
 localStorage.setItem(key, JSON.stringify(user));
@@ -128,31 +130,34 @@ npm test
 ```
 
 View the demo component (development only):
+
 - Add `ConfigDemoComponent` to a route
 - Navigate to see all configuration values and test functions
 
 ## ⚙️ Configuration Sections
 
-| Section | Purpose | Key Properties |
-|---------|---------|----------------|
-| `api` | Backend API settings | baseUrl, apiPrefix, timeout |
-| `auth` | Authentication | tokenKey, refreshTokenKey |
-| `app` | Application info | name, version, language |
-| `features` | Feature flags | enableDebugMode, enableAnalytics |
-| `logging` | Logging config | logLevel, enableConsoleLogging |
-| `storage` | Storage settings | prefix, type |
-| `business` | Business rules | appointmentDuration, bookingLimits |
-| `ui` | UI/UX settings | theme, animations, itemsPerPage |
+| Section    | Purpose              | Key Properties                     |
+| ---------- | -------------------- | ---------------------------------- |
+| `api`      | Backend API settings | baseUrl, apiPrefix, timeout        |
+| `auth`     | Authentication       | tokenKey, refreshTokenKey          |
+| `app`      | Application info     | name, version, language            |
+| `features` | Feature flags        | enableDebugMode, enableAnalytics   |
+| `logging`  | Logging config       | logLevel, enableConsoleLogging     |
+| `storage`  | Storage settings     | prefix, type                       |
+| `business` | Business rules       | appointmentDuration, bookingLimits |
+| `ui`       | UI/UX settings       | theme, animations, itemsPerPage    |
 
 ## 🔐 Security
 
 ✅ **Do:**
+
 - Keep `.env` files out of git
 - Use environment variables in CI/CD
 - Rotate keys regularly
 - Use HTTPS in production
 
 ❌ **Don't:**
+
 - Commit sensitive data
 - Hardcode API keys
 - Use HTTP in production
@@ -203,13 +208,13 @@ Before using in production:
 
 ```typescript
 // Common ConfigService methods
-this.config.getApiUrl()                     // Full API URL
-this.config.buildEndpointUrl('/path')       // Build endpoint
-this.config.isDebugModeEnabled()           // Check debug mode
-this.config.isFeatureEnabled('feature')    // Check feature flag
-this.config.getStorageKey('key')           // Get prefixed key
-this.config.get('api.baseUrl')             // Get by path
-this.config.getDefaultAppointmentDuration() // Business rules
+this.config.getApiUrl(); // Full API URL
+this.config.buildEndpointUrl("/path"); // Build endpoint
+this.config.isDebugModeEnabled(); // Check debug mode
+this.config.isFeatureEnabled("feature"); // Check feature flag
+this.config.getStorageKey("key"); // Get prefixed key
+this.config.get("api.baseUrl"); // Get by path
+this.config.getDefaultAppointmentDuration(); // Business rules
 ```
 
 ---

@@ -1,5 +1,10 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
+import {
+  CanActivate,
+  ActivatedRouteSnapshot,
+  RouterStateSnapshot,
+  Router,
+} from '@angular/router';
 import { Observable } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 import { AuthService } from '../services/auth/auth.service';
@@ -34,12 +39,12 @@ import { UserRole } from '../services/auth/auth.types';
 export class RoleGuard implements CanActivate {
   constructor(
     private authService: AuthService,
-    private router: Router
+    private router: Router,
   ) {}
 
   canActivate(
     route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
+    state: RouterStateSnapshot,
   ): Observable<boolean> | Promise<boolean> | boolean {
     const requiredRoles = route.data['roles'] as UserRole[];
 
@@ -63,13 +68,15 @@ export class RoleGuard implements CanActivate {
 
         if (!hasRole) {
           // User doesn't have required role, redirect to unauthorized page
-          console.warn(`User role ${user.role} not in required roles: ${requiredRoles.join(', ')}`);
+          console.warn(
+            `User role ${user.role} not in required roles: ${requiredRoles.join(', ')}`,
+          );
           this.router.navigate(['/unauthorized']);
           return false;
         }
 
         return true;
-      })
+      }),
     );
   }
 }

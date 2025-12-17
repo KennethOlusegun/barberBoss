@@ -296,8 +296,10 @@ export const THEME_COLORS = {
 /**
  * Type exports for better TypeScript support
  */
-export type AppointmentStatus = typeof APPOINTMENT_STATUS[keyof typeof APPOINTMENT_STATUS];
-export type UserRole = typeof USER_ROLES[keyof typeof USER_ROLES];
-export type TimeBlockType = typeof TIME_BLOCK_TYPES[keyof typeof TIME_BLOCK_TYPES];
-export type DayOfWeek = typeof DAYS_OF_WEEK[keyof typeof DAYS_OF_WEEK];
-export type ThemeColor = typeof THEME_COLORS[keyof typeof THEME_COLORS];
+export type AppointmentStatus =
+  (typeof APPOINTMENT_STATUS)[keyof typeof APPOINTMENT_STATUS];
+export type UserRole = (typeof USER_ROLES)[keyof typeof USER_ROLES];
+export type TimeBlockType =
+  (typeof TIME_BLOCK_TYPES)[keyof typeof TIME_BLOCK_TYPES];
+export type DayOfWeek = (typeof DAYS_OF_WEEK)[keyof typeof DAYS_OF_WEEK];
+export type ThemeColor = (typeof THEME_COLORS)[keyof typeof THEME_COLORS];

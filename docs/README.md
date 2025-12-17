@@ -11,12 +11,14 @@ BarberBoss é um sistema de agendamento para barbearias construído com NestJS e
 Documentação da API e arquitetura do servidor.
 
 **Autenticação e Segurança:**
+
 - [Autenticação](./backend/AUTH.md) - Sistema de autenticação JWT e autorização por roles
 - [Rate Limiting](./backend/RATE_LIMITING.md) - Controle de taxa de requisições
 - [Exception Filters](./backend/EXCEPTION_FILTERS.md) - Tratamento global de exceções
 - [Environment Validation](./backend/ENV_VALIDATION.md) - Validação de variáveis de ambiente
 
 **APIs e Endpoints:**
+
 - [Paginação](./backend/PAGINATION.md) - Implementação de paginação nos endpoints
 - [Exemplos de Paginação](./backend/PAGINATION_EXAMPLES.md) - Exemplos práticos de uso da API
 - [Time Blocks](./backend/TIME_BLOCKS.md) - Sistema de bloqueios de horário
@@ -28,6 +30,7 @@ Documentação da API e arquitetura do servidor.
 - [Settings](./backend/SETTINGS.md) - Configurações do sistema
 
 **Ferramentas e Utilidades:**
+
 - [Day.js](./backend/DAYJS.md) - Configuração e uso do Day.js com timezone PT-BR
 - [Complete Flow](./backend/COMPLETE_FLOW.md) - Fluxo completo da aplicação
 
@@ -36,21 +39,25 @@ Documentação da API e arquitetura do servidor.
 Documentação do aplicativo mobile.
 
 **Configuração:**
+
 - [Environment Configuration](./mobile/ENVIRONMENT_CONFIGURATION.md) - Configuração de ambientes
 - [Environment Complete](./mobile/ENVIRONMENT_COMPLETE.md) - Guia completo
 - [Environment Quickstart](./mobile/ENVIRONMENT_QUICKSTART.md) - Início rápido
 - [Environment Best Practices](./mobile/ENVIRONMENT_BEST_PRACTICES.md) - Melhores práticas
 
 **Serviços Core:**
+
 - [API Service](./mobile/API_SERVICE.md) - Serviço HTTP de comunicação
 - [Storage Service](./mobile/STORAGE_SERVICE.md) - Armazenamento local
 - [Auth Service](./mobile/AUTH_SERVICE.md) - Autenticação
 
 **HTTP e Interceptors:**
+
 - [HTTP Interceptors](./mobile/HTTP_INTERCEPTORS.md) - Sistema completo de interceptors
 - [Auth Interceptor Setup](./mobile/AUTH_INTERCEPTOR_SETUP.md) - Configuração de auth
 
 **Models e Interfaces:**
+
 - [Models & Interfaces](./mobile/MODELS_INTERFACES.md) - Documentação completa
 - [Models Implementation](./mobile/MODELS_IMPLEMENTATION.md) - Resumo da implementação
 
@@ -74,6 +81,7 @@ Guia de estilização e design system.
 API RESTful construída com NestJS, Prisma ORM e PostgreSQL.
 
 **Principais Módulos:**
+
 - **Auth** - Autenticação JWT
 - **User** - Gerenciamento de usuários
 - **Service** - Serviços da barbearia

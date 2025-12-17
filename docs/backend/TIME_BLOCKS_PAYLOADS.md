@@ -18,6 +18,7 @@
 ```
 
 **Resposta Esperada (201):**
+
 ```json
 {
   "id": "uuid-gerado",
@@ -152,6 +153,7 @@ Sem parâmetros. Retorna todos os bloqueios ativos.
 **GET** `/time-blocks/range?startDate=2025-01-10T08:00:00.000Z&endDate=2025-01-10T18:00:00.000Z`
 
 **Parâmetros de Query:**
+
 - `startDate`: Data/hora início do período (ISO 8601)
 - `endDate`: Data/hora fim do período (ISO 8601)
 
@@ -182,6 +184,7 @@ Marca o bloqueio como inativo (`active: false`).
 - `DELETE /time-blocks/{id}`
 
 **Header necessário:**
+
 ```
 Authorization: Bearer {seu_token_jwt}
 ```
@@ -189,6 +192,7 @@ Authorization: Bearer {seu_token_jwt}
 ### Como obter o token:
 
 1. Faça login:
+
    ```bash
    POST /auth/login
    {
@@ -206,7 +210,7 @@ Authorization: Bearer {seu_token_jwt}
 Para `recurringDays`:
 
 | Número | Dia da Semana |
-|--------|---------------|
+| ------ | ------------- |
 | 0      | Domingo       |
 | 1      | Segunda-feira |
 | 2      | Terça-feira   |
@@ -216,6 +220,7 @@ Para `recurringDays`:
 | 6      | Sábado        |
 
 **Exemplos:**
+
 - `[1, 2, 3, 4, 5]` - Segunda a Sexta
 - `[0, 6]` - Final de semana
 - `[1, 3, 5]` - Segundas, Quartas e Sextas
@@ -292,6 +297,7 @@ POST /time-blocks
 ```
 
 **Resposta (400):**
+
 ```json
 {
   "statusCode": 400,
@@ -313,6 +319,7 @@ POST /time-blocks
 ```
 
 **Resposta (400):**
+
 ```json
 {
   "statusCode": 400,
@@ -332,6 +339,7 @@ POST /time-blocks
 ```
 
 **Resposta (400):**
+
 ```json
 {
   "statusCode": 400,
@@ -358,10 +366,10 @@ POST /time-blocks
 
 ## 📊 Tipos de Bloqueio Disponíveis
 
-| Tipo      | Descrição                    | Uso Recomendado                |
-|-----------|------------------------------|--------------------------------|
-| LUNCH     | Horário de almoço            | Recorrente (diário)            |
-| BREAK     | Pausa/intervalo              | Recorrente (dias específicos)  |
-| DAY_OFF   | Folga                        | Único (dia específico)         |
-| VACATION  | Férias                       | Único (período)                |
-| CUSTOM    | Personalizado                | Qualquer situação especial     |
+| Tipo     | Descrição         | Uso Recomendado               |
+| -------- | ----------------- | ----------------------------- |
+| LUNCH    | Horário de almoço | Recorrente (diário)           |
+| BREAK    | Pausa/intervalo   | Recorrente (dias específicos) |
+| DAY_OFF  | Folga             | Único (dia específico)        |
+| VACATION | Férias            | Único (período)               |
+| CUSTOM   | Personalizado     | Qualquer situação especial    |

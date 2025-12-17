@@ -80,7 +80,7 @@ export class StorageService {
   async set<T = any>(
     key: string | StorageKey,
     value: T,
-    options?: StorageOptions
+    options?: StorageOptions,
   ): Promise<void> {
     try {
       const storedData: StoredData<T> = {
@@ -282,7 +282,9 @@ export class StorageService {
    * @param key - Storage key
    * @returns Promise that resolves with the stored data wrapper or null
    */
-  async getRaw<T = any>(key: string | StorageKey): Promise<StoredData<T> | null> {
+  async getRaw<T = any>(
+    key: string | StorageKey,
+  ): Promise<StoredData<T> | null> {
     try {
       const result = await Preferences.get({ key: String(key) });
 
@@ -372,14 +374,16 @@ export class StorageService {
    */
   private async runMigrations(): Promise<void> {
     try {
-      const currentVersion = await this.get<number>(this.VERSION_KEY) || 0;
+      const currentVersion = (await this.get<number>(this.VERSION_KEY)) || 0;
 
       const pendingMigrations = this.migrations.filter(
-        (m) => m.version > currentVersion
+        (m) => m.version > currentVersion,
       );
 
       for (const migration of pendingMigrations) {
-        console.log(`Running storage migration to version ${migration.version}`);
+        console.log(
+          `Running storage migration to version ${migration.version}`,
+        );
         await migration.migrate();
         await this.set(this.VERSION_KEY, migration.version);
       }

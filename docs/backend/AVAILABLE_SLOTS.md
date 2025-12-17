@@ -18,10 +18,10 @@ GET /api/appointments/available-slots/search?date={data}&serviceId={uuid}
 
 ### Parâmetros Query
 
-| Parâmetro | Tipo | Obrigatório | Descrição |
-|-----------|------|-------------|-----------|
-| `date` | string (ISO 8601) | Sim | Data para buscar horários disponíveis (ex: 2025-12-10) |
-| `serviceId` | UUID | Sim | ID do serviço a ser agendado |
+| Parâmetro   | Tipo              | Obrigatório | Descrição                                              |
+| ----------- | ----------------- | ----------- | ------------------------------------------------------ |
+| `date`      | string (ISO 8601) | Sim         | Data para buscar horários disponíveis (ex: 2025-12-10) |
+| `serviceId` | UUID              | Sim         | ID do serviço a ser agendado                           |
 
 ### Características
 
@@ -95,9 +95,9 @@ curl -X GET "http://localhost:3000/appointments/available-slots/search?date=2025
 
 ```typescript
 // Baseado nas configurações
-const openTime = "08:00";  // Configuração
+const openTime = "08:00"; // Configuração
 const closeTime = "18:00"; // Configuração
-const slotInterval = 15;   // Configuração (minutos)
+const slotInterval = 15; // Configuração (minutos)
 const serviceDuration = 30; // Do serviço selecionado
 
 // Gera slots de 15 em 15 minutos entre 08:00 e 18:00
@@ -128,6 +128,7 @@ Para cada slot gerado, verifica:
 **Agendamentos existentes**: 10:00-10:30, 14:00-14:30
 
 **Slots disponíveis**:
+
 ```
 08:00, 08:15, 08:30, 08:45, 09:00, 09:15, 09:30, 09:45,
 10:45, 11:00, 11:15, 11:30, 11:45, 12:00, 12:15, 12:30, 12:45, 13:00, 13:15, 13:30,
@@ -171,28 +172,28 @@ interface AvailableSlot {
 
 async function fetchAvailableSlots(
   date: string,
-  serviceId: string
+  serviceId: string,
 ): Promise<AvailableSlot> {
   const response = await fetch(
-    `/api/appointments/available-slots/search?date=${date}&serviceId=${serviceId}`
+    `/api/appointments/available-slots/search?date=${date}&serviceId=${serviceId}`,
   );
-  
+
   if (!response.ok) {
-    throw new Error('Falha ao buscar horários disponíveis');
+    throw new Error("Falha ao buscar horários disponíveis");
   }
-  
+
   return response.json();
 }
 
 // Uso
-const slots = await fetchAvailableSlots('2025-12-10', 'service-uuid');
+const slots = await fetchAvailableSlots("2025-12-10", "service-uuid");
 
 // Renderizar slots
-slots.slots.forEach(slot => {
+slots.slots.forEach((slot) => {
   const date = new Date(slot);
-  const time = date.toLocaleTimeString('pt-BR', { 
-    hour: '2-digit', 
-    minute: '2-digit' 
+  const time = date.toLocaleTimeString("pt-BR", {
+    hour: "2-digit",
+    minute: "2-digit",
   });
   console.log(time); // "11:00", "11:15", etc.
 });
@@ -208,7 +209,7 @@ function TimeSlotPicker({ date, serviceId }) {
   useEffect(() => {
     setLoading(true);
     fetchAvailableSlots(date, serviceId)
-      .then(data => setSlots(data.slots))
+      .then((data) => setSlots(data.slots))
       .finally(() => setLoading(false));
   }, [date, serviceId]);
 
@@ -221,11 +222,11 @@ function TimeSlotPicker({ date, serviceId }) {
         <p>Nenhum horário disponível nesta data</p>
       ) : (
         <div className="slot-grid">
-          {slots.map(slot => (
+          {slots.map((slot) => (
             <button key={slot} onClick={() => selectSlot(slot)}>
-              {new Date(slot).toLocaleTimeString('pt-BR', {
-                hour: '2-digit',
-                minute: '2-digit'
+              {new Date(slot).toLocaleTimeString("pt-BR", {
+                hour: "2-digit",
+                minute: "2-digit",
               })}
             </button>
           ))}
@@ -241,7 +242,7 @@ function TimeSlotPicker({ date, serviceId }) {
 ### Otimizações Implementadas
 
 1. **Query única**: Busca todos os agendamentos do dia em uma query
-2. **Algoritmo eficiente**: O(n*m) onde n=slots possíveis, m=agendamentos existentes
+2. **Algoritmo eficiente**: O(n\*m) onde n=slots possíveis, m=agendamentos existentes
 3. **Índices do banco**: `@@index([startsAt, endsAt])` no modelo Appointment
 4. **Cache de settings**: Configurações cacheadas por 1 minuto
 
@@ -256,6 +257,7 @@ function TimeSlotPicker({ date, serviceId }) {
 ### Horários Indisponíveis
 
 Um slot não aparece se:
+
 - Já existe agendamento naquele horário
 - Não respeita antecedência mínima
 - O serviço não caberia antes do fechamento

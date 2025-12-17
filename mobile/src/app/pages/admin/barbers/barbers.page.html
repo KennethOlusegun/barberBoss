@@ -7,9 +7,15 @@
   <ion-button routerLink="new">Cadastrar Barbeiro</ion-button>
   <ion-list *ngIf="!loading">
     <ion-item *ngFor="let barber of barbers">
-      <ion-label>{{ barber.name }}<br><small>{{ barber.email }}</small></ion-label>
-      <ion-button fill="clear" color="primary" (click)="editBarber(barber)">Editar</ion-button>
-      <ion-button fill="clear" color="danger" (click)="deleteBarber(barber)">Remover</ion-button>
+      <ion-label
+        >{{ barber.name }}<br /><small>{{ barber.email }}</small></ion-label
+      >
+      <ion-button fill="clear" color="primary" (click)="editBarber(barber)"
+        >Editar</ion-button
+      >
+      <ion-button fill="clear" color="danger" (click)="deleteBarber(barber)"
+        >Remover</ion-button
+      >
     </ion-item>
     <ion-item *ngIf="barbers.length === 0">
       <ion-label>Nenhum barbeiro cadastrado.</ion-label>

@@ -14,13 +14,13 @@ export interface Environment {
   api: {
     /**
      * Base URL for the backend API
-     * @example 'http://localhost:3000' | 'https://api.barberboss.com'
+     * @example 'http://192.168.0.8:3000' | 'https://api.barberboss.com'
      */
     baseUrl: string;
 
     /**
      * API version prefix
-    * @example ''
+     * @example ''
      */
     apiPrefix: string;
 

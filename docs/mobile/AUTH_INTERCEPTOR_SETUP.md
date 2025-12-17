@@ -9,13 +9,17 @@ Para que o `AuthInterceptor` funcione corretamente, ele precisa ser registrado n
 Edite o arquivo `src/app/app.config.ts`:
 
 ```typescript
-import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
-import { provideRouter } from '@angular/router';
-import { provideHttpClient, withInterceptors, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { provideIonicAngular } from '@ionic/angular/standalone';
+import { ApplicationConfig, provideZoneChangeDetection } from "@angular/core";
+import { provideRouter } from "@angular/router";
+import {
+  provideHttpClient,
+  withInterceptors,
+  HTTP_INTERCEPTORS,
+} from "@angular/common/http";
+import { provideIonicAngular } from "@ionic/angular/standalone";
 
-import { routes } from './app.routes';
-import { AuthInterceptor } from './core/interceptors/auth.interceptor';
+import { routes } from "./app.routes";
+import { AuthInterceptor } from "./core/interceptors/auth.interceptor";
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -37,14 +41,14 @@ export const appConfig: ApplicationConfig = {
 Se ainda estiver usando NgModule, edite o arquivo `src/app/app.module.ts`:
 
 ```typescript
-import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { IonicModule } from '@ionic/angular';
+import { NgModule } from "@angular/core";
+import { BrowserModule } from "@angular/platform-browser";
+import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
+import { IonicModule } from "@ionic/angular";
 
-import { AppComponent } from './app.component';
-import { AppRoutingModule } from './app-routing.module';
-import { AuthInterceptor } from './core/interceptors/auth.interceptor';
+import { AppComponent } from "./app.component";
+import { AppRoutingModule } from "./app-routing.module";
+import { AuthInterceptor } from "./core/interceptors/auth.interceptor";
 
 @NgModule({
   declarations: [AppComponent],
@@ -85,6 +89,7 @@ O header deve aparecer automaticamente em todas as requisições após o login.
 **Problema:** Token não aparece nas requisições.
 
 **Solução:**
+
 - Verifique se o interceptor está registrado corretamente
 - Certifique-se de que `HttpClientModule` ou `provideHttpClient()` está importado
 - Reinicie o servidor de desenvolvimento
@@ -110,10 +115,11 @@ providers: [
     useClass: ErrorInterceptor,
     multi: true,
   },
-]
+];
 ```
 
 Recomendação de ordem:
+
 1. Logging Interceptor (para debug)
 2. Auth Interceptor (adiciona token)
 3. Error Interceptor (trata erros)
@@ -127,20 +133,20 @@ Se precisar de rotas sem autenticação, você pode adicionar lógica no interce
 intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
   // Lista de URLs públicas
   const publicUrls = ['/auth/login', '/auth/register'];
-  
+
   // Verifica se é rota pública
   const isPublicUrl = publicUrls.some(url => request.url.includes(url));
-  
+
   if (isPublicUrl) {
     return next.handle(request);
   }
-  
+
   // Adiciona token apenas para rotas privadas
   const token = this.authService.getToken();
   if (token) {
     request = this.addTokenToRequest(request, token);
   }
-  
+
   return next.handle(request);
 }
 ```

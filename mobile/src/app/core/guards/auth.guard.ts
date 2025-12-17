@@ -1,5 +1,10 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
+import {
+  CanActivate,
+  ActivatedRouteSnapshot,
+  RouterStateSnapshot,
+  Router,
+} from '@angular/router';
 import { Observable } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 import { AuthService } from '../services/auth/auth.service';
@@ -24,12 +29,12 @@ import { AuthService } from '../services/auth/auth.service';
 export class AuthGuard implements CanActivate {
   constructor(
     private authService: AuthService,
-    private router: Router
+    private router: Router,
   ) {}
 
   canActivate(
     route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
+    state: RouterStateSnapshot,
   ): Observable<boolean> | Promise<boolean> | boolean {
     return this.authService.isAuthenticated$.pipe(
       take(1),
@@ -43,7 +48,7 @@ export class AuthGuard implements CanActivate {
           return false;
         }
         return true;
-      })
+      }),
     );
   }
 }

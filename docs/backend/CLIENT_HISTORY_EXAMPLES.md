@@ -5,6 +5,7 @@
 ### Setup Inicial
 
 Certifique-se de ter:
+
 1. Backend rodando na porta 3000
 2. Token JWT válido de um usuário ADMIN ou BARBER
 3. Alguns agendamentos cadastrados no sistema
@@ -117,12 +118,14 @@ curl -X GET "http://localhost:3000/appointments/client-history?clientName=João&
 ### 1. Nenhum Parâmetro Fornecido
 
 **Request:**
+
 ```bash
 curl -X GET "http://localhost:3000/appointments/client-history" \
   -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
 ```
 
 **Response:**
+
 ```json
 {
   "statusCode": 400,
@@ -134,11 +137,13 @@ curl -X GET "http://localhost:3000/appointments/client-history" \
 ### 2. Sem Token de Autenticação
 
 **Request:**
+
 ```bash
 curl -X GET "http://localhost:3000/appointments/client-history?clientName=João"
 ```
 
 **Response:**
+
 ```json
 {
   "statusCode": 401,
@@ -149,12 +154,14 @@ curl -X GET "http://localhost:3000/appointments/client-history?clientName=João"
 ### 3. Usuário Sem Permissão (CLIENT)
 
 **Request com token de usuário CLIENT:**
+
 ```bash
 curl -X GET "http://localhost:3000/appointments/client-history?clientName=João" \
   -H "Authorization: Bearer TOKEN_DE_CLIENTE"
 ```
 
 **Response:**
+
 ```json
 {
   "statusCode": 403,
@@ -177,26 +184,23 @@ interface ClientHistoryParams {
   limit?: number;
 }
 
-async function getClientHistory(
-  params: ClientHistoryParams,
-  token: string
-) {
+async function getClientHistory(params: ClientHistoryParams, token: string) {
   const searchParams = new URLSearchParams();
-  
-  if (params.clientName) searchParams.append('clientName', params.clientName);
-  if (params.phone) searchParams.append('phone', params.phone);
-  if (params.page) searchParams.append('page', params.page.toString());
-  if (params.limit) searchParams.append('limit', params.limit.toString());
+
+  if (params.clientName) searchParams.append("clientName", params.clientName);
+  if (params.phone) searchParams.append("phone", params.phone);
+  if (params.page) searchParams.append("page", params.page.toString());
+  if (params.limit) searchParams.append("limit", params.limit.toString());
 
   const response = await fetch(
     `http://localhost:3000/appointments/client-history?${searchParams}`,
     {
-      method: 'GET',
+      method: "GET",
       headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
       },
-    }
+    },
   );
 
   if (!response.ok) {
@@ -210,54 +214,61 @@ async function getClientHistory(
 // Uso
 try {
   const history = await getClientHistory(
-    { clientName: 'João', page: 1, limit: 10 },
-    'SEU_TOKEN_JWT'
+    { clientName: "João", page: 1, limit: 10 },
+    "SEU_TOKEN_JWT",
   );
-  
+
   console.log(`Total de agendamentos: ${history.meta.total}`);
-  console.log('Agendamentos:', history.data);
+  console.log("Agendamentos:", history.data);
 } catch (error) {
-  console.error('Erro:', error.message);
+  console.error("Erro:", error.message);
 }
 ```
 
 ### Exemplo com Axios
 
 ```typescript
-import axios from 'axios';
+import axios from "axios";
 
 const api = axios.create({
-  baseURL: 'http://localhost:3000',
+  baseURL: "http://localhost:3000",
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
 });
 
 // Adicionar token em todas as requisições
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem("token");
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
 });
 
-async function getClientHistory(clientName?: string, phone?: string, page = 1, limit = 10) {
+async function getClientHistory(
+  clientName?: string,
+  phone?: string,
+  page = 1,
+  limit = 10,
+) {
   try {
-    const response = await api.get('/appointments/client-history', {
+    const response = await api.get("/appointments/client-history", {
       params: { clientName, phone, page, limit },
     });
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      throw new Error(error.response?.data?.message || 'Erro ao buscar histórico');
+      throw new Error(
+        error.response?.data?.message || "Erro ao buscar histórico",
+      );
     }
     throw error;
   }
 }
 
 // Uso
-const history = await getClientHistory('João Silva');
+const history = await getClientHistory("João Silva");
 console.log(history);
 ```
 
@@ -357,18 +368,18 @@ console.log(history);
 interface ClientHistoryResponse {
   data: Appointment[];
   meta: {
-    total: number;      // Total de agendamentos encontrados
-    page: number;       // Página atual
-    limit: number;      // Itens por página
+    total: number; // Total de agendamentos encontrados
+    page: number; // Página atual
+    limit: number; // Itens por página
     totalPages: number; // Total de páginas
   };
 }
 
 interface Appointment {
   id: string;
-  startsAt: string;     // ISO 8601 format
-  endsAt: string;       // ISO 8601 format
-  status: 'PENDING' | 'CONFIRMED' | 'CANCELED' | 'COMPLETED' | 'NO_SHOW';
+  startsAt: string; // ISO 8601 format
+  endsAt: string; // ISO 8601 format
+  status: "PENDING" | "CONFIRMED" | "CANCELED" | "COMPLETED" | "NO_SHOW";
   userId: string | null;
   clientName: string | null;
   user?: {
@@ -395,20 +406,25 @@ function displayClientHistory(response: ClientHistoryResponse) {
   console.log(`Página ${response.meta.page} de ${response.meta.totalPages}\n`);
 
   response.data.forEach((appointment, index) => {
-    const clientName = appointment.user?.name || appointment.clientName || 'Cliente não identificado';
-    const phone = appointment.user?.phone || 'Telefone não disponível';
-    const date = new Date(appointment.startsAt).toLocaleDateString('pt-BR');
-    const time = new Date(appointment.startsAt).toLocaleTimeString('pt-BR', { 
-      hour: '2-digit', 
-      minute: '2-digit' 
+    const clientName =
+      appointment.user?.name ||
+      appointment.clientName ||
+      "Cliente não identificado";
+    const phone = appointment.user?.phone || "Telefone não disponível";
+    const date = new Date(appointment.startsAt).toLocaleDateString("pt-BR");
+    const time = new Date(appointment.startsAt).toLocaleTimeString("pt-BR", {
+      hour: "2-digit",
+      minute: "2-digit",
     });
 
     console.log(`${index + 1}. ${clientName}`);
     console.log(`   📞 ${phone}`);
     console.log(`   📅 ${date} às ${time}`);
-    console.log(`   ✂️  ${appointment.service.name} (R$ ${appointment.service.price})`);
+    console.log(
+      `   ✂️  ${appointment.service.name} (R$ ${appointment.service.price})`,
+    );
     console.log(`   📊 Status: ${appointment.status}`);
-    console.log('');
+    console.log("");
   });
 }
 ```
@@ -426,7 +442,7 @@ function displayClientHistory(response: ClientHistoryResponse) {
 // Exemplo de debounce
 function debounce<T extends (...args: any[]) => any>(
   func: T,
-  wait: number
+  wait: number,
 ): (...args: Parameters<T>) => void {
   let timeout: NodeJS.Timeout;
   return function executedFunction(...args: Parameters<T>) {
@@ -442,11 +458,11 @@ function debounce<T extends (...args: any[]) => any>(
 // Uso
 const debouncedSearch = debounce(
   (name: string) => getClientHistory({ clientName: name }),
-  500
+  500,
 );
 
 // Chamar ao digitar
-input.addEventListener('input', (e) => {
+input.addEventListener("input", (e) => {
   debouncedSearch(e.target.value);
 });
 ```

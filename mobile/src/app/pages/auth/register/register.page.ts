@@ -11,14 +11,14 @@ import { UserRole } from 'src/app/core/services/auth/auth.types';
   templateUrl: './register.page.html',
   styleUrls: ['./register.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule]
+  imports: [IonicModule, CommonModule, FormsModule],
 })
 export class RegisterPage {
   form = {
     name: '',
     email: '',
     password: '',
-    role: UserRole.CLIENT
+    role: UserRole.CLIENT,
   };
   submitted = false;
   loading = false;
@@ -26,15 +26,23 @@ export class RegisterPage {
   roles = [
     { label: 'Cliente', value: UserRole.CLIENT },
     { label: 'Barbeiro', value: UserRole.BARBER },
-    { label: 'Administrador', value: UserRole.ADMIN }
+    { label: 'Administrador', value: UserRole.ADMIN },
   ];
 
-  constructor(private router: Router, private authService: AuthService) {}
+  constructor(
+    private router: Router,
+    private authService: AuthService,
+  ) {}
 
   onSubmit(): void {
     this.submitted = true;
     this.errorMsg = '';
-    if (!this.form.name || !this.form.email || !this.form.password || this.form.password.length < 6) {
+    if (
+      !this.form.name ||
+      !this.form.email ||
+      !this.form.password ||
+      this.form.password.length < 6
+    ) {
       return;
     }
     this.loading = true;
@@ -48,9 +56,10 @@ export class RegisterPage {
       error: (err) => {
         this.loading = false;
         console.error('Erro ao cadastrar usuário:', err);
-        this.errorMsg = err?.error?.message || err?.message || 'Erro ao cadastrar usuário.';
+        this.errorMsg =
+          err?.error?.message || err?.message || 'Erro ao cadastrar usuário.';
         alert('Erro ao cadastrar usuário: ' + this.errorMsg);
-      }
+      },
     });
   }
 

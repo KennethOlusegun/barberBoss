@@ -3,6 +3,7 @@
 ## 📋 Visão Geral
 
 O módulo **TimeBlock** permite bloquear horários específicos para impedir agendamentos, útil para:
+
 - 🍽️ **Horários de almoço**
 - ☕ **Pausas/intervalos**
 - 🏖️ **Folgas e férias**
@@ -39,6 +40,7 @@ Permite criar bloqueios que se repetem em dias específicos da semana:
 ```
 
 **Dias da semana:**
+
 - `0` = Domingo
 - `1` = Segunda-feira
 - `2` = Terça-feira
@@ -82,6 +84,7 @@ curl -X POST http://localhost:3000/time-blocks \
 ```
 
 **Resposta (201):**
+
 ```json
 {
   "id": "uuid-do-bloqueio",
@@ -98,6 +101,7 @@ curl -X POST http://localhost:3000/time-blocks \
 ```
 
 **Validações:**
+
 - ✅ `startsAt` deve ser anterior a `endsAt`
 - ✅ Se `isRecurring` for `true`, `recurringDays` é obrigatório
 - ✅ `recurringDays` deve conter valores entre 0-6
@@ -113,6 +117,7 @@ curl http://localhost:3000/time-blocks
 ```
 
 **Resposta (200):**
+
 ```json
 [
   {
@@ -153,6 +158,7 @@ curl "http://localhost:3000/time-blocks/range?start=2025-01-10T08:00:00.000Z&end
 ```
 
 **Resposta (200):**
+
 ```json
 [
   {
@@ -168,6 +174,7 @@ curl "http://localhost:3000/time-blocks/range?start=2025-01-10T08:00:00.000Z&end
 ```
 
 **Nota:** Este endpoint retorna:
+
 - Bloqueios únicos que sobrepõem o período
 - Bloqueios recorrentes cujo dia da semana coincide com o período
 
@@ -182,6 +189,7 @@ curl http://localhost:3000/time-blocks/uuid-do-bloqueio
 ```
 
 **Resposta (200):**
+
 ```json
 {
   "id": "uuid-do-bloqueio",
@@ -198,6 +206,7 @@ curl http://localhost:3000/time-blocks/uuid-do-bloqueio
 ```
 
 **Resposta (404):**
+
 ```json
 {
   "statusCode": 404,
@@ -222,6 +231,7 @@ curl -X PATCH http://localhost:3000/time-blocks/uuid-do-bloqueio \
 ```
 
 **Campos atualizáveis:**
+
 - `type`
 - `reason`
 - `startsAt`
@@ -231,6 +241,7 @@ curl -X PATCH http://localhost:3000/time-blocks/uuid-do-bloqueio \
 - `active`
 
 **Resposta (200):**
+
 ```json
 {
   "id": "uuid-do-bloqueio",
@@ -257,6 +268,7 @@ curl -X DELETE http://localhost:3000/time-blocks/uuid-do-bloqueio \
 ```
 
 **Resposta (200):**
+
 ```json
 {
   "message": "Bloqueio de horário removido com sucesso"
@@ -277,13 +289,13 @@ Ao criar ou atualizar um agendamento, o sistema verifica automaticamente se há 
 // Em appointment.service.ts
 async create(createAppointmentDto: CreateAppointmentDto) {
   // ... validações de horário comercial ...
-  
+
   // Verifica se há bloqueio no horário
   const isBlocked = await this.timeBlockService.isBlocked(startsAt, endsAt);
   if (isBlocked) {
     throw new BadRequestException('Horário bloqueado');
   }
-  
+
   // ... criar agendamento ...
 }
 ```
@@ -295,8 +307,8 @@ O endpoint `/appointments/available-slots/search` automaticamente remove horári
 ```typescript
 // Slots disponíveis já excluem bloqueios
 const availableSlots = await appointmentService.getAvailableSlots({
-  date: '2025-01-10',
-  serviceId: 'uuid-servico'
+  date: "2025-01-10",
+  serviceId: "uuid-servico",
 });
 ```
 
@@ -372,7 +384,7 @@ model TimeBlock {
   isRecurring   Boolean  @default(false)
   recurringDays Int[]    @default([]) // [0-6] = Domingo a Sábado
   active        Boolean  @default(true)
-  
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -382,14 +394,14 @@ model TimeBlock {
 
 ## 🔐 Permissões
 
-| Endpoint | Método | Público | ADMIN | BARBER | CLIENT |
-|----------|--------|---------|-------|--------|--------|
-| `/time-blocks` | POST | ❌ | ✅ | ❌ | ❌ |
-| `/time-blocks` | GET | ✅ | ✅ | ✅ | ✅ |
-| `/time-blocks/range` | GET | ✅ | ✅ | ✅ | ✅ |
-| `/time-blocks/:id` | GET | ✅ | ✅ | ✅ | ✅ |
-| `/time-blocks/:id` | PATCH | ❌ | ✅ | ❌ | ❌ |
-| `/time-blocks/:id` | DELETE | ❌ | ✅ | ❌ | ❌ |
+| Endpoint             | Método | Público | ADMIN | BARBER | CLIENT |
+| -------------------- | ------ | ------- | ----- | ------ | ------ |
+| `/time-blocks`       | POST   | ❌      | ✅    | ❌     | ❌     |
+| `/time-blocks`       | GET    | ✅      | ✅    | ✅     | ✅     |
+| `/time-blocks/range` | GET    | ✅      | ✅    | ✅     | ✅     |
+| `/time-blocks/:id`   | GET    | ✅      | ✅    | ✅     | ✅     |
+| `/time-blocks/:id`   | PATCH  | ❌      | ✅    | ❌     | ❌     |
+| `/time-blocks/:id`   | DELETE | ❌      | ✅    | ❌     | ❌     |
 
 ---
 

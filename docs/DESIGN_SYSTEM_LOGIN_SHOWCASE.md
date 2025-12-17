@@ -9,9 +9,10 @@ A página de login do **BarberBoss** foi redesenhada seguindo rigorosamente o De
 ## 🎨 Componentes Implementados
 
 ### 1. **Header com Logo Premium**
+
 ```scss
 // Gradiente azul com efeito glow
-background: linear-gradient(135deg, #3B82F6 0%, rgba(59, 130, 246, 0.8) 100%);
+background: linear-gradient(135deg, #3b82f6 0%, rgba(59, 130, 246, 0.8) 100%);
 box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
 
 // Animação ao carregar
@@ -19,6 +20,7 @@ animation: slide-up 600ms ease-out;
 ```
 
 **Características:**
+
 - ✅ Logo dentro de card com classe `.barber-card`
 - ✅ Título com `.barber-header--decorated` (ícone tesoura ✂)
 - ✅ Efeito hover com elevação (-5px)
@@ -27,22 +29,24 @@ animation: slide-up 600ms ease-out;
 ---
 
 ### 2. **Inputs com Estilo Moderno**
+
 ```scss
 // Base
-background-color: #1E293B; // $barber-slate-grey
+background-color: #1e293b; // $barber-slate-grey
 border-radius: 8px;
 border: 2px solid transparent;
 
 // Focus State (Blue)
-border-color: #3B82F6;
+border-color: #3b82f6;
 box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 
 // Invalid State (Red)
-border-color: #EF4444;
+border-color: #ef4444;
 box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
 ```
 
 **Aplicados aos campos:**
+
 - 📧 Email com ícone de envelope
 - 🔐 Senha com toggle de visibilidade
 - Ícones mudam de cor ao focar (grey → blue)
@@ -51,6 +55,7 @@ box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
 ---
 
 ### 3. **Botão "Entrar" com Glow Effect**
+
 ```scss
 // Classes aplicadas
 .login-btn + .glow-fab
@@ -65,6 +70,7 @@ transform: translateY(-2px);
 ```
 
 **Estados:**
+
 - ✅ Normal: glow subtle
 - ✅ Hover: glow aumentado + elevação
 - ✅ Active: glow reduzido + sem elevação
@@ -73,6 +79,7 @@ transform: translateY(-2px);
 ---
 
 ### 4. **Alerta de Erro com Status Line**
+
 ```scss
 // Classes aplicadas
 .error-box + .status-line + .status-line--danger
@@ -84,6 +91,7 @@ Linha vermelha 3px no lado esquerdo
 ```
 
 **Exibe quando:**
+
 - Credenciais inválidas
 - Erro de conexão
 - Com animação `slide-up`
@@ -91,21 +99,23 @@ Linha vermelha 3px no lado esquerdo
 ---
 
 ### 5. **Tipografia**
+
 ```scss
 // Títulos (Oswald)
-font-family: 'Oswald', sans-serif;
+font-family: "Oswald", sans-serif;
 font-weight: 700;
 text-transform: uppercase;
 letter-spacing: 1px;
-color: #FFFFFF;
+color: #ffffff;
 
 // Corpo (Inter)
-font-family: 'Inter', sans-serif;
+font-family: "Inter", sans-serif;
 font-weight: 400;
-color: #94A3B8;
+color: #94a3b8;
 ```
 
 **Escala:**
+
 - H1: 3rem (mobile: 1.5rem) ← Título "BARBERBOSS"
 - Labels: 1.125rem
 - Body: 1rem
@@ -114,13 +124,14 @@ color: #94A3B8;
 ---
 
 ### 6. **Link "Esqueceu a Senha?"**
+
 ```scss
 .forgot-password-btn {
-  --color: #3B82F6;
+  --color: #3b82f6;
   font-weight: 600;
-  
+
   &:hover {
-    --color: #4F8CFF;
+    --color: #4f8cff;
     text-decoration: underline;
   }
 }
@@ -129,6 +140,7 @@ color: #94A3B8;
 ---
 
 ### 7. **Divider "ou"**
+
 ```scss
 // Duas linhas cinzas + texto centralizado
 border-top: rgba(148, 163, 184, 0.2) - 1px
@@ -138,10 +150,11 @@ color: #94A3B8
 ---
 
 ### 8. **Botão "Criar uma conta"**
+
 ```scss
 .register-btn {
-  --border-color: #3B82F6;
-  --color: #3B82F6;
+  --border-color: #3b82f6;
+  --color: #3b82f6;
   border: 2px solid;
   background: outline;
 }
@@ -154,17 +167,18 @@ box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
 ---
 
 ### 9. **Footer com Links**
+
 ```scss
 // Texto pequeno cinzento
 font-size: 0.875rem;
-color: #94A3B8;
+color: #94a3b8;
 
 // Links azuis com underline no hover
-color: #3B82F6;
+color: #3b82f6;
 text-decoration: none;
 
 &:hover {
-  color: #4F8CFF;
+  color: #4f8cff;
   text-decoration: underline;
 }
 ```
@@ -174,6 +188,7 @@ text-decoration: none;
 ## 🎬 Animações
 
 ### Slide Up Staggered
+
 ```scss
 @keyframes slide-up {
   from {
@@ -196,14 +211,14 @@ text-decoration: none;
 
 ## 🎨 Paleta de Cores
 
-| Nome | Código | Uso |
-|------|--------|-----|
-| Midnight Navy | `#0B1120` | Background principal |
-| Slate Grey | `#1E293B` | Cards, inputs, containers |
-| Royal Blue | `#3B82F6` | Primary, buttons, accents |
-| Vintage Red | `#EF4444` | Danger, errors, alerts |
-| Branco Puro | `#FFFFFF` | Headings, textos importantes |
-| Cinza Aço | `#94A3B8` | Body text, placeholders |
+| Nome          | Código    | Uso                          |
+| ------------- | --------- | ---------------------------- |
+| Midnight Navy | `#0B1120` | Background principal         |
+| Slate Grey    | `#1E293B` | Cards, inputs, containers    |
+| Royal Blue    | `#3B82F6` | Primary, buttons, accents    |
+| Vintage Red   | `#EF4444` | Danger, errors, alerts       |
+| Branco Puro   | `#FFFFFF` | Headings, textos importantes |
+| Cinza Aço     | `#94A3B8` | Body text, placeholders      |
 
 ---
 
@@ -229,9 +244,10 @@ FAB: padrão
 ## 📱 Responsividade
 
 ### Breakpoints Implementados
+
 - **Desktop**: Full width
 - **Tablet (768px)**: Padding reduzido
-- **Mobile (480px)**: 
+- **Mobile (480px)**:
   - Fonte reduzida
   - Logo: 80px × 80px (vs 100px)
   - Gaps: 1rem (vs 1.5rem)
@@ -260,11 +276,13 @@ FAB: padrão
 ## 🚀 Como Utilizar em Outras Pages
 
 1. **Importe as variáveis:**
+
 ```scss
-@import '../../theme/variables.scss';
+@import "../../theme/variables.scss";
 ```
 
 2. **Use as classes utilitárias:**
+
 ```html
 <div class="barber-card barber-card--primary">
   <h2 class="barber-header">Título</h2>
@@ -273,6 +291,7 @@ FAB: padrão
 ```
 
 3. **Reutilize as variáveis SCSS:**
+
 ```scss
 background-color: $barber-slate-grey;
 box-shadow: $shadow-glow-primary;
@@ -312,4 +331,4 @@ border-radius: $border-radius-lg;
 ---
 
 **Design System v1.0 - BarberBoss**
-*Modern Classic: Dark Mode Premium com Estética Clássica de Barbearia*
+_Modern Classic: Dark Mode Premium com Estética Clássica de Barbearia_

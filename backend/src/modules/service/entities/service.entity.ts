@@ -6,6 +6,7 @@ export class Service implements PrismaService {
   description: string | null;
   price: Prisma.Decimal; // Prisma Decimal type
   durationMin: number;
+  barberCommission: Prisma.Decimal | null;
   active: boolean;
   createdAt: Date;
   updatedAt: Date;

@@ -5,6 +5,7 @@
 ### ✨ Implementado
 
 #### Interceptors Core
+
 - ✅ **TimeoutInterceptor** - Gerenciamento de timeout para requisições HTTP
 - ✅ **LoadingInterceptor** - Indicador de carregamento automático
 - ✅ **AuthInterceptor** - Autenticação JWT e refresh de token
@@ -14,17 +15,20 @@
 - ✅ **ErrorInterceptor** - Tratamento global de erros HTTP
 
 #### Serviços
+
 - ✅ **LoadingService** - Serviço para gerenciar estados de loading
   - Integração com Ionic LoadingController
   - Controle de múltiplas requisições simultâneas
   - API Observable para monitoramento de estado
 
 #### Configuração
+
 - ✅ **api.providers.ts** - Provider function para configurar todos os interceptors
 - ✅ **main.ts** - Configuração automática dos interceptors na aplicação
 - ✅ Ordem otimizada de execução dos interceptors
 
 #### Documentação
+
 - ✅ **HTTP_INTERCEPTORS.md** - Documentação completa e detalhada
 - ✅ **README.md** - Guia rápido de referência
 - ✅ **interceptor-usage.service.ts** - Exemplos práticos de uso
@@ -33,12 +37,14 @@
 #### Funcionalidades
 
 ##### TimeoutInterceptor
+
 - Timeout padrão configurável (30s)
 - Header `X-Timeout` para timeout customizado
 - Header `X-Skip-Timeout` para desabilitar
 - Tratamento de TimeoutError com código 408
 
 ##### LoadingInterceptor
+
 - Loading automático para todas as requisições
 - Suporte a múltiplas requisições simultâneas
 - Header `X-Skip-Loading` para operações em background
@@ -46,6 +52,7 @@
 - Contadores de requisições ativas
 
 ##### AuthInterceptor
+
 - Adição automática de token JWT
 - Refresh automático de token em 401
 - Fila de requisições durante refresh
@@ -53,6 +60,7 @@
 - Prevenção de múltiplos refresh simultâneos
 
 ##### LoggingInterceptor
+
 - Logs detalhados de requests/responses
 - Ativo apenas em modo desenvolvimento
 - Medição de duração das requisições
@@ -60,6 +68,7 @@
 - Headers, body e status visíveis
 
 ##### RetryInterceptor
+
 - Retry automático com backoff exponencial
 - 3 tentativas por padrão
 - Delay inicial de 1 segundo
@@ -67,6 +76,7 @@
 - Headers `X-Retry-Count`, `X-Retry-Delay`, `X-Skip-Retry`
 
 ##### CachingInterceptor
+
 - Cache automático de requisições GET
 - Duração padrão de 5 minutos
 - Cache em memória
@@ -74,6 +84,7 @@
 - Métodos para limpar cache (total ou específico)
 
 ##### ErrorInterceptor
+
 - Tratamento global de erros HTTP
 - Redirecionamento automático em 401
 - Mensagens de erro por código de status
@@ -81,6 +92,7 @@
 - Logging de erros detalhado
 
 #### Testes
+
 - ✅ Testes unitários para cada interceptor
 - ✅ Testes de integração entre interceptors
 - ✅ Testes com HttpClientTestingModule
@@ -89,16 +101,16 @@
 
 ### 📝 Headers Customizados
 
-| Header | Interceptor | Tipo | Descrição |
-|--------|-------------|------|-----------|
-| `X-Timeout` | Timeout | number | Timeout em ms |
-| `X-Skip-Timeout` | Timeout | 'true' | Desabilita timeout |
-| `X-Skip-Loading` | Loading | 'true' | Desabilita loading |
-| `X-Loading-Message` | Loading | string | Mensagem customizada |
-| `X-Retry-Count` | Retry | number | Número de tentativas |
-| `X-Retry-Delay` | Retry | number | Delay inicial em ms |
-| `X-Skip-Retry` | Retry | 'true' | Desabilita retry |
-| `X-Cache-Duration` | Caching | number/'none' | Duração do cache |
+| Header              | Interceptor | Tipo          | Descrição            |
+| ------------------- | ----------- | ------------- | -------------------- |
+| `X-Timeout`         | Timeout     | number        | Timeout em ms        |
+| `X-Skip-Timeout`    | Timeout     | 'true'        | Desabilita timeout   |
+| `X-Skip-Loading`    | Loading     | 'true'        | Desabilita loading   |
+| `X-Loading-Message` | Loading     | string        | Mensagem customizada |
+| `X-Retry-Count`     | Retry       | number        | Número de tentativas |
+| `X-Retry-Delay`     | Retry       | number        | Delay inicial em ms  |
+| `X-Skip-Retry`      | Retry       | 'true'        | Desabilita retry     |
+| `X-Cache-Duration`  | Caching     | number/'none' | Duração do cache     |
 
 ### 📂 Estrutura de Arquivos
 
@@ -176,13 +188,15 @@ A implementação já está ativa! Todos os interceptors são aplicados automati
 Para customizar o comportamento, use os headers apropriados:
 
 ```typescript
-this.http.get('/api/data', {
-  headers: {
-    'X-Skip-Loading': 'true',
-    'X-Cache-Duration': '600000',
-    'X-Timeout': '10000'
-  }
-}).subscribe();
+this.http
+  .get("/api/data", {
+    headers: {
+      "X-Skip-Loading": "true",
+      "X-Cache-Duration": "600000",
+      "X-Timeout": "10000",
+    },
+  })
+  .subscribe();
 ```
 
 ### 📚 Recursos Adicionais

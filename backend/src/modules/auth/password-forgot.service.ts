@@ -42,9 +42,9 @@ export class PasswordForgotService {
   }
 
   async resetPassword(dto: PasswordResetDto) {
-    let payload: any;
+    let payload: { userId: string };
     try {
-      payload = this.jwtService.verify(dto.token);
+      payload = this.jwtService.verify<{ userId: string }>(dto.token);
     } catch {
       throw new BadRequestException('Token inválido ou expirado');
     }

@@ -47,7 +47,8 @@ describe('StorageService', () => {
       await service.set('test.key', 'test value', { ttl });
 
       expect(Preferences.set).toHaveBeenCalled();
-      const callArgs = (Preferences.set as jasmine.Spy).calls.mostRecent().args[0];
+      const callArgs = (Preferences.set as jasmine.Spy).calls.mostRecent()
+        .args[0];
       const storedData = JSON.parse(callArgs.value);
 
       expect(storedData.expiresAt).toBeDefined();
@@ -64,7 +65,8 @@ describe('StorageService', () => {
       await service.set('user.data', complexObject);
 
       expect(Preferences.set).toHaveBeenCalled();
-      const callArgs = (Preferences.set as jasmine.Spy).calls.mostRecent().args[0];
+      const callArgs = (Preferences.set as jasmine.Spy).calls.mostRecent()
+        .args[0];
       const storedData = JSON.parse(callArgs.value);
 
       expect(storedData.value).toEqual(complexObject);
@@ -72,11 +74,11 @@ describe('StorageService', () => {
 
     it('should handle errors gracefully', async () => {
       (Preferences.set as jasmine.Spy).and.returnValue(
-        Promise.reject(new Error('Storage error'))
+        Promise.reject(new Error('Storage error')),
       );
 
       await expectAsync(service.set('test.key', 'value')).toBeRejectedWithError(
-        'Storage error'
+        'Storage error',
       );
     });
   });
@@ -88,7 +90,7 @@ describe('StorageService', () => {
         timestamp: Date.now(),
       };
       (Preferences.get as jasmine.Spy).and.returnValue(
-        Promise.resolve({ value: JSON.stringify(storedData) })
+        Promise.resolve({ value: JSON.stringify(storedData) }),
       );
 
       const result = await service.get('test.key');
@@ -99,7 +101,7 @@ describe('StorageService', () => {
 
     it('should return null for non-existent keys', async () => {
       (Preferences.get as jasmine.Spy).and.returnValue(
-        Promise.resolve({ value: null })
+        Promise.resolve({ value: null }),
       );
 
       const result = await service.get('non.existent');
@@ -114,7 +116,7 @@ describe('StorageService', () => {
         expiresAt: Date.now() - 5000, // Expired 5 seconds ago
       };
       (Preferences.get as jasmine.Spy).and.returnValue(
-        Promise.resolve({ value: JSON.stringify(storedData) })
+        Promise.resolve({ value: JSON.stringify(storedData) }),
       );
 
       const result = await service.get('expired.key');
@@ -130,7 +132,7 @@ describe('StorageService', () => {
         expiresAt: Date.now() + 10000, // Expires in 10 seconds
       };
       (Preferences.get as jasmine.Spy).and.returnValue(
-        Promise.resolve({ value: JSON.stringify(storedData) })
+        Promise.resolve({ value: JSON.stringify(storedData) }),
       );
 
       const result = await service.get('valid.key');
@@ -149,7 +151,7 @@ describe('StorageService', () => {
         timestamp: Date.now(),
       };
       (Preferences.get as jasmine.Spy).and.returnValue(
-        Promise.resolve({ value: JSON.stringify(storedData) })
+        Promise.resolve({ value: JSON.stringify(storedData) }),
       );
 
       const result = await service.get('user.data');
@@ -159,7 +161,7 @@ describe('StorageService', () => {
 
     it('should handle JSON parse errors', async () => {
       (Preferences.get as jasmine.Spy).and.returnValue(
-        Promise.resolve({ value: 'invalid json' })
+        Promise.resolve({ value: 'invalid json' }),
       );
 
       const result = await service.get('invalid.key');
@@ -199,7 +201,7 @@ describe('StorageService', () => {
         timestamp: Date.now(),
       };
       (Preferences.get as jasmine.Spy).and.returnValue(
-        Promise.resolve({ value: JSON.stringify(storedData) })
+        Promise.resolve({ value: JSON.stringify(storedData) }),
       );
 
       const result = await service.has('test.key');
@@ -209,7 +211,7 @@ describe('StorageService', () => {
 
     it('should return false if key does not exist', async () => {
       (Preferences.get as jasmine.Spy).and.returnValue(
-        Promise.resolve({ value: null })
+        Promise.resolve({ value: null }),
       );
 
       const result = await service.has('non.existent');
@@ -224,7 +226,7 @@ describe('StorageService', () => {
         expiresAt: Date.now() - 1000,
       };
       (Preferences.get as jasmine.Spy).and.returnValue(
-        Promise.resolve({ value: JSON.stringify(storedData) })
+        Promise.resolve({ value: JSON.stringify(storedData) }),
       );
 
       const result = await service.has('expired.key');
@@ -237,7 +239,7 @@ describe('StorageService', () => {
     it('should return all storage keys', async () => {
       const mockKeys = ['key1', 'key2', 'key3'];
       (Preferences.keys as jasmine.Spy).and.returnValue(
-        Promise.resolve({ keys: mockKeys })
+        Promise.resolve({ keys: mockKeys }),
       );
 
       const result = await service.keys();
@@ -247,7 +249,7 @@ describe('StorageService', () => {
 
     it('should return empty array on error', async () => {
       (Preferences.keys as jasmine.Spy).and.returnValue(
-        Promise.reject(new Error('Keys error'))
+        Promise.reject(new Error('Keys error')),
       );
 
       const result = await service.keys();
@@ -260,7 +262,7 @@ describe('StorageService', () => {
     it('should return storage statistics', async () => {
       const mockKeys = ['key1', 'key2'];
       (Preferences.keys as jasmine.Spy).and.returnValue(
-        Promise.resolve({ keys: mockKeys })
+        Promise.resolve({ keys: mockKeys }),
       );
 
       let callCount = 0;
@@ -281,7 +283,7 @@ describe('StorageService', () => {
     it('should remove all items with matching prefix', async () => {
       const allKeys = ['cache.user', 'cache.posts', 'settings.theme'];
       (Preferences.keys as jasmine.Spy).and.returnValue(
-        Promise.resolve({ keys: allKeys })
+        Promise.resolve({ keys: allKeys }),
       );
 
       await service.removeByPrefix('cache.');
@@ -300,7 +302,7 @@ describe('StorageService', () => {
         expiresAt: 9876543210,
       };
       (Preferences.get as jasmine.Spy).and.returnValue(
-        Promise.resolve({ value: JSON.stringify(storedData) })
+        Promise.resolve({ value: JSON.stringify(storedData) }),
       );
 
       const result = await service.getRaw('test.key');
@@ -310,7 +312,7 @@ describe('StorageService', () => {
 
     it('should return null for non-existent keys', async () => {
       (Preferences.get as jasmine.Spy).and.returnValue(
-        Promise.resolve({ value: null })
+        Promise.resolve({ value: null }),
       );
 
       const result = await service.getRaw('non.existent');
@@ -327,7 +329,7 @@ describe('StorageService', () => {
         expiresAt: Date.now() + 10000,
       };
       (Preferences.get as jasmine.Spy).and.returnValue(
-        Promise.resolve({ value: JSON.stringify(storedData) })
+        Promise.resolve({ value: JSON.stringify(storedData) }),
       );
 
       const result = await service.isExpired('test.key');
@@ -342,7 +344,7 @@ describe('StorageService', () => {
         expiresAt: Date.now() - 1000,
       };
       (Preferences.get as jasmine.Spy).and.returnValue(
-        Promise.resolve({ value: JSON.stringify(storedData) })
+        Promise.resolve({ value: JSON.stringify(storedData) }),
       );
 
       const result = await service.isExpired('test.key');
@@ -356,7 +358,7 @@ describe('StorageService', () => {
         timestamp: Date.now(),
       };
       (Preferences.get as jasmine.Spy).and.returnValue(
-        Promise.resolve({ value: JSON.stringify(storedData) })
+        Promise.resolve({ value: JSON.stringify(storedData) }),
       );
 
       const result = await service.isExpired('test.key');
@@ -366,7 +368,7 @@ describe('StorageService', () => {
 
     it('should return true for non-existent data', async () => {
       (Preferences.get as jasmine.Spy).and.returnValue(
-        Promise.resolve({ value: null })
+        Promise.resolve({ value: null }),
       );
 
       const result = await service.isExpired('non.existent');
@@ -382,13 +384,14 @@ describe('StorageService', () => {
         timestamp: Date.now(),
       };
       (Preferences.get as jasmine.Spy).and.returnValue(
-        Promise.resolve({ value: JSON.stringify(storedData) })
+        Promise.resolve({ value: JSON.stringify(storedData) }),
       );
 
       await service.refreshTTL('test.key', 5000);
 
       expect(Preferences.set).toHaveBeenCalled();
-      const callArgs = (Preferences.set as jasmine.Spy).calls.mostRecent().args[0];
+      const callArgs = (Preferences.set as jasmine.Spy).calls.mostRecent()
+        .args[0];
       const newStoredData = JSON.parse(callArgs.value);
 
       expect(newStoredData.expiresAt).toBeDefined();
@@ -396,24 +399,25 @@ describe('StorageService', () => {
 
     it('should not throw error for non-existent keys', async () => {
       (Preferences.get as jasmine.Spy).and.returnValue(
-        Promise.resolve({ value: null })
+        Promise.resolve({ value: null }),
       );
 
-      await expectAsync(service.refreshTTL('non.existent', 5000)).toBeResolved();
+      await expectAsync(
+        service.refreshTTL('non.existent', 5000),
+      ).toBeResolved();
     });
   });
 
   describe('initialize', () => {
     it('should initialize without errors', async () => {
       (Preferences.get as jasmine.Spy).and.returnValue(
-        Promise.resolve({ value: null })
+        Promise.resolve({ value: null }),
       );
       (Preferences.keys as jasmine.Spy).and.returnValue(
-        Promise.resolve({ keys: [] })
+        Promise.resolve({ keys: [] }),
       );
 
       await expectAsync(service.initialize()).toBeResolved();
     });
   });
 });
-

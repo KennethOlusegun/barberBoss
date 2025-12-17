@@ -8,8 +8,8 @@ import { RouterModule } from '@angular/router';
   imports: [
     CommonModule,
     IonicModule,
-    RouterModule.forChild([{ path: '', component: DashboardPage }])
+    RouterModule.forChild([{ path: '', component: DashboardPage }]),
   ],
-  declarations: [DashboardPage]
+  declarations: [DashboardPage],
 })
 export class DashboardPageModule {}

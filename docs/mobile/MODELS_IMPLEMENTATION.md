@@ -7,12 +7,14 @@ Todos os Models e Interfaces foram implementados com sucesso para o aplicativo m
 ## 📦 Arquivos Criados
 
 ### Enums (src/app/core/enums/)
+
 - ✅ `role.enum.ts` - Enum de papéis de usuário
 - ✅ `appointment-status.enum.ts` - Enum de status de agendamento
 - ✅ `block-type.enum.ts` - Enum de tipos de bloqueio
 - ✅ `index.ts` - Barrel export
 
 ### Interfaces (src/app/core/interfaces/)
+
 - ✅ `user.interface.ts` - Interfaces de User e DTOs
 - ✅ `service.interface.ts` - Interfaces de Service e DTOs
 - ✅ `appointment.interface.ts` - Interfaces de Appointment e DTOs
@@ -21,6 +23,7 @@ Todos os Models e Interfaces foram implementados com sucesso para o aplicativo m
 - ✅ `index.ts` - Barrel export
 
 ### Models (src/app/core/models/)
+
 - ✅ `user.model.ts` - Model de User com métodos utilitários
 - ✅ `service.model.ts` - Model de Service com métodos utilitários
 - ✅ `appointment.model.ts` - Model de Appointment com métodos utilitários
@@ -29,26 +32,31 @@ Todos os Models e Interfaces foram implementados com sucesso para o aplicativo m
 - ✅ `index.ts` - Barrel export
 
 ### Types (src/app/core/types/)
+
 - ✅ `common.types.ts` - Tipos comuns e utilitários
 - ✅ `index.ts` - Barrel export
 
 ### Documentation (docs/mobile/)
+
 - ✅ `MODELS_INTERFACES.md` - Documentação completa com exemplos
 
 ## 🎯 Funcionalidades
 
 ### User Model
+
 - Verificação de roles (isAdmin, isBarber, isClient)
 - Formatação de nome e iniciais
 - Suporte completo a DTOs de login e registro
 
 ### Service Model
+
 - Formatação de preço (R$ XX,XX)
 - Formatação de duração (Xh XXmin)
 - Cálculo de horário de término
 - Verificação de disponibilidade
 
 ### Appointment Model
+
 - Formatação de data e horário
 - Verificação de status
 - Validações de edição/cancelamento
@@ -56,12 +64,14 @@ Todos os Models e Interfaces foram implementados com sucesso para o aplicativo m
 - Cálculo de duração
 
 ### Settings Model
+
 - Gerenciamento de horários comerciais
 - Validação de dias úteis
 - Cálculo de datas permitidas
 - Verificação de horários disponíveis
 
 ### TimeBlock Model
+
 - Suporte a bloqueios recorrentes
 - Verificação de sobreposição
 - Formatação de intervalos
@@ -88,15 +98,27 @@ Todos os Models e Interfaces foram implementados com sucesso para o aplicativo m
 ## 💡 Como Usar
 
 ### Importação
+
 ```typescript
-import { 
-  User, Service, Appointment, Settings, TimeBlock,
-  IUser, IService, IAppointment, ISettings, ITimeBlock,
-  Role, AppointmentStatus, BlockType
-} from '@app/core';
+import {
+  User,
+  Service,
+  Appointment,
+  Settings,
+  TimeBlock,
+  IUser,
+  IService,
+  IAppointment,
+  ISettings,
+  ITimeBlock,
+  Role,
+  AppointmentStatus,
+  BlockType,
+} from "@app/core";
 ```
 
 ### Exemplo de Uso
+
 ```typescript
 // Criar instância do model
 const appointment = new Appointment(data);

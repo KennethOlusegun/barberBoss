@@ -8,5 +8,5 @@ export enum BlockType {
   BREAK = 'BREAK',
   DAY_OFF = 'DAY_OFF',
   VACATION = 'VACATION',
-  CUSTOM = 'CUSTOM'
+  CUSTOM = 'CUSTOM',
 }

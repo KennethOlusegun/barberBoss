@@ -1,3 +1,84 @@
 <ion-app>
-  <ion-router-outlet></ion-router-outlet>
+  <!-- Sidebar Rail (Mobile Drawer) -->
+  <ion-menu
+    side="start"
+    menuId="main-menu"
+    contentId="main-content"
+    type="overlay"
+    class="app-rail"
+  >
+    <ion-content>
+      <ion-list lines="none">
+        <ion-menu-toggle auto-hide="false" *ngFor="let p of appPages">
+          <ion-item
+            [routerLink]="p.url"
+            routerDirection="root"
+            [class.active]="selectedPath === p.url"
+            button
+          >
+            <mat-icon>{{ p.icon }}</mat-icon>
+          </ion-item>
+        </ion-menu-toggle>
+      </ion-list>
+    </ion-content>
+  </ion-menu>
+
+  <div class="app-shell">
+    <!-- Sidebar Rail (Desktop Only) -->
+    <nav class="rail-desktop">
+      <ul>
+        <li *ngFor="let p of appPages" [class.active]="selectedPath === p.url">
+          <a [routerLink]="p.url">
+            <mat-icon>{{ p.icon }}</mat-icon>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="main-content" id="main-content">
+      <!-- Header -->
+      <ion-header class="app-header">
+        <ion-toolbar>
+          <!-- Hamburger for mobile -->
+          <ion-buttons slot="start" class="show-mobile">
+            <ion-menu-button autoHide="false"></ion-menu-button>
+          </ion-buttons>
+
+          <!-- Search Bar -->
+          <div class="search-container">
+            <ion-searchbar placeholder="Buscar..." animated></ion-searchbar>
+          </div>
+
+          <!-- Right Icons -->
+          <ion-buttons slot="end">
+            <ion-button>
+              <mat-icon>notifications_none</mat-icon>
+            </ion-button>
+            <ion-button>
+              <ion-avatar>
+                <img src="assets/avatar.png" alt="Perfil" />
+              </ion-avatar>
+            </ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+
+      <!-- Page Content -->
+      <ion-content>
+        <router-outlet></router-outlet>
+        <!-- FAB -->
+        <ion-fab
+          *ngIf="showFab"
+          slot="fixed"
+          vertical="bottom"
+          horizontal="end"
+          class="main-fab"
+        >
+          <ion-fab-button (click)="onFabClick()">
+            <mat-icon>add</mat-icon>
+          </ion-fab-button>
+        </ion-fab>
+      </ion-content>
+    </div>
+  </div>
 </ion-app>

@@ -1,5 +1,8 @@
 import { TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import {
+  HttpClientTestingModule,
+  HttpTestingController,
+} from '@angular/common/http/testing';
 import { HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
 import { TimeoutInterceptor } from './timeout.interceptor';
 import { LoadingInterceptor } from './loading.interceptor';
@@ -102,7 +105,9 @@ describe('LoadingInterceptor', () => {
 
     httpClient = TestBed.inject(HttpClient);
     httpMock = TestBed.inject(HttpTestingController);
-    loadingService = TestBed.inject(LoadingService) as jasmine.SpyObj<LoadingService>;
+    loadingService = TestBed.inject(
+      LoadingService,
+    ) as jasmine.SpyObj<LoadingService>;
   });
 
   afterEach(() => {
@@ -200,7 +205,10 @@ describe('RetryInterceptor', () => {
     for (let i = 0; i < 4; i++) {
       const req = httpMock.expectOne('/api/test');
       attemptCount++;
-      req.flush('Server error', { status: 500, statusText: 'Internal Server Error' });
+      req.flush('Server error', {
+        status: 500,
+        statusText: 'Internal Server Error',
+      });
     }
   });
 
@@ -235,7 +243,10 @@ describe('RetryInterceptor', () => {
 
     const req = httpMock.expectOne('/api/test');
     attemptCount++;
-    req.flush('Server error', { status: 500, statusText: 'Internal Server Error' });
+    req.flush('Server error', {
+      status: 500,
+      statusText: 'Internal Server Error',
+    });
   });
 });
 

@@ -22,12 +22,12 @@ GET /appointments/client-history
 
 ## Parâmetros de Query
 
-| Parâmetro | Tipo | Obrigatório | Descrição |
-|-----------|------|-------------|-----------|
-| `clientName` | string | Condicional* | Nome do cliente (busca parcial, case-insensitive) |
-| `phone` | string | Condicional* | Telefone do cliente |
-| `page` | number | Não | Número da página (padrão: 1) |
-| `limit` | number | Não | Itens por página (padrão: 10) |
+| Parâmetro    | Tipo   | Obrigatório   | Descrição                                         |
+| ------------ | ------ | ------------- | ------------------------------------------------- |
+| `clientName` | string | Condicional\* | Nome do cliente (busca parcial, case-insensitive) |
+| `phone`      | string | Condicional\* | Telefone do cliente                               |
+| `page`       | number | Não           | Número da página (padrão: 1)                      |
+| `limit`      | number | Não           | Itens por página (padrão: 10)                     |
 
 \* **Pelo menos um dos parâmetros** (`clientName` ou `phone`) **deve ser fornecido**.
 
@@ -163,6 +163,7 @@ A busca por nome é **case-insensitive** e aceita **correspondências parciais**
 ### 2. Busca em Múltiplas Fontes
 
 A busca por nome verifica:
+
 - Campo `clientName` do agendamento (para clientes sem cadastro)
 - Campo `user.name` (para clientes cadastrados no sistema)
 
@@ -196,21 +197,21 @@ async function getClientHistory(clientName: string, page = 1, limit = 10) {
     `http://localhost:3000/appointments/client-history?${params}`,
     {
       headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
       },
-    }
+    },
   );
 
   if (!response.ok) {
-    throw new Error('Erro ao buscar histórico do cliente');
+    throw new Error("Erro ao buscar histórico do cliente");
   }
 
   return await response.json();
 }
 
 // Uso
-const history = await getClientHistory('João Silva', 1, 20);
+const history = await getClientHistory("João Silva", 1, 20);
 console.log(`Total de agendamentos: ${history.meta.total}`);
 ```
 
@@ -260,34 +261,34 @@ GET /appointments/client-history?clientName=João&phone=119876
 
 ### Appointment
 
-| Campo | Tipo | Descrição |
-|-------|------|-----------|
-| `id` | string (UUID) | ID único do agendamento |
-| `startsAt` | DateTime (ISO 8601) | Data/hora de início |
-| `endsAt` | DateTime (ISO 8601) | Data/hora de término |
-| `status` | enum | Status do agendamento (PENDING, CONFIRMED, CANCELED, COMPLETED, NO_SHOW) |
-| `userId` | string (UUID) \| null | ID do usuário cadastrado (se aplicável) |
-| `clientName` | string \| null | Nome do cliente (para agendamentos manuais) |
-| `service` | object | Detalhes do serviço realizado |
-| `user` | object \| null | Dados do cliente (se cadastrado) |
+| Campo        | Tipo                  | Descrição                                                                |
+| ------------ | --------------------- | ------------------------------------------------------------------------ |
+| `id`         | string (UUID)         | ID único do agendamento                                                  |
+| `startsAt`   | DateTime (ISO 8601)   | Data/hora de início                                                      |
+| `endsAt`     | DateTime (ISO 8601)   | Data/hora de término                                                     |
+| `status`     | enum                  | Status do agendamento (PENDING, CONFIRMED, CANCELED, COMPLETED, NO_SHOW) |
+| `userId`     | string (UUID) \| null | ID do usuário cadastrado (se aplicável)                                  |
+| `clientName` | string \| null        | Nome do cliente (para agendamentos manuais)                              |
+| `service`    | object                | Detalhes do serviço realizado                                            |
+| `user`       | object \| null        | Dados do cliente (se cadastrado)                                         |
 
 ### Service (nested)
 
-| Campo | Tipo | Descrição |
-|-------|------|-----------|
-| `id` | string (UUID) | ID do serviço |
-| `name` | string | Nome do serviço |
-| `price` | Decimal | Preço do serviço |
-| `durationMin` | number | Duração em minutos |
+| Campo         | Tipo          | Descrição          |
+| ------------- | ------------- | ------------------ |
+| `id`          | string (UUID) | ID do serviço      |
+| `name`        | string        | Nome do serviço    |
+| `price`       | Decimal       | Preço do serviço   |
+| `durationMin` | number        | Duração em minutos |
 
 ### User (nested)
 
-| Campo | Tipo | Descrição |
-|-------|------|-----------|
-| `id` | string (UUID) | ID do usuário |
-| `name` | string | Nome completo |
-| `email` | string | Email |
-| `phone` | string \| null | Telefone |
+| Campo   | Tipo           | Descrição     |
+| ------- | -------------- | ------------- |
+| `id`    | string (UUID)  | ID do usuário |
+| `name`  | string         | Nome completo |
+| `email` | string         | Email         |
+| `phone` | string \| null | Telefone      |
 
 ## Próximas Melhorias Sugeridas
 

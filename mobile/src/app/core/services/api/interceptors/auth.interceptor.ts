@@ -18,7 +18,10 @@ import { ConfigService } from '../../config.service';
 export class AuthInterceptor implements HttpInterceptor {
   constructor(private configService: ConfigService) {}
 
-  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+  intercept(
+    req: HttpRequest<any>,
+    next: HttpHandler,
+  ): Observable<HttpEvent<any>> {
     // Check if request is to our API
     const apiBaseUrl = this.configService.getApiBaseUrl();
     if (!req.url.startsWith(apiBaseUrl)) {

@@ -262,13 +262,17 @@ export class ExampleInterceptorUsageService {
    * - No retry (batch should be atomic)
    */
   batchUpdate(items: any[]): Observable<any> {
-    return this.http.post(`${this.apiUrl}/batch`, { items }, {
-      headers: {
-        'X-Loading-Message': `Atualizando ${items.length} itens...`,
-        'X-Timeout': '180000', // 3 minutes
-        'X-Skip-Retry': 'true',
+    return this.http.post(
+      `${this.apiUrl}/batch`,
+      { items },
+      {
+        headers: {
+          'X-Loading-Message': `Atualizando ${items.length} itens...`,
+          'X-Timeout': '180000', // 3 minutes
+          'X-Skip-Retry': 'true',
+        },
       },
-    });
+    );
   }
 
   /**

@@ -7,7 +7,6 @@
 // 1. IMPORTAÇÕES DO GOOGLE FONTS
 // ============================================================================
 
-
 // Google Fonts devem ser importadas no index.html ou via @layer (não via @import no Sass)
 // Exemplo para index.html:
 // <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -18,12 +17,12 @@
 // ============================================================================
 
 // Cores Base - Dark Mode Premium
-$barber-midnight-navy: #0B1120;
-$barber-slate-grey: #1E293B;
-$barber-royal-blue: #3B82F6;
-$barber-vintage-red: #EF4444;
-$barber-white-pure: #FFFFFF;
-$barber-grey-steel: #94A3B8;
+$barber-midnight-navy: #0b1120;
+$barber-slate-grey: #1e293b;
+$barber-royal-blue: #3b82f6;
+$barber-vintage-red: #ef4444;
+$barber-white-pure: #ffffff;
+$barber-grey-steel: #94a3b8;
 
 // ============================================================================
 // 3. SOBRESCRITA DAS VARIÁVEIS DO IONIC (CSS Variables)
@@ -38,40 +37,40 @@ $barber-grey-steel: #94A3B8;
   --ion-color-primary-rgb: 59, 130, 246;
   --ion-color-primary-contrast: #{$barber-white-pure};
   --ion-color-primary-contrast-rgb: 255, 255, 255;
-  --ion-color-primary-shade: #3367D6;
-  --ion-color-primary-tint: #4F8CFF;
+  --ion-color-primary-shade: #3367d6;
+  --ion-color-primary-tint: #4f8cff;
 
   // Cores Secundárias (Danger/Red)
   --ion-color-secondary: #{$barber-vintage-red};
   --ion-color-secondary-rgb: 239, 68, 68;
   --ion-color-secondary-contrast: #{$barber-white-pure};
   --ion-color-secondary-contrast-rgb: 255, 255, 255;
-  --ion-color-secondary-shade: #D63D3D;
-  --ion-color-secondary-tint: #F15555;
+  --ion-color-secondary-shade: #d63d3d;
+  --ion-color-secondary-tint: #f15555;
 
   // Cor de Perigo
   --ion-color-danger: #{$barber-vintage-red};
   --ion-color-danger-rgb: 239, 68, 68;
   --ion-color-danger-contrast: #{$barber-white-pure};
   --ion-color-danger-contrast-rgb: 255, 255, 255;
-  --ion-color-danger-shade: #D63D3D;
-  --ion-color-danger-tint: #F15555;
+  --ion-color-danger-shade: #d63d3d;
+  --ion-color-danger-tint: #f15555;
 
   // Cor de Sucesso (Verde Sutil)
-  --ion-color-success: #10B981;
+  --ion-color-success: #10b981;
   --ion-color-success-rgb: 16, 185, 129;
   --ion-color-success-contrast: #{$barber-white-pure};
   --ion-color-success-contrast-rgb: 255, 255, 255;
-  --ion-color-success-shade: #0D9E71;
-  --ion-color-success-tint: #28C68E;
+  --ion-color-success-shade: #0d9e71;
+  --ion-color-success-tint: #28c68e;
 
   // Cor de Aviso (Amarelo Sutil)
-  --ion-color-warning: #F59E0B;
+  --ion-color-warning: #f59e0b;
   --ion-color-warning-rgb: 245, 158, 11;
   --ion-color-warning-contrast: #{$barber-midnight-navy};
   --ion-color-warning-contrast-rgb: 11, 17, 32;
-  --ion-color-warning-shade: #DC860D;
-  --ion-color-warning-tint: #F7A623;
+  --ion-color-warning-shade: #dc860d;
+  --ion-color-warning-tint: #f7a623;
 
   // Cores de Background
   --ion-background-color: #{$barber-midnight-navy};
@@ -85,14 +84,14 @@ $barber-grey-steel: #94A3B8;
   --ion-text-color: #{$barber-grey-steel};
   --ion-text-color-rgb: 148, 163, 184;
   --ion-text-color-step-50: #{$barber-slate-grey};
-  --ion-text-color-step-100: #3F4A61;
-  --ion-text-color-step-150: #4A5474;
+  --ion-text-color-step-100: #3f4a61;
+  --ion-text-color-step-150: #4a5474;
   --ion-text-color-step-200: #556084;
-  --ion-text-color-step-250: #626A97;
-  --ion-text-color-step-300: #6D74AA;
-  --ion-text-color-step-350: #7A7FBD;
-  --ion-text-color-step-400: #8A89D0;
-  --ion-text-color-step-450: #9A92E3;
+  --ion-text-color-step-250: #626a97;
+  --ion-text-color-step-300: #6d74aa;
+  --ion-text-color-step-350: #7a7fbd;
+  --ion-text-color-step-400: #8a89d0;
+  --ion-text-color-step-450: #9a92e3;
   --ion-text-color-step-500: #{$barber-white-pure};
   --ion-text-color-step-550: #{$barber-white-pure};
   --ion-text-color-step-600: #{$barber-white-pure};
@@ -108,12 +107,17 @@ $barber-grey-steel: #94A3B8;
   --ion-border-color: #{$barber-slate-grey};
 
   // Font Family (Inter como principal)
-  --ion-font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  --ion-font-family:
+    "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", sans-serif;
 
   // Sombras Customizadas
-  --ion-box-shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-  --ion-box-shadow-medium: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
-  --ion-box-shadow-elevation: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+  --ion-box-shadow-subtle:
+    0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  --ion-box-shadow-medium:
+    0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  --ion-box-shadow-elevation:
+    0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
 }
 
 // ============================================================================
@@ -121,8 +125,13 @@ $barber-grey-steel: #94A3B8;
 // ============================================================================
 
 // Headings - Oswald (Condensed, Bold, Uppercase)
-h1, h2, h3, h4, h5, h6 {
-  font-family: 'Oswald', sans-serif;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Oswald", sans-serif;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -173,8 +182,17 @@ h6 {
 }
 
 // Body Text - Inter (Clean, Modern)
-body, p, span {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+body,
+p,
+span {
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    "Helvetica Neue",
+    sans-serif;
   font-weight: 400;
   color: #{$barber-grey-steel};
 }
@@ -221,9 +239,15 @@ $transition-slow: 500ms ease-in-out;
 
 // Sombras (Box Shadow)
 $shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-$shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
-$shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
-$shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+$shadow-sm:
+  0 1px 3px 0 rgba(0, 0, 0, 0.1),
+  0 1px 2px -1px rgba(0, 0, 0, 0.1);
+$shadow-md:
+  0 4px 6px -1px rgba(0, 0, 0, 0.1),
+  0 2px 4px -2px rgba(0, 0, 0, 0.1);
+$shadow-lg:
+  0 10px 15px -3px rgba(0, 0, 0, 0.1),
+  0 4px 6px -4px rgba(0, 0, 0, 0.1);
 $shadow-glow-primary: 0 4px 15px rgba(59, 130, 246, 0.4);
 $shadow-glow-danger: 0 4px 15px rgba(239, 68, 68, 0.4);
 

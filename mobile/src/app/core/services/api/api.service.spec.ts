@@ -1,5 +1,8 @@
 import { TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import {
+  HttpClientTestingModule,
+  HttpTestingController,
+} from '@angular/common/http/testing';
 import { ApiService } from './api.service';
 import { ConfigService } from '../config.service';
 import { ApiErrorCode } from './api.types';
@@ -19,10 +22,7 @@ describe('ApiService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      providers: [
-        ApiService,
-        { provide: ConfigService, useValue: mockConfig },
-      ],
+      providers: [ApiService, { provide: ConfigService, useValue: mockConfig }],
     });
 
     service = TestBed.inject(ApiService);
@@ -52,11 +52,11 @@ describe('ApiService', () => {
       req.flush(mockData);
     });
 
-      it('should include query parameters', () => { 
+    it('should include query parameters', () => {
       service.get('/users', { params: { page: 1, limit: 10 } }).subscribe();
 
       const req = httpMock.expectOne(
-        'http://localhost:3000/api/users?page=1&limit=10'
+        'http://localhost:3000/api/users?page=1&limit=10',
       );
       expect(req.request.method).toBe('GET');
       req.flush([]);
@@ -86,7 +86,9 @@ describe('ApiService', () => {
       service.get('/users', { requiresAuth: true }).subscribe();
 
       const req = httpMock.expectOne('http://localhost:3000/api/users');
-      expect(req.request.headers.get('Authorization')).toBe('Bearer test-token');
+      expect(req.request.headers.get('Authorization')).toBe(
+        'Bearer test-token',
+      );
       req.flush([]);
     });
 
@@ -111,7 +113,10 @@ describe('ApiService', () => {
       });
 
       const req = httpMock.expectOne('http://localhost:3000/api/users/999');
-      req.flush({ message: 'Not found' }, { status: 404, statusText: 'Not Found' });
+      req.flush(
+        { message: 'Not found' },
+        { status: 404, statusText: 'Not Found' },
+      );
     });
 
     it('should handle network errors', () => {
@@ -154,7 +159,9 @@ describe('ApiService', () => {
         search: 'test',
       });
 
-        expect(url).toBe('http://localhost:3000/api/users?page=1&limit=10&search=test');
+      expect(url).toBe(
+        'http://localhost:3000/api/users?page=1&limit=10&search=test',
+      );
     });
 
     it('should handle null and undefined parameters', () => {

@@ -23,13 +23,21 @@ export class TimeBlock {
     this.id = data.id;
     this.type = data.type as BlockType;
     this.reason = data.reason;
-    this.startsAt = data.startsAt instanceof Date ? data.startsAt : new Date(data.startsAt);
-    this.endsAt = data.endsAt instanceof Date ? data.endsAt : new Date(data.endsAt);
+    this.startsAt =
+      data.startsAt instanceof Date ? data.startsAt : new Date(data.startsAt);
+    this.endsAt =
+      data.endsAt instanceof Date ? data.endsAt : new Date(data.endsAt);
     this.isRecurring = data.isRecurring ?? false;
     this.recurringDays = data.recurringDays || [];
     this.active = data.active ?? true;
-    this.createdAt = data.createdAt instanceof Date ? data.createdAt : new Date(data.createdAt);
-    this.updatedAt = data.updatedAt instanceof Date ? data.updatedAt : new Date(data.updatedAt);
+    this.createdAt =
+      data.createdAt instanceof Date
+        ? data.createdAt
+        : new Date(data.createdAt);
+    this.updatedAt =
+      data.updatedAt instanceof Date
+        ? data.updatedAt
+        : new Date(data.updatedAt);
   }
 
   /**
@@ -56,12 +64,12 @@ export class TimeBlock {
     const startDate = this.startsAt.toLocaleDateString('pt-BR', {
       day: '2-digit',
       month: '2-digit',
-      year: 'numeric'
+      year: 'numeric',
     });
     const endDate = this.endsAt.toLocaleDateString('pt-BR', {
       day: '2-digit',
       month: '2-digit',
-      year: 'numeric'
+      year: 'numeric',
     });
 
     if (startDate === endDate) {
@@ -76,11 +84,11 @@ export class TimeBlock {
   getFormattedTimeRange(): string {
     const startTime = this.startsAt.toLocaleTimeString('pt-BR', {
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
     });
     const endTime = this.endsAt.toLocaleTimeString('pt-BR', {
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
     });
     return `${startTime} - ${endTime}`;
   }
@@ -89,9 +97,7 @@ export class TimeBlock {
    * Get recurring days labels
    */
   getRecurringDaysLabels(): string[] {
-    return this.recurringDays
-      .sort()
-      .map(day => WORKING_DAY_LABELS[day]);
+    return this.recurringDays.sort().map((day) => WORKING_DAY_LABELS[day]);
   }
 
   /**
@@ -160,7 +166,9 @@ export class TimeBlock {
    * Get duration in minutes
    */
   getDurationMinutes(): number {
-    return Math.round((this.endsAt.getTime() - this.startsAt.getTime()) / 60000);
+    return Math.round(
+      (this.endsAt.getTime() - this.startsAt.getTime()) / 60000,
+    );
   }
 
   /**
@@ -172,7 +180,7 @@ export class TimeBlock {
       [BlockType.BREAK]: 'medium',
       [BlockType.DAY_OFF]: 'primary',
       [BlockType.VACATION]: 'success',
-      [BlockType.CUSTOM]: 'tertiary'
+      [BlockType.CUSTOM]: 'tertiary',
     };
     return colors[this.type] || 'medium';
   }

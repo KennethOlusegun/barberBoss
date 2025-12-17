@@ -3,6 +3,7 @@
 ## ✅ Arquivos Criados
 
 ### Core Service
+
 - **api.service.ts** - Serviço base de API com métodos HTTP (GET, POST, PUT, PATCH, DELETE)
 - **api.service.spec.ts** - Testes unitários do serviço
 - **api.types.ts** - Interfaces e tipos TypeScript
@@ -11,6 +12,7 @@
 - **index.ts** - Barrel export para o módulo API
 
 ### Interceptors
+
 - **auth.interceptor.ts** - Adiciona token de autenticação automaticamente
 - **error.interceptor.ts** - Tratamento global de erros HTTP
 - **logging.interceptor.ts** - Logs de requisições em desenvolvimento
@@ -20,6 +22,7 @@
 - **timeout.interceptor.ts** - Timeout configurável
 
 ### Documentação e Exemplos
+
 - **README.md** - Documentação completa com exemplos de uso
 - **examples/user.service.example.ts** - Exemplo de serviço específico
 - **examples/component.example.ts** - Exemplo de uso em componente
@@ -52,6 +55,7 @@ mobile/src/app/core/services/api/
 ## 🚀 Funcionalidades Implementadas
 
 ### 1. Serviço Base (ApiService)
+
 - ✅ Métodos HTTP completos (GET, POST, PUT, PATCH, DELETE)
 - ✅ Configuração automática de base URL via ConfigService
 - ✅ Timeout configurável por requisição
@@ -63,6 +67,7 @@ mobile/src/app/core/services/api/
 - ✅ Extração inteligente de dados de resposta
 
 ### 2. Sistema de Tipos
+
 - ✅ `ApiRequestOptions` - Opções de requisição
 - ✅ `ApiResponse<T>` - Wrapper de resposta
 - ✅ `PaginatedResponse<T>` - Resposta paginada
@@ -71,6 +76,7 @@ mobile/src/app/core/services/api/
 - ✅ `HttpMethod` - Enum de métodos HTTP
 
 ### 3. Interceptors HTTP
+
 - ✅ **AuthInterceptor** - Injeção automática de token JWT
 - ✅ **ErrorInterceptor** - Tratamento global de erros
 - ✅ **LoggingInterceptor** - Logs detalhados em desenvolvimento
@@ -80,6 +86,7 @@ mobile/src/app/core/services/api/
 - ✅ **TimeoutInterceptor** - Timeout configurável
 
 ### 4. Tratamento de Erros
+
 - ✅ Códigos de erro padronizados
 - ✅ Mensagens de erro personalizáveis
 - ✅ Handler de erro customizado por requisição
@@ -87,6 +94,7 @@ mobile/src/app/core/services/api/
 - ✅ Retry inteligente em erros específicos
 
 ### 5. Configuração
+
 - ✅ Integração com ConfigService
 - ✅ Configurações de timeout, retry, cache
 - ✅ Endpoints predefinidos (API_ENDPOINTS)
@@ -95,38 +103,41 @@ mobile/src/app/core/services/api/
 ## 📖 Como Usar
 
 ### 1. Configurar Providers (app.config.ts)
+
 ```typescript
-import { provideApiHttpClient } from './core/services/api';
+import { provideApiHttpClient } from "./core/services/api";
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideApiHttpClient(),
     // ... outros providers
-  ]
+  ],
 };
 ```
 
 ### 2. Criar Serviços Específicos
+
 ```typescript
-@Injectable({ providedIn: 'root' })
+@Injectable({ providedIn: "root" })
 export class UserService {
   constructor(private apiService: ApiService) {}
-  
+
   getUsers(): Observable<User[]> {
-    return this.apiService.get<User[]>('/users');
+    return this.apiService.get<User[]>("/users");
   }
 }
 ```
 
 ### 3. Usar nos Componentes
+
 ```typescript
 export class MyComponent {
   constructor(private userService: UserService) {}
-  
+
   loadData() {
     this.userService.getUsers().subscribe({
       next: (users) => console.log(users),
-      error: (error: ApiError) => this.handleError(error)
+      error: (error: ApiError) => this.handleError(error),
     });
   }
 }

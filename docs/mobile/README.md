@@ -16,6 +16,7 @@ Aplicativo mobile híbrido construído com Ionic e Angular para clientes e barbe
 ## 📚 Documentação
 
 ### Configuração e Setup
+
 - [Environment Configuration](./ENVIRONMENT_CONFIGURATION.md) - Configuração de ambientes
 - [Environment Complete Guide](./ENVIRONMENT_COMPLETE.md) - Guia completo de variáveis
 - [Environment Quickstart](./ENVIRONMENT_QUICKSTART.md) - Início rápido
@@ -26,21 +27,25 @@ Aplicativo mobile híbrido construído com Ionic e Angular para clientes e barbe
 - [Environment Implementation Summary](./ENVIRONMENT_IMPLEMENTATION_SUMMARY.md) - Resumo da implementação
 
 ### Serviços Core
+
 - [API Service](./API_SERVICE.md) - Serviço HTTP de comunicação com backend
 - [API Implementation Summary](./API_IMPLEMENTATION_SUMMARY.md) - Resumo da implementação da API
 - [Storage Service](./STORAGE_SERVICE.md) - Serviço de armazenamento local
 - [Auth Service](./AUTH_SERVICE.md) - Serviço de autenticação
 
 ### HTTP e Interceptors
+
 - [HTTP Interceptors](./HTTP_INTERCEPTORS.md) - Sistema completo de interceptors
 - [HTTP Interceptors Changelog](./HTTP_INTERCEPTORS_CHANGELOG.md) - Histórico de mudanças
 - [Auth Interceptor Setup](./AUTH_INTERCEPTOR_SETUP.md) - Configuração do interceptor de auth
 
 ### Models e Interfaces
+
 - [Models & Interfaces](./MODELS_INTERFACES.md) - Documentação completa de models
 - [Models Implementation](./MODELS_IMPLEMENTATION.md) - Resumo da implementação
 
 ### Exemplos
+
 - [Examples](./EXAMPLES.md) - Componentes de exemplo e demos
 
 ## 🚀 Começando
@@ -64,24 +69,26 @@ npm install
 Configure as variáveis de ambiente em `src/environments/`:
 
 **environment.ts** (Desenvolvimento)
+
 ```typescript
 export const environment = {
   production: false,
   api: {
-    baseUrl: 'http://localhost:3000',
-    timeout: 30000
-  }
+    baseUrl: "http://localhost:3000",
+    timeout: 30000,
+  },
 };
 ```
 
 **environment.prod.ts** (Produção)
+
 ```typescript
 export const environment = {
   production: true,
   api: {
-    baseUrl: 'https://api.barberboss.com',
-    timeout: 30000
-  }
+    baseUrl: "https://api.barberboss.com",
+    timeout: 30000,
+  },
 };
 ```
 
@@ -148,6 +155,7 @@ ionic cap open ios
 ## 🔐 Autenticação
 
 O app usa autenticação JWT com refresh token automático. Veja:
+
 - [Auth Service](./AUTH_SERVICE.md) - Implementação do serviço de auth
 - [Auth Interceptor](./AUTH_INTERCEPTOR_SETUP.md) - Configuração do interceptor
 

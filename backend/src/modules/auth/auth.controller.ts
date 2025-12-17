@@ -81,6 +81,10 @@ export class AuthController {
   })
   @ApiResponse({ status: 401, description: 'Email ou senha inválidos' })
   async login(@Body() loginDto: LoginDto) {
+    console.log('[LOGIN] Dados recebidos do front:', {
+      email: loginDto.email,
+      password: loginDto.password,
+    });
     return this.authService.login(loginDto.email, loginDto.password);
   }
 

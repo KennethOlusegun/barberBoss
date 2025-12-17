@@ -58,5 +58,5 @@ export const WORKING_DAY_LABELS: Record<number, string> = {
   3: 'Quarta',
   4: 'Quinta',
   5: 'Sexta',
-  6: 'Sábado'
+  6: 'Sábado',
 };

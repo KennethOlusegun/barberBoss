@@ -1,8 +1,18 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  ReactiveFormsModule,
+  FormsModule,
+} from '@angular/forms';
 import { ApiService } from 'src/app/core/services/api/api.service';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { ToastController, LoadingController, IonicModule } from '@ionic/angular';
+import {
+  ToastController,
+  LoadingController,
+  IonicModule,
+} from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -10,7 +20,7 @@ import { CommonModule } from '@angular/common';
   templateUrl: './profile.page.html',
   styleUrls: ['./profile.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, ReactiveFormsModule, FormsModule]
+  imports: [IonicModule, CommonModule, ReactiveFormsModule, FormsModule],
 })
 export class ProfilePage implements OnInit {
   profileForm: FormGroup;
@@ -22,12 +32,12 @@ export class ProfilePage implements OnInit {
     private apiService: ApiService,
     private authService: AuthService,
     private toastCtrl: ToastController,
-    private loadingCtrl: LoadingController
+    private loadingCtrl: LoadingController,
   ) {
     this.profileForm = this.fb.group({
       name: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      phone: ['']
+      phone: [''],
     });
   }
 
@@ -38,9 +48,9 @@ export class ProfilePage implements OnInit {
         this.profileForm.patchValue({
           name: user.name,
           email: user.email,
-          phone: user.phone || ''
+          phone: user.phone || '',
         });
-      }
+      },
     });
   }
 
@@ -50,17 +60,27 @@ export class ProfilePage implements OnInit {
     const loading = await this.loadingCtrl.create({ message: 'Salvando...' });
     await loading.present();
     const payload = { ...this.profileForm.value };
-    this.apiService.patch(`/users/${this.userId}`, payload, { requiresAuth: true }).subscribe({
-      next: async () => {
-        await loading.dismiss();
-        const toast = await this.toastCtrl.create({ message: 'Perfil atualizado!', color: 'success', duration: 2000 });
-        toast.present();
-      },
-      error: async () => {
-        await loading.dismiss();
-        const toast = await this.toastCtrl.create({ message: 'Erro ao atualizar perfil', color: 'danger', duration: 2000 });
-        toast.present();
-      }
-    });
+    this.apiService
+      .patch(`/users/${this.userId}`, payload, { requiresAuth: true })
+      .subscribe({
+        next: async () => {
+          await loading.dismiss();
+          const toast = await this.toastCtrl.create({
+            message: 'Perfil atualizado!',
+            color: 'success',
+            duration: 2000,
+          });
+          toast.present();
+        },
+        error: async () => {
+          await loading.dismiss();
+          const toast = await this.toastCtrl.create({
+            message: 'Erro ao atualizar perfil',
+            color: 'danger',
+            duration: 2000,
+          });
+          toast.present();
+        },
+      });
   }
 }

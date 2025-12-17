@@ -3,6 +3,7 @@
 Este arquivo contém exemplos práticos de como usar os endpoints paginados da API.
 
 ## Base URL
+
 ```
 http://localhost:3000
 ```
@@ -10,11 +11,13 @@ http://localhost:3000
 ## 1. Usuários
 
 ### Listar todos os usuários (página 1, padrão)
+
 ```bash
 curl http://localhost:3000/users
 ```
 
 ### Listar usuários com paginação personalizada
+
 ```bash
 # Página 2 com 20 itens
 curl "http://localhost:3000/users?page=2&limit=20"
@@ -24,6 +27,7 @@ curl "http://localhost:3000/users?page=1&limit=5"
 ```
 
 ### Buscar usuário específico por ID
+
 ```bash
 curl http://localhost:3000/users/{uuid}
 ```
@@ -31,11 +35,13 @@ curl http://localhost:3000/users/{uuid}
 ## 2. Serviços
 
 ### Listar todos os serviços ativos (página 1, padrão)
+
 ```bash
 curl http://localhost:3000/services
 ```
 
 ### Listar serviços com paginação personalizada
+
 ```bash
 # Página 1 com 15 itens
 curl "http://localhost:3000/services?page=1&limit=15"
@@ -45,6 +51,7 @@ curl "http://localhost:3000/services?page=3&limit=10"
 ```
 
 ### Buscar serviço específico por ID
+
 ```bash
 curl http://localhost:3000/services/{uuid}
 ```
@@ -52,17 +59,20 @@ curl http://localhost:3000/services/{uuid}
 ## 3. Agendamentos
 
 ### Listar todos os agendamentos (página 1, padrão)
+
 ```bash
 curl http://localhost:3000/appointments
 ```
 
 ### Listar agendamentos com paginação
+
 ```bash
 # Página 2 com 15 itens
 curl "http://localhost:3000/appointments?page=2&limit=15"
 ```
 
 ### Filtrar agendamentos por data com paginação
+
 ```bash
 # Agendamentos do dia 15/01/2024
 curl "http://localhost:3000/appointments?date=2024-01-15&page=1&limit=20"
@@ -72,6 +82,7 @@ curl "http://localhost:3000/appointments?date=$(date -I)&page=1&limit=10"
 ```
 
 ### Filtrar agendamentos por usuário com paginação
+
 ```bash
 # Todos os agendamentos de um usuário específico
 curl "http://localhost:3000/appointments?userId={uuid}&page=1&limit=10"
@@ -81,6 +92,7 @@ curl "http://localhost:3000/appointments?userId={uuid}&page=2&limit=10"
 ```
 
 ### Filtrar agendamentos por status com paginação
+
 ```bash
 # Agendamentos confirmados
 curl "http://localhost:3000/appointments?status=CONFIRMED&page=1&limit=20"
@@ -93,6 +105,7 @@ curl "http://localhost:3000/appointments?status=COMPLETED&page=1&limit=15"
 ```
 
 ### Buscar agendamento específico por ID
+
 ```bash
 curl http://localhost:3000/appointments/{uuid}
 ```
@@ -100,27 +113,29 @@ curl http://localhost:3000/appointments/{uuid}
 ## 4. Exemplos com JavaScript/Fetch
 
 ### Função genérica para buscar dados paginados
+
 ```javascript
 async function fetchPaginated(endpoint, page = 1, limit = 10, filters = {}) {
   const params = new URLSearchParams({
     page: page.toString(),
     limit: limit.toString(),
-    ...filters
+    ...filters,
   });
-  
+
   const response = await fetch(`http://localhost:3000/${endpoint}?${params}`);
   return await response.json();
 }
 
 // Usar a função
-const users = await fetchPaginated('users', 1, 20);
-const services = await fetchPaginated('services', 2, 15);
-const appointments = await fetchPaginated('appointments', 1, 10, { 
-  date: '2024-01-15' 
+const users = await fetchPaginated("users", 1, 20);
+const services = await fetchPaginated("services", 2, 15);
+const appointments = await fetchPaginated("appointments", 1, 10, {
+  date: "2024-01-15",
 });
 ```
 
 ### Navegar entre páginas
+
 ```javascript
 class PaginationHelper {
   constructor(endpoint, limit = 10) {
@@ -132,13 +147,13 @@ class PaginationHelper {
 
   async fetch(page = this.currentPage) {
     const response = await fetch(
-      `http://localhost:3000/${this.endpoint}?page=${page}&limit=${this.limit}`
+      `http://localhost:3000/${this.endpoint}?page=${page}&limit=${this.limit}`,
     );
     const data = await response.json();
-    
+
     this.currentPage = data.meta.currentPage;
     this.meta = data.meta;
-    
+
     return data;
   }
 
@@ -162,7 +177,7 @@ class PaginationHelper {
 }
 
 // Usar o helper
-const usersPagination = new PaginationHelper('users', 20);
+const usersPagination = new PaginationHelper("users", 20);
 
 // Buscar primeira página
 const firstPage = await usersPagination.fetch();
@@ -179,8 +194,9 @@ const backToFirst = await usersPagination.previous();
 ## 5. Exemplos com React
 
 ### Hook personalizado para paginação
+
 ```javascript
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 function usePagination(endpoint, limit = 10, filters = {}) {
   const [data, setData] = useState([]);
@@ -193,20 +209,20 @@ function usePagination(endpoint, limit = 10, filters = {}) {
     const fetchData = async () => {
       setLoading(true);
       setError(null);
-      
+
       try {
         const params = new URLSearchParams({
           page: currentPage.toString(),
           limit: limit.toString(),
-          ...filters
+          ...filters,
         });
-        
+
         const response = await fetch(
-          `http://localhost:3000/${endpoint}?${params}`
+          `http://localhost:3000/${endpoint}?${params}`,
         );
-        
-        if (!response.ok) throw new Error('Erro ao buscar dados');
-        
+
+        if (!response.ok) throw new Error("Erro ao buscar dados");
+
         const result = await response.json();
         setData(result.data);
         setMeta(result.meta);
@@ -222,13 +238,13 @@ function usePagination(endpoint, limit = 10, filters = {}) {
 
   const nextPage = () => {
     if (meta?.hasNextPage) {
-      setCurrentPage(prev => prev + 1);
+      setCurrentPage((prev) => prev + 1);
     }
   };
 
   const previousPage = () => {
     if (meta?.hasPreviousPage) {
-      setCurrentPage(prev => prev - 1);
+      setCurrentPage((prev) => prev - 1);
     }
   };
 
@@ -244,20 +260,20 @@ function usePagination(endpoint, limit = 10, filters = {}) {
     currentPage,
     nextPage,
     previousPage,
-    goToPage
+    goToPage,
   };
 }
 
 // Usar o hook
 function UsersList() {
-  const { 
-    data: users, 
-    meta, 
-    loading, 
-    error, 
-    nextPage, 
-    previousPage 
-  } = usePagination('users', 20);
+  const {
+    data: users,
+    meta,
+    loading,
+    error,
+    nextPage,
+    previousPage,
+  } = usePagination("users", 20);
 
   if (loading) return <div>Carregando...</div>;
   if (error) return <div>Erro: {error}</div>;
@@ -265,31 +281,25 @@ function UsersList() {
   return (
     <div>
       <ul>
-        {users.map(user => (
+        {users.map((user) => (
           <li key={user.id}>{user.name}</li>
         ))}
       </ul>
-      
+
       <div className="pagination">
-        <button 
-          onClick={previousPage} 
-          disabled={!meta?.hasPreviousPage}
-        >
+        <button onClick={previousPage} disabled={!meta?.hasPreviousPage}>
           Anterior
         </button>
-        
+
         <span>
           Página {meta?.currentPage} de {meta?.totalPages}
         </span>
-        
-        <button 
-          onClick={nextPage} 
-          disabled={!meta?.hasNextPage}
-        >
+
+        <button onClick={nextPage} disabled={!meta?.hasNextPage}>
           Próxima
         </button>
       </div>
-      
+
       <div className="info">
         Mostrando {users.length} de {meta?.totalItems} itens
       </div>
@@ -325,6 +335,7 @@ function UsersList() {
 ## 7. Respostas Esperadas
 
 ### Resposta de Sucesso (200 OK)
+
 ```json
 {
   "data": [...],
@@ -340,6 +351,7 @@ function UsersList() {
 ```
 
 ### Resposta com Validação de Erro (400 Bad Request)
+
 ```json
 {
   "statusCode": 400,

@@ -1,27 +1,46 @@
-import { Component, OnInit, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
-import { Router } from '@angular/router';
-import { AuthService } from 'src/app/core/services/auth/auth.service';
+// ...existing code...
+import {
+  Component,
+  OnInit,
+  ChangeDetectorRef,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { ApiService } from 'src/app/core/services/api/api.service';
-import { User } from 'src/app/core/models/user.model';
-
+import { AuthService } from 'src/app/core/services/auth/auth.service';
+import { Router } from '@angular/router';
+// ...existing code...
 import { CommonModule } from '@angular/common';
 import { NgIf, NgFor } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.page.html',
   styleUrls: ['./dashboard.page.scss'],
   standalone: true,
-  imports: [CommonModule, NgIf, NgFor, IonicModule],
+  imports: [CommonModule, NgIf, NgFor, IonicModule, RouterModule],
   changeDetection: ChangeDetectionStrategy.Default,
 })
 export class DashboardPage implements OnInit {
+  // ...existing code...
+  irParaClients() {
+    this.router.navigate(['/barber/clients']);
+  }
+  irParaServices() {
+    this.router.navigate(['/barber/services']);
+  }
+  irParaFinance() {
+    this.router.navigate(['/barber/finance']);
+  }
+  irParaProfile() {
+    this.router.navigate(['/barber/profile']);
+  }
   agendamentos: any[] = [];
   agendamentosResumo = {
     total: 0,
     proximos: 0,
-    concluidos: 0
+    concluidos: 0,
   };
   perfil: any = {};
   loading = true;
@@ -31,7 +50,7 @@ export class DashboardPage implements OnInit {
     private authService: AuthService,
     private apiService: ApiService,
     private cdr: ChangeDetectorRef,
-    private router: Router
+    private router: Router,
   ) {}
 
   irParaAdmin() {
@@ -56,7 +75,7 @@ export class DashboardPage implements OnInit {
         this.error = 'Erro ao carregar perfil.';
         this.loading = false;
         this.cdr.detectChanges();
-      }
+      },
     });
   }
 
@@ -64,44 +83,54 @@ export class DashboardPage implements OnInit {
     console.log('[Dashboard] Buscando agendamentos para userId:', userId);
 
     // Busca todos os agendamentos do usuário logado
-    this.apiService.get<any>(`/appointments`, {
-      params: { userId, limit: 100 },
-      requiresAuth: true
-    }).subscribe({
-      next: (result) => {
-        console.log('[Dashboard] Resposta recebida:', result);
+    this.apiService
+      .get<any>(`/appointments`, {
+        params: { userId, limit: 100 },
+        requiresAuth: true,
+      })
+      .subscribe({
+        next: (result) => {
+          console.log('[Dashboard] Resposta recebida:', result);
 
-        // A resposta já vem extraída, pode ser um array ou um objeto com { data, meta }
-        let ags: any[] = [];
-        if (Array.isArray(result)) {
-          ags = result;
-        } else if (result?.data && Array.isArray(result.data)) {
-          ags = result.data;
-        } else {
-          ags = [];
-        }
+          // A resposta já vem extraída, pode ser um array ou um objeto com { data, meta }
+          let ags: any[] = [];
+          if (Array.isArray(result)) {
+            ags = result;
+          } else if (result?.data && Array.isArray(result.data)) {
+            ags = result.data;
+          } else {
+            ags = [];
+          }
 
-        console.log('[Dashboard] Agendamentos:', ags);
+          console.log('[Dashboard] Agendamentos:', ags);
 
-        this.agendamentos = ags;
-        this.atualizarResumoAgendamentos();
+          this.agendamentos = ags;
+          this.atualizarResumoAgendamentos();
 
-        console.log('[Dashboard] Resumo atualizado:', this.agendamentosResumo);
-        console.log('[Dashboard] agendamentos.length:', this.agendamentos.length);
+          console.log(
+            '[Dashboard] Resumo atualizado:',
+            this.agendamentosResumo,
+          );
+          console.log(
+            '[Dashboard] agendamentos.length:',
+            this.agendamentos.length,
+          );
 
-        this.loading = false;
-        this.cdr.detectChanges();
-      },
-      error: (err) => {
-        console.error('[Dashboard] Erro ao carregar agendamentos:', err);
-        this.error = 'Erro ao carregar agendamentos: ' + (err?.message || 'Desconhecido');
-        this.loading = false;
-        this.cdr.detectChanges();
-      },
-      complete: () => {
-        console.log('[Dashboard] Requisição de agendamentos completa');
-      }
-    });
+          this.loading = false;
+          this.cdr.detectChanges();
+        },
+        error: (err) => {
+          console.error('[Dashboard] Erro ao carregar agendamentos:', err);
+          this.error =
+            'Erro ao carregar agendamentos: ' +
+            (err?.message || 'Desconhecido');
+          this.loading = false;
+          this.cdr.detectChanges();
+        },
+        complete: () => {
+          console.log('[Dashboard] Requisição de agendamentos completa');
+        },
+      });
   }
   logout() {
     this.authService.logout().subscribe(() => {
@@ -114,7 +143,12 @@ export class DashboardPage implements OnInit {
     if (!window.confirm('Deseja marcar este agendamento como CONCLUÍDO?')) {
       return;
     }
-    this.apiService.patch(`/appointments/${agendamento.id}`, { status: 'COMPLETED' }, { requiresAuth: true })
+    this.apiService
+      .patch(
+        `/appointments/${agendamento.id}`,
+        { status: 'COMPLETED' },
+        { requiresAuth: true },
+      )
       .subscribe({
         next: () => {
           agendamento.status = 'COMPLETED';
@@ -122,8 +156,10 @@ export class DashboardPage implements OnInit {
           this.cdr.detectChanges();
         },
         error: (err) => {
-          alert('Erro ao concluir agendamento: ' + (err?.message || 'Desconhecido'));
-        }
+          alert(
+            'Erro ao concluir agendamento: ' + (err?.message || 'Desconhecido'),
+          );
+        },
       });
   }
 
@@ -131,7 +167,12 @@ export class DashboardPage implements OnInit {
     if (!window.confirm('Deseja CANCELAR este agendamento?')) {
       return;
     }
-    this.apiService.patch(`/appointments/${agendamento.id}`, { status: 'CANCELED' }, { requiresAuth: true })
+    this.apiService
+      .patch(
+        `/appointments/${agendamento.id}`,
+        { status: 'CANCELED' },
+        { requiresAuth: true },
+      )
       .subscribe({
         next: () => {
           agendamento.status = 'CANCELED';
@@ -139,15 +180,21 @@ export class DashboardPage implements OnInit {
           this.cdr.detectChanges();
         },
         error: (err) => {
-          alert('Erro ao cancelar agendamento: ' + (err?.message || 'Desconhecido'));
-        }
+          alert(
+            'Erro ao cancelar agendamento: ' + (err?.message || 'Desconhecido'),
+          );
+        },
       });
   }
 
   atualizarResumoAgendamentos() {
     this.agendamentosResumo.total = this.agendamentos.length;
-    this.agendamentosResumo.proximos = this.agendamentos.filter((a: any) => a.status === 'CONFIRMED' || a.status === 'PENDING').length;
-    this.agendamentosResumo.concluidos = this.agendamentos.filter((a: any) => a.status === 'COMPLETED').length;
+    this.agendamentosResumo.proximos = this.agendamentos.filter(
+      (a: any) => a.status === 'CONFIRMED' || a.status === 'PENDING',
+    ).length;
+    this.agendamentosResumo.concluidos = this.agendamentos.filter(
+      (a: any) => a.status === 'COMPLETED',
+    ).length;
   }
   novoAgendamento() {
     // Navegação programática para a tela de criação de agendamento

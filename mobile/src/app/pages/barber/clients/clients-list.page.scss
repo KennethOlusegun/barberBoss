@@ -1,13 +1,479 @@
-ion-content {
-  --padding-top: 16px;
+// ============================================================================
+// CLIENTS LIST PAGE - Design System Modern Classic
+// ============================================================================
+
+@use "../../../../theme/variables.scss" as *;
+
+// ============================================================================
+// CONTENT BASE
+// ============================================================================
+
+.clients-content {
+  --background: #{$barber-midnight-navy};
+  --padding-top: 1rem;
+  --padding-bottom: 6rem;
 }
 
-ion-item {
-  margin-bottom: 12px;
+// ============================================================================
+// GRID E LAYOUT
+// ============================================================================
+
+ion-grid {
+  padding: 1rem;
+
+  @media (max-width: $breakpoint-md) {
+    padding: 0.75rem;
+  }
 }
+
+// ============================================================================
+// ACTION CARDS - Seguindo o Design System
+// ============================================================================
+
+.action-card {
+  background-color: $barber-slate-grey;
+  border-radius: $border-radius-lg;
+  box-shadow: $shadow-sm;
+  transition: $transition-base;
+  margin-bottom: 1rem;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  &:hover {
+    box-shadow: $shadow-md;
+    transform: translateY(-2px);
+  }
+
+  // Header dos cards
+  ion-card-header {
+    padding: 1.5rem 1rem 1rem;
+    text-align: center;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+
+    .card-icon {
+      font-size: 2.5rem;
+      margin-bottom: 0.75rem;
+      color: $barber-royal-blue;
+    }
+
+    ion-card-title {
+      font-family: "Oswald", sans-serif;
+      font-size: 1.125rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: $barber-white-pure;
+      margin-bottom: 0.25rem;
+    }
+
+    ion-card-subtitle {
+      font-family: "Inter", sans-serif;
+      font-size: 0.875rem;
+      font-weight: 400;
+      color: $barber-grey-steel;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+  }
+
+  // Content dos cards
+  ion-card-content {
+    padding: 1rem;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+
+    .card-description {
+      font-family: "Inter", sans-serif;
+      font-size: 0.875rem;
+      color: $barber-grey-steel;
+      text-align: center;
+      margin-top: 0.75rem;
+      margin-bottom: 0;
+    }
+  }
+
+  // Variantes de cor para cada card
+  &.create-card {
+    .card-icon {
+      color: $barber-royal-blue;
+    }
+  }
+
+  &.update-card {
+    .card-icon {
+      color: #f59e0b;
+    }
+  }
+
+  &.delete-card {
+    .card-icon {
+      color: $barber-vintage-red;
+    }
+  }
+
+  &.view-card {
+    .card-icon {
+      color: #10b981;
+    }
+  }
+}
+
+// ============================================================================
+// CONTAINER DE LISTA DE CLIENTES
+// ============================================================================
+
+.client-list-container {
+  max-height: 380px;
+  overflow-y: auto;
+  margin-top: 0.5rem;
+  padding-right: 0.25rem;
+
+  // Scrollbar customizada seguindo o design
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: rgba(148, 163, 184, 0.1);
+    border-radius: $border-radius-full;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $barber-royal-blue;
+    border-radius: $border-radius-full;
+    transition: $transition-fast;
+
+    &:hover {
+      background: #2563eb;
+    }
+  }
+
+  // Lista
+  ion-list {
+    background: transparent;
+    padding: 0;
+    margin: 0;
+  }
+
+  // Spinner de loading
+  ion-spinner {
+    display: block;
+    margin: 2rem auto;
+    --color: #{$barber-royal-blue};
+  }
+}
+
+// ============================================================================
+// CLIENT ITEM - Itens individuais de cliente
+// ============================================================================
+
+.client-item {
+  --background: rgba(148, 163, 184, 0.05);
+  --border-color: transparent;
+  --padding-start: 0.75rem;
+  --padding-end: 0.5rem;
+  --padding-top: 0.75rem;
+  --padding-bottom: 0.75rem;
+  --inner-padding-end: 0;
+  --min-height: 60px;
+
+  border-radius: $border-radius-md;
+  margin-bottom: 0.5rem;
+  transition: $transition-fast;
+  border: 1px solid rgba(148, 163, 184, 0.1);
+  display: flex !important;
+  align-items: center;
+
+  &:hover {
+    --background: rgba(148, 163, 184, 0.1);
+    border-color: rgba(59, 130, 246, 0.3);
+    transform: translateX(2px);
+  }
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  // Avatar
+  ion-avatar {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    background: rgba(59, 130, 246, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 0.75rem;
+
+    ion-icon {
+      font-size: 28px;
+      color: $barber-royal-blue;
+      margin: 0;
+    }
+  }
+
+  // Label
+  ion-label {
+    margin: 0.5rem 0;
+
+    h3 {
+      font-family: "Inter", sans-serif;
+      font-size: 0.9375rem;
+      font-weight: 600;
+      color: $barber-white-pure;
+      margin-bottom: 0.25rem;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+
+    p {
+      font-family: "Inter", sans-serif;
+      font-size: 0.8125rem;
+      color: $barber-grey-steel;
+      margin: 0;
+      line-height: 1.4;
+
+      &.client-phone {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        margin-top: 0.25rem;
+
+        ion-icon {
+          font-size: 0.875rem;
+          color: $barber-royal-blue;
+        }
+      }
+    }
+  }
+
+  // Botões de ação
+  ion-button.action-button {
+    --padding-start: 0.5rem !important;
+    --padding-end: 0.5rem !important;
+    --padding-top: 0.5rem !important;
+    --padding-bottom: 0.5rem !important;
+    margin: 0 !important;
+    margin-left: 0.5rem !important;
+    height: 36px !important;
+    width: 36px !important;
+    min-width: 36px !important;
+    border-radius: $border-radius-sm !important;
+    transition: $transition-fast;
+    flex-shrink: 0;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+
+    ion-icon {
+      font-size: 1.25rem !important;
+      margin: 0 !important;
+      pointer-events: none;
+    }
+
+    // Botão de editar (primary)
+    &[color="primary"] {
+      --background: transparent !important;
+      --background-hover: rgba(59, 130, 246, 0.15) !important;
+      --background-activated: rgba(59, 130, 246, 0.25) !important;
+      --color: #{$barber-royal-blue} !important;
+      --ripple-color: rgba(59, 130, 246, 0.3) !important;
+
+      &:hover {
+        --background: rgba(59, 130, 246, 0.15) !important;
+      }
+    }
+
+    // Botão de deletar (danger)
+    &[color="danger"] {
+      --background: transparent !important;
+      --background-hover: rgba(239, 68, 68, 0.15) !important;
+      --background-activated: rgba(239, 68, 68, 0.25) !important;
+      --color: #{$barber-vintage-red} !important;
+      --ripple-color: rgba(239, 68, 68, 0.3) !important;
+
+      &:hover {
+        --background: rgba(239, 68, 68, 0.15) !important;
+      }
+    }
+
+    // Botão de visualizar (medium)
+    &[color="medium"] {
+      --background: transparent !important;
+      --background-hover: rgba(148, 163, 184, 0.15) !important;
+      --background-activated: rgba(148, 163, 184, 0.25) !important;
+      --color: #{$barber-grey-steel} !important;
+      --ripple-color: rgba(148, 163, 184, 0.3) !important;
+
+      &:hover {
+        --background: rgba(148, 163, 184, 0.15) !important;
+      }
+    }
+  }
+}
+
+// ============================================================================
+// EMPTY STATE - Estado vazio
+// ============================================================================
 
 .empty-state {
   text-align: center;
-  color: #888;
-  margin-top: 2rem;
+  padding: 3rem 1rem;
+
+  ion-icon {
+    font-size: 4rem;
+    color: rgba(148, 163, 184, 0.3);
+    margin-bottom: 1rem;
+    display: block;
+  }
+
+  p {
+    font-family: "Inter", sans-serif;
+    font-size: 0.9375rem;
+    color: $barber-grey-steel;
+    margin: 0;
+  }
+}
+
+// ============================================================================
+// ERRO CARD
+// ============================================================================
+
+ion-card[color="danger"] {
+  background-color: rgba(239, 68, 68, 0.1) !important;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: $border-radius-md;
+  margin: 1rem;
+
+  ion-card-content {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-family: "Inter", sans-serif;
+    color: $barber-vintage-red;
+    font-weight: 500;
+
+    ion-icon {
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+  }
+}
+
+// ============================================================================
+// BOTÃO NOVO CLIENTE
+// ============================================================================
+
+ion-button[expand="block"] {
+  --background: #{$barber-royal-blue};
+  --background-hover: #2563eb;
+  --background-activated: #1d4ed8;
+  --color: #{$barber-white-pure};
+  --border-radius: #{$border-radius-md};
+  --box-shadow: #{$shadow-glow-primary};
+
+  height: 44px;
+  font-family: "Inter", sans-serif;
+  font-weight: 600;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: $transition-base;
+
+  &:hover {
+    --box-shadow: 0 6px 20px rgba(59, 130, 246, 0.5);
+    transform: translateY(-1px);
+  }
+
+  ion-icon {
+    font-size: 1.125rem;
+  }
+}
+
+// ============================================================================
+// RESPONSIVIDADE
+// ============================================================================
+
+@media (max-width: $breakpoint-lg) {
+  .client-list-container {
+    max-height: 320px;
+  }
+}
+
+@media (max-width: $breakpoint-md) {
+  .action-card {
+    ion-card-header {
+      padding: 1.25rem 0.875rem 0.875rem;
+
+      .card-icon {
+        font-size: 2rem;
+      }
+
+      ion-card-title {
+        font-size: 1rem;
+      }
+
+      ion-card-subtitle {
+        font-size: 0.8125rem;
+      }
+    }
+
+    ion-card-content {
+      padding: 0.875rem;
+    }
+  }
+
+  .client-list-container {
+    max-height: 280px;
+  }
+
+  .client-item {
+    --padding-start: 0.625rem;
+    --padding-end: 0.625rem;
+
+    ion-avatar {
+      width: 32px;
+      height: 32px;
+      min-width: 32px;
+
+      ion-icon {
+        font-size: 24px;
+      }
+    }
+
+    ion-label {
+      h3 {
+        font-size: 0.875rem;
+      }
+
+      p {
+        font-size: 0.75rem;
+      }
+    }
+
+    ion-button {
+      height: 32px;
+      min-width: 32px;
+
+      ion-icon {
+        font-size: 1rem;
+      }
+    }
+  }
+}
+
+@media (max-width: $breakpoint-sm) {
+  ion-grid {
+    padding: 0.5rem;
+  }
+
+  .action-card {
+    margin-bottom: 0.75rem;
+  }
+
+  .client-list-container {
+    max-height: 240px;
+  }
 }

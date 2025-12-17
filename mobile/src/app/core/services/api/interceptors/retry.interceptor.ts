@@ -26,7 +26,10 @@ export class RetryInterceptor implements HttpInterceptor {
   private readonly DEFAULT_BACKOFF_DELAY = 1000; // 1 second
   private readonly RETRYABLE_STATUS_CODES = [408, 429, 500, 502, 503, 504];
 
-  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+  intercept(
+    req: HttpRequest<any>,
+    next: HttpHandler,
+  ): Observable<HttpEvent<any>> {
     // Check if retry should be skipped
     if (req.headers.get('X-Skip-Retry') === 'true') {
       return next.handle(req);
@@ -51,23 +54,27 @@ export class RetryInterceptor implements HttpInterceptor {
 
             console.log(
               `🔄 Retrying request (${retryAttempt}/${maxRetries}) after ${delayTime}ms:`,
-              req.url
+              req.url,
             );
 
             return timer(delayTime);
           }),
           finalize(() => {
             console.log('✅ Retry sequence completed for:', req.url);
-          })
-        )
-      )
+          }),
+        ),
+      ),
     );
   }
 
   /**
    * Determine if the request should be retried
    */
-  private shouldRetry(error: any, retryAttempt: number, maxRetries: number): boolean {
+  private shouldRetry(
+    error: any,
+    retryAttempt: number,
+    maxRetries: number,
+  ): boolean {
     // Don't retry if max retries exceeded
     if (retryAttempt > maxRetries) {
       return false;

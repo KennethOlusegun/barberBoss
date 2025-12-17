@@ -9,13 +9,16 @@ import { BarberService, Barber } from 'src/app/core/services/barber.service';
   standalone: true,
   imports: [IonicModule, CommonModule],
   templateUrl: './admin.page.html',
-  styleUrls: ['./admin.page.scss']
+  styleUrls: ['./admin.page.scss'],
 })
 export class AdminPage implements OnInit {
   barbers: Barber[] = [];
   loading = false;
 
-  constructor(private barberService: BarberService, private router: Router) {}
+  constructor(
+    private barberService: BarberService,
+    private router: Router,
+  ) {}
 
   ngOnInit() {
     this.loadBarbers();
@@ -30,7 +33,7 @@ export class AdminPage implements OnInit {
       },
       error: () => {
         this.loading = false;
-      }
+      },
     });
   }
 

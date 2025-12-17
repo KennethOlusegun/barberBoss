@@ -10,7 +10,7 @@ import { RouterModule } from '@angular/router';
   templateUrl: './services-list.page.html',
   styleUrls: ['./services-list.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, RouterModule]
+  imports: [IonicModule, CommonModule, RouterModule],
 })
 export class ServicesListPage implements OnInit {
   services: Service[] = [];
@@ -25,7 +25,8 @@ export class ServicesListPage implements OnInit {
 
   fetchServices() {
     this.loading = true;
-    this.apiService.get<any>('/services', { params: { limit: 100 }, requiresAuth: true })
+    this.apiService
+      .get<any>('/services', { params: { limit: 100 }, requiresAuth: true })
       .subscribe({
         next: (result) => {
           if (Array.isArray(result)) {
@@ -40,7 +41,7 @@ export class ServicesListPage implements OnInit {
         error: (err) => {
           this.error = 'Erro ao buscar serviços';
           this.loading = false;
-        }
+        },
       });
   }
 }

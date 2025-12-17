@@ -9,10 +9,13 @@ import { CommonModule } from '@angular/common';
   templateUrl: './logout.page.html',
   styleUrls: ['./logout.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, RouterModule]
+  imports: [IonicModule, CommonModule, RouterModule],
 })
 export class LogoutPage {
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+  ) {}
 
   logout() {
     this.authService.logout().subscribe(() => {

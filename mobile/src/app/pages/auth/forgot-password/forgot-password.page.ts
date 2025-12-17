@@ -1,5 +1,3 @@
-
-
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
@@ -12,11 +10,11 @@ import { AuthService } from '@core/services/auth/auth.service';
   templateUrl: './forgot-password.page.html',
   styleUrls: ['./forgot-password.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, ReactiveFormsModule]
+  imports: [IonicModule, CommonModule, ReactiveFormsModule],
 })
 export class ForgotPasswordPage {
   forgotForm = this.fb.group({
-    email: ['', [Validators.required, Validators.email]]
+    email: ['', [Validators.required, Validators.email]],
   });
   isLoading = false;
   successMessage = '';
@@ -25,7 +23,7 @@ export class ForgotPasswordPage {
   constructor(
     private router: Router,
     private fb: FormBuilder,
-    private authService: AuthService
+    private authService: AuthService,
   ) {}
 
   submit(): void {
@@ -36,13 +34,15 @@ export class ForgotPasswordPage {
     const email = this.forgotForm.value.email ?? '';
     this.authService.requestPasswordReset({ email }).subscribe({
       next: () => {
-        this.successMessage = 'E-mail de recuperação enviado! Verifique sua caixa de entrada.';
+        this.successMessage =
+          'E-mail de recuperação enviado! Verifique sua caixa de entrada.';
         this.isLoading = false;
       },
       error: (err) => {
-        this.errorMessage = err?.error?.message || 'Erro ao solicitar recuperação de senha.';
+        this.errorMessage =
+          err?.error?.message || 'Erro ao solicitar recuperação de senha.';
         this.isLoading = false;
-      }
+      },
     });
   }
 
