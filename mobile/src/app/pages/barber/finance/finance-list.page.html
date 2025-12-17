@@ -1,0 +1,63 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/tab1"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Relatórios Financeiros</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="fetchFinanceSummary()">
+        <ion-icon name="refresh"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <ion-card *ngIf="error" color="danger">
+    <ion-card-content>
+      <ion-icon name="alert-circle-outline"></ion-icon>
+      {{ error }}
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card *ngIf="!loading && financeSummary">
+    <ion-card-header>
+      <ion-card-title>Resumo Financeiro</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <div class="resumo-grid">
+        <div class="resumo-item">
+          <h3>R$ {{ financeSummary.completed | number:'1.2-2' }}</h3>
+          <p>Concluídos</p>
+        </div>
+        <div class="resumo-item">
+          <h3>R$ {{ financeSummary.pending | number:'1.2-2' }}</h3>
+          <p>Pendentes</p>
+        </div>
+        <div class="resumo-item total">
+          <h2>R$ {{ financeSummary.total | number:'1.2-2' }}</h2>
+          <p>Total</p>
+        </div>
+      </div>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-list *ngIf="!loading && financeSummary?.appointments?.length">
+    <ion-list-header>Agendamentos</ion-list-header>
+    <ion-item *ngFor="let ag of financeSummary.appointments">
+      <ion-label>
+        <h2>{{ ag.service?.name }}</h2>
+        <p>Data: {{ ag.startsAt | date: 'dd/MM/yyyy' }} - {{ ag.status }}</p>
+        <p *ngIf="ag.service?.price">Valor: R$ {{ ag.service.price }}</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+  <div *ngIf="!loading && financeSummary && !financeSummary.appointments.length" class="empty-state">
+    Nenhum agendamento encontrado.
+  </div>
+  <ion-spinner *ngIf="loading" name="crescent"></ion-spinner>
+</ion-content>

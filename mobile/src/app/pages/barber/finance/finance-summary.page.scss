@@ -33,8 +33,80 @@ ion-content {
   }
 }
 
+
+.extrato-list {
+  padding: 0;
+  .extrato-item {
+    --padding-start: 0;
+    --inner-padding-end: 0;
+    align-items: flex-start;
+    min-height: 56px;
+    border-radius: 8px;
+    margin-bottom: 4px;
+    border-left: 4px solid transparent;
+    transition: border-color 0.2s, opacity 0.2s;
+    background: var(--ion-item-background, #181c24);
+    .status-indicator {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      min-width: 28px;
+      height: 100%;
+      .icon-status {
+        font-size: 1.3rem;
+        vertical-align: middle;
+      }
+    }
+    &.extrato-confirmado {
+      border-left: 4px solid var(--ion-color-primary, #3880ff);
+    }
+    &.extrato-pendente {
+      border-left: 4px solid var(--ion-color-warning, #ffb300);
+      opacity: 0.85;
+    }
+    .extrato-info {
+      flex: 1;
+      .servico-nome {
+        font-weight: 600;
+        font-size: 1rem;
+        color: var(--ion-text-color, #fff);
+      }
+      .servico-detalhes {
+        font-size: 0.85rem;
+        color: var(--ion-color-medium, #b0b0b0);
+        margin-top: 2px;
+        .data {
+          font-weight: 500;
+        }
+        .cliente {
+          margin-left: 6px;
+        }
+      }
+    }
+    .extrato-valores {
+      text-align: right;
+      min-width: 90px;
+      .comissao {
+        font-weight: bold;
+        font-size: 1.1rem;
+        &.confirmado {
+          color: var(--ion-color-primary, #3880ff);
+        }
+        &.pendente {
+          color: var(--ion-color-warning, #ffb300);
+        }
+      }
+      .valor-servico {
+        font-size: 0.8rem;
+        color: var(--ion-color-step-600, #888);
+        margin-top: 2px;
+      }
+    }
+  }
+}
 .empty-state {
   text-align: center;
-  color: #888;
+  color: var(--ion-color-medium, #888);
   margin-top: 2rem;
 }

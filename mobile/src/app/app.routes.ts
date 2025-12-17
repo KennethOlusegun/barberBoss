@@ -152,6 +152,14 @@ export const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
+    path: 'barber/finance/list',
+    loadComponent: () =>
+      import('./pages/barber/finance/finance-list.page').then(
+        (m) => m.FinanceListPage,
+      ),
+    canActivate: [AuthGuard],
+  },
+  {
     path: 'barber/profile',
     loadComponent: () =>
       import('./pages/barber/profile/profile.page').then((m) => m.ProfilePage),

@@ -21,30 +21,68 @@
         <ion-card-title>Receita Total</ion-card-title>
       </ion-card-header>
       <ion-card-content>
-        <h2>R$ {{ total | number:'1.2-2' }}</h2>
+        <h2>R$ {{ financeSummary?.total | number:'1.2-2' }}</h2>
         <div class="resumo-grid">
           <div class="resumo-item">
-            <h3>R$ {{ completed | number:'1.2-2' }}</h3>
+            <h3>R$ {{ financeSummary?.completed | number:'1.2-2' }}</h3>
             <p>Concluídos</p>
           </div>
           <div class="resumo-item">
-            <h3>R$ {{ pending | number:'1.2-2' }}</h3>
+            <h3>R$ {{ financeSummary?.pending | number:'1.2-2' }}</h3>
             <p>Pendentes</p>
           </div>
         </div>
       </ion-card-content>
     </ion-card>
-    <ion-list *ngIf="appointments.length">
+    <ion-list class="extrato-list" *ngIf="financeSummary?.appointments?.length">
       <ion-list-header>Agendamentos</ion-list-header>
-      <ion-item *ngFor="let ag of appointments">
-        <ion-label>
-          <h2>{{ ag.service?.name }}</h2>
-          <p>Data: {{ ag.startsAt | date: 'dd/MM/yyyy' }} - {{ ag.status }}</p>
-          <p *ngIf="ag.service?.price">Valor: R$ {{ ag.service.price }}</p>
-        </ion-label>
+      <ion-item
+        *ngFor="let ag of financeSummary.appointments"
+        class="extrato-item"
+        lines="none"
+      >
+        <!-- Indicador de status -->
+        <div
+          class="status-indicator"
+          [ngClass]="{
+            'confirmado': ag.status === 'CONFIRMED',
+            'pendente': ag.status === 'PENDING'
+          }"
+          slot="start"
+        >
+          <mat-icon *ngIf="ag.status === 'CONFIRMED'" color="primary" fontIcon="check_circle" class="icon-status">check_circle</mat-icon>
+          <mat-icon *ngIf="ag.status === 'PENDING'" color="warn" fontIcon="schedule" class="icon-status">schedule</mat-icon>
+        </div>
+
+        <!-- Informações do serviço -->
+        <div class="extrato-info">
+          <div class="servico-nome">{{ ag.service?.name }}</div>
+          <div class="servico-detalhes">
+            <span class="data">{{ ag.startsAt | date: 'dd MMM' }}</span>
+            <span class="cliente" *ngIf="ag.user?.name">• {{ ag.user.name }}</span>
+          </div>
+        </div>
+
+        <!-- Valores -->
+        <div class="extrato-valores" slot="end">
+          <div
+            class="comissao"
+            [ngClass]="{ 'confirmado': ag.status === 'CONFIRMED', 'pendente': ag.status === 'PENDING' }"
+          >
+            +R$ {{
+              (ag.service?.price
+                ? (ag.service.price * (ag.service.barberCommission ?? 0.5))
+                : 0
+              ) | number: '1.2-2'
+            }}
+          </div>
+          <div class="valor-servico">
+            <span>Serviço: R$ {{ ag.service?.price | number: '1.2-2' }}</span>
+          </div>
+        </div>
       </ion-item>
     </ion-list>
-    <div *ngIf="!appointments.length" class="empty-state">
+    <div *ngIf="financeSummary && !financeSummary.appointments.length" class="empty-state">
       Nenhum agendamento encontrado.
     </div>
   </div>
