@@ -11,12 +11,18 @@ export class FinanceReportService {
       where: { barberId },
       include: { service: true },
     });
+    // Calcula comissão do barbeiro
+    const calcCommission = (a: any) => {
+      const price = Number(a.service?.price || 0);
+      const commission = a.service?.barberCommission != null ? Number(a.service.barberCommission) : 0.5; // padrão 50%
+      return price * commission;
+    };
     const completed = appointments
       .filter((a) => a.status === 'COMPLETED')
-      .reduce((sum, a) => sum + Number(a.service?.price || 0), 0);
+      .reduce((sum, a) => sum + calcCommission(a), 0);
     const pending = appointments
       .filter((a) => a.status === 'CONFIRMED' || a.status === 'PENDING')
-      .reduce((sum, a) => sum + Number(a.service?.price || 0), 0);
+      .reduce((sum, a) => sum + calcCommission(a), 0);
     return {
       completed,
       pending,

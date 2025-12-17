@@ -57,7 +57,10 @@ model Service {
   description String?
   price       Decimal  @db.Decimal(10, 2) // Dinheiro sempre use Decimal, nunca Float!
   durationMin Int      // Ex: 30, 45, 60 (Minutos)
-  
+
+  // Comissão do barbeiro (percentual, ex: 0.5 para 50%)
+  barberCommission Decimal? @db.Decimal(5, 4) // Opcional, padrão pode ser definido na aplicação
+
   // Relacionamentos
   appointments Appointment[]
 
