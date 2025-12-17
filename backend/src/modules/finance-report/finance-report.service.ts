@@ -14,7 +14,10 @@ export class FinanceReportService {
     // Calcula comissão do barbeiro
     const calcCommission = (a: any) => {
       const price = Number(a.service?.price || 0);
-      const commission = a.service?.barberCommission != null ? Number(a.service.barberCommission) : 0.5; // padrão 50%
+      const commission =
+        a.service?.barberCommission != null
+          ? Number(a.service.barberCommission)
+          : 0.5; // padrão 50%
       return price * commission;
     };
     const completed = appointments

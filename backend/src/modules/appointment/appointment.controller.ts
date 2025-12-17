@@ -88,7 +88,7 @@ export class AppointmentController {
     description: 'Lista de agendamentos retornada com sucesso',
   })
   findAll(@Query() filter: AppointmentFilterDto) {
-    const { date, userId, status, page, offset, limit } = filter;
+    const { date, userId, barberId, status, page, offset, limit } = filter;
 
     // Converter offset para page se necessário
     const paginationDto: PaginationDto = { limit: limit || 10 };
@@ -103,6 +103,9 @@ export class AppointmentController {
 
     if (date) {
       return this.appointmentService.findByDate(new Date(date), paginationDto);
+    }
+    if (barberId) {
+      return this.appointmentService.findByBarber(barberId, paginationDto);
     }
     if (userId) {
       return this.appointmentService.findByUser(userId, paginationDto);

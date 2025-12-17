@@ -33,15 +33,12 @@ export class AppointmentService {
   ): Promise<void> {
     const settings = await this.settingsService.get();
 
-    // LOGS DE DEBUG PARA FUSO/DIA DA SEMANA
-
     console.log('--- [DEBUG] validateBusinessHours ---');
-    // Valor original recebido
     console.log('date (original, Date):', date, '| ISO:', date.toISOString());
-    // Interpretação UTC
+
     const dateUtc = dayjs.utc(date);
     console.log('dateUtc (dayjs.utc):', dateUtc.format());
-    // Convertido para timezone
+
     const dateInTimezone = dateUtc.tz(timezone);
     console.log(
       'dateInTimezone:',
@@ -49,7 +46,7 @@ export class AppointmentService {
       '| Timezone:',
       timezone,
     );
-    // Dia da semana calculado
+
     const day = dateInTimezone.day();
     console.log(
       'day (0=Domingo):',
@@ -57,7 +54,6 @@ export class AppointmentService {
       '| Nome:',
       this.settingsService.getDayName(day),
     );
-    // Dias úteis do sistema
     console.log('settings.workingDays:', settings.workingDays);
 
     // Verifica se é um dia útil
@@ -78,7 +74,6 @@ export class AppointmentService {
     const minute = dateInTimezone.minute();
     const timeInMinutes = hour * 60 + minute;
 
-    // Converter horários de abertura e fechamento para minutos
     const [openHour, openMin] = settings.openTime.split(':').map(Number);
     const [closeHour, closeMin] = settings.closeTime.split(':').map(Number);
     const openMinutes = openHour * 60 + openMin;
@@ -118,16 +113,13 @@ export class AppointmentService {
   async create(
     createAppointmentDto: CreateAppointmentDto,
   ): Promise<Appointment> {
-    // LOG DE DEBUG: início do método create
-
     console.log('--- [DEBUG] AppointmentService.create ---');
     console.log(
       'Payload recebido:',
       JSON.stringify(createAppointmentDto, null, 2),
     );
 
-    // ✅ FIX 1: Validação XOR entre userId e clientName
-    // Garantir que exatamente um está preenchido (não ambos, não nenhum)
+    // Validação XOR entre userId e clientName
     const hasUserId = !!createAppointmentDto.userId;
     const hasClientName = !!createAppointmentDto.clientName?.trim();
 
@@ -160,18 +152,12 @@ export class AppointmentService {
       );
     }
 
-    // Obter timezone do DTO (padrão: America/Sao_Paulo)
     const timezone = createAppointmentDto.timezone || 'America/Sao_Paulo';
-
-    // ✅ FIX 2: Sempre usar dayjs.utc para parsing de datas recebidas do frontend
     const startsAt = dayjs.utc(createAppointmentDto.startsAt).toDate();
-
-    // Calcular endsAt automaticamente baseado na duração do serviço
     const endsAt = createAppointmentDto.endsAt
       ? dayjs.utc(createAppointmentDto.endsAt).toDate()
       : dayjs.utc(startsAt).add(service.durationMin, 'minutes').toDate();
 
-    // Validar que startsAt é antes de endsAt
     if (startsAt >= endsAt) {
       const startsAtStr = dayjs(startsAt)
         .tz(timezone)
@@ -182,11 +168,9 @@ export class AppointmentService {
       );
     }
 
-    // Validar horário comercial para startsAt e endsAt
     await this.validateBusinessHours(startsAt, timezone);
     await this.validateBusinessHours(endsAt, timezone);
 
-    // Verificar se o horário está bloqueado
     const blockInfo = await this.timeBlockService.getBlockInfo(
       startsAt,
       endsAt,
@@ -208,7 +192,6 @@ export class AppointmentService {
       );
     }
 
-    // Verificar se o usuário existe (se fornecido)
     if (createAppointmentDto.userId) {
       const user = await this.prisma.user.findUnique({
         where: { id: createAppointmentDto.userId },
@@ -221,29 +204,24 @@ export class AppointmentService {
       }
     }
 
-    // Usar transação com isolamento Serializable para prevenir race conditions
     const appointment = await this.prisma.$transaction(
       async (tx) => {
-        // Verificar conflitos de horário dentro da transação (prevenir overbooking)
         const conflicts = await tx.appointment.findMany({
           where: {
             OR: [
               {
-                // Novo agendamento começa durante um existente
                 AND: [
                   { startsAt: { lte: startsAt } },
                   { endsAt: { gt: startsAt } },
                 ],
               },
               {
-                // Novo agendamento termina durante um existente
                 AND: [
                   { startsAt: { lt: endsAt } },
                   { endsAt: { gte: endsAt } },
                 ],
               },
               {
-                // Novo agendamento engloba um existente
                 AND: [
                   { startsAt: { gte: startsAt } },
                   { endsAt: { lte: endsAt } },
@@ -282,7 +260,6 @@ export class AppointmentService {
           );
         }
 
-        // Criar o agendamento dentro da transação
         return await tx.appointment.create({
           data: {
             startsAt,
@@ -352,15 +329,12 @@ export class AppointmentService {
     return new Appointment(appointment);
   }
 
-  // ✅ FIX 3: Método update() AGORA COM TRANSAÇÃO
   async update(
     id: string,
     updateAppointmentDto: UpdateAppointmentDto,
   ): Promise<Appointment> {
-    await this.findOne(id); // Verifica se existe
+    await this.findOne(id);
 
-    // ✅ FIX 7: Validação XOR no update (adicional ao DTO)
-    // Garantir que não estamos setando userId E clientName simultaneamente
     const hasUserId =
       updateAppointmentDto.userId !== undefined &&
       updateAppointmentDto.userId !== null;
@@ -374,7 +348,6 @@ export class AppointmentService {
       );
     }
 
-    // Se estiver atualizando datas ou serviço, validar e recalcular
     if (
       updateAppointmentDto.startsAt ||
       updateAppointmentDto.endsAt ||
@@ -385,7 +358,6 @@ export class AppointmentService {
         include: { service: true },
       });
 
-      // Se o serviço foi alterado, buscar o novo serviço
       let service = current!.service;
       if (
         updateAppointmentDto.serviceId &&
@@ -410,12 +382,10 @@ export class AppointmentService {
         service = newService;
       }
 
-      // ✅ FIX 4: Usar dayjs para parsing
       const startsAt = updateAppointmentDto.startsAt
         ? dayjs(updateAppointmentDto.startsAt).toDate()
         : current!.startsAt;
 
-      // Recalcular endsAt se startsAt foi alterado e endsAt não foi fornecido
       const endsAt = updateAppointmentDto.endsAt
         ? dayjs(updateAppointmentDto.endsAt).toDate()
         : updateAppointmentDto.startsAt
@@ -433,14 +403,11 @@ export class AppointmentService {
         );
       }
 
-      // Obter timezone do DTO ou usar padrão
       const timezone = updateAppointmentDto.timezone || 'America/Sao_Paulo';
 
-      // Validar horário comercial para startsAt e endsAt
       await this.validateBusinessHours(startsAt, timezone);
       await this.validateBusinessHours(endsAt, timezone);
 
-      // Verificar se o horário está bloqueado
       const blockInfo = await this.timeBlockService.getBlockInfo(
         startsAt,
         endsAt,
@@ -460,10 +427,8 @@ export class AppointmentService {
         );
       }
 
-      // ✅ FIX 5: TRANSAÇÃO COM SERIALIZABLE (CRÍTICO!)
       const appointment = await this.prisma.$transaction(
         async (tx) => {
-          // Verificar conflitos DENTRO da transação (excluindo o próprio agendamento)
           const conflicts = await tx.appointment.findMany({
             where: {
               id: { not: id },
@@ -511,7 +476,6 @@ export class AppointmentService {
             );
           }
 
-          // Atualizar com as datas calculadas DENTRO da transação
           return await tx.appointment.update({
             where: { id },
             data: {
@@ -546,8 +510,6 @@ export class AppointmentService {
       return new Appointment(appointment);
     }
 
-    // Se não estiver atualizando datas, apenas atualizar outros campos
-    // (sem necessidade de transação)
     const appointment = await this.prisma.appointment.update({
       where: { id },
       data: {
@@ -574,7 +536,7 @@ export class AppointmentService {
   }
 
   async remove(id: string): Promise<Appointment> {
-    await this.findOne(id); // Verifica se existe
+    await this.findOne(id);
 
     const appointment = await this.prisma.appointment.delete({
       where: { id },
@@ -582,8 +544,6 @@ export class AppointmentService {
 
     return new Appointment(appointment);
   }
-
-  // Métodos auxiliares úteis
 
   async findByDate(
     date: Date,
@@ -662,6 +622,38 @@ export class AppointmentService {
     return new PaginatedResult(appointmentEntities, total, page, limit);
   }
 
+  async findByBarber(
+    barberId: string,
+    paginationDto?: PaginationDto,
+  ): Promise<PaginatedResult<Appointment>> {
+    const page = paginationDto?.page || 1;
+    const limit = paginationDto?.limit || 10;
+    const skip = (page - 1) * limit;
+
+    const [appointments, total] = await Promise.all([
+      this.prisma.appointment.findMany({
+        skip,
+        take: limit,
+        where: { barberId },
+        include: {
+          user: true,
+          service: true,
+        },
+        orderBy: {
+          startsAt: 'desc',
+        },
+      }),
+      this.prisma.appointment.count({
+        where: { barberId },
+      }),
+    ]);
+
+    const appointmentEntities = appointments.map(
+      (appointment) => new Appointment(appointment),
+    );
+    return new PaginatedResult(appointmentEntities, total, page, limit);
+  }
+
   async findByStatus(
     status: string,
     paginationDto?: PaginationDto,
@@ -721,10 +713,6 @@ export class AppointmentService {
     return new PaginatedResult(appointmentEntities, total, page, limit);
   }
 
-  /**
-   * Retorna os horários disponíveis para agendamento em uma data específica
-   * ✅ FIX 6: Nunca retornar slots no passado
-   */
   async getAvailableSlots(
     date: string,
     serviceId: string,
@@ -734,7 +722,6 @@ export class AppointmentService {
   }> {
     const settings = await this.settingsService.get();
 
-    // Verificar se o serviço existe e está ativo
     const service = await this.prisma.service.findUnique({
       where: { id: serviceId },
     });
@@ -749,11 +736,9 @@ export class AppointmentService {
       );
     }
 
-    // Converter a data para o início do dia usando dayjs
     const targetDate = dayjs(date).startOf('day');
-
-    // Verificar se é dia útil
     const dayOfWeek = targetDate.day();
+
     if (!settings.workingDays.includes(dayOfWeek)) {
       const dayName = this.settingsService.getDayName(dayOfWeek);
       throw new BadRequestException(
@@ -761,14 +746,12 @@ export class AppointmentService {
       );
     }
 
-    // Converter horários de abertura e fechamento para minutos
     const [openHour, openMin] = settings.openTime.split(':').map(Number);
     const [closeHour, closeMin] = settings.closeTime.split(':').map(Number);
 
     const openTimeInMinutes = openHour * 60 + openMin;
     const closeTimeInMinutes = closeHour * 60 + closeMin;
 
-    // Buscar todos os agendamentos do dia que não foram cancelados/concluídos
     const startOfDay = targetDate.toDate();
     const endOfDay = targetDate.endOf('day').toDate();
 
@@ -787,13 +770,11 @@ export class AppointmentService {
       },
     });
 
-    // Gerar todos os slots possíveis
     const availableSlots: string[] = [];
     const serviceDurationMin = service.durationMin;
     const slotInterval = settings.slotIntervalMin;
     const now = new Date();
 
-    // Iterar pelos slots possíveis
     for (
       let timeInMinutes = openTimeInMinutes;
       timeInMinutes + serviceDurationMin <= closeTimeInMinutes;
@@ -813,18 +794,15 @@ export class AppointmentService {
         .add(serviceDurationMin, 'minutes')
         .toDate();
 
-      // ✅ FIX: SEMPRE validar que o slot não está no passado
       if (slotStart.getTime() <= now.getTime()) {
-        continue; // Pular slots que já passaram
+        continue;
       }
 
-      // Verificar antecedência mínima
       const minAdvanceMs = settings.minAdvanceHours * 60 * 60 * 1000;
       if (slotStart.getTime() - now.getTime() < minAdvanceMs) {
         continue;
       }
 
-      // Verificar se o slot conflita com algum agendamento existente
       const hasConflict = existingAppointments.some((appointment) => {
         const appointmentStart = new Date(appointment.startsAt).getTime();
         const appointmentEnd = new Date(appointment.endsAt).getTime();
@@ -839,7 +817,6 @@ export class AppointmentService {
         );
       });
 
-      // Verificar se o horário está bloqueado
       const isBlocked = await this.timeBlockService.isBlocked(
         slotStart,
         slotEnd,
@@ -859,9 +836,6 @@ export class AppointmentService {
     };
   }
 
-  /**
-   * Busca o histórico de agendamentos de um cliente por nome ou telefone
-   */
   async getClientHistory(
     clientName?: string,
     phone?: string,

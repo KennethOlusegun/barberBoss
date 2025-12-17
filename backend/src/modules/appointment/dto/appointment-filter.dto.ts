@@ -14,6 +14,10 @@ export class AppointmentFilterDto {
   userId?: string;
 
   @IsOptional()
+  @IsUUID('4', { message: 'barberId deve ser um UUID válido (formato v4)' })
+  barberId?: string;
+
+  @IsOptional()
   @IsISO8601(
     { strict: true },
     { message: 'date deve estar no formato ISO 8601' },

@@ -1,4 +1,3 @@
-
 import { Controller, Get, Query } from '@nestjs/common';
 import { FinanceReportService } from './finance-report.service';
 import { FinanceSummaryDto } from './dto/finance-summary.dto';
@@ -12,7 +11,9 @@ export class FinanceReportController {
   @Get('summary')
   @ApiQuery({ name: 'barberId', required: true })
   @ApiOkResponse({ type: FinanceSummaryDto })
-  async getFinanceSummary(@Query('barberId') barberId: string): Promise<FinanceSummaryDto> {
+  async getFinanceSummary(
+    @Query('barberId') barberId: string,
+  ): Promise<FinanceSummaryDto> {
     return this.financeReportService.getFinanceSummary(barberId);
   }
 }
