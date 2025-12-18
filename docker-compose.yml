@@ -1,0 +1,81 @@
+version: '3.9'
+
+services:
+  # 🐘 O Banco de Dados (Usando seus dados antigos)
+  postgres:
+    image: postgres:16-alpine
+    container_name: barberboss-postgres
+    restart: unless-stopped
+    environment:
+      # Use as MESMAS credenciais que você usava antes
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "5432:5432"
+    volumes:
+      # Apelido interno -> Caminho dentro do container
+      - postgres_data_legacy:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - barber-net
+
+  # 🟢 Seu Backend NestJS
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: barberboss-backend
+    restart: unless-stopped
+    command: npm run start:dev
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+      # Conecta no serviço 'postgres' definido acima
+      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?schema=public
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN}
+    ports:
+      - "3000:3000"
+      - "5555:5555"
+    volumes:
+      - ./backend:/app       # Hot Reload (Edita no Windows, atualiza no Docker)
+      - /app/node_modules    # Protege a pasta node_modules
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - barber-net
+
+  # 🌐 O Ngrok (Domínio Fixo)
+  ngrok:
+    image: ngrok/ngrok:latest
+    container_name: barberboss-ngrok
+    restart: unless-stopped
+    environment:
+      NGROK_AUTHTOKEN: ${NGROK_AUTHTOKEN}
+    command: >
+      http backend:3000
+      --domain=${NGROK_DOMAIN}
+      --request-header-add=ngrok-skip-browser-warning:69420
+    depends_on:
+      - backend
+    ports:
+      - "4040:4040"
+    networks:
+      - barber-net
+
+# 👇 AQUI ESTÁ A MÁGICA (Não mude isso)
+volumes:
+  postgres_data_legacy:
+    external: true
+    # Este é o ID do volume onde seus dados reais estão
+    name: ee3c164462e261452d908cbdc725102a352d5ed6522ea8fcb76efbeaae4cf129
+
+networks:
+  barber-net:
+    driver: bridge

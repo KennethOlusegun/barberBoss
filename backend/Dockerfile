@@ -1,47 +1,23 @@
-# Build stage
-FROM node:lts-alpine AS builder
-WORKDIR /usr/src/app
 
-# Copy package files
-COPY package*.json ./
-COPY prisma ./prisma/
+# Dockerfile para ambiente de desenvolvimento NestJS
 
-# Install all dependencies (including dev dependencies for build)
-RUN npm ci
+FROM node:18-bullseye
 
-# Copy source code
+WORKDIR /app
+
+# Copia apenas os arquivos de dependências para otimizar cache
+COPY package.json package-lock.json* ./
+
+RUN npm install
+
+# Copia o restante do código
 COPY . .
 
-# Generate Prisma Client
-RUN npx prisma generate
+# Garante que node_modules do host não sobrescreva o do container
+VOLUME ["/app/node_modules"]
 
-# Build the application
-RUN npm run build
-
-# Production stage
-FROM node:lts-alpine AS production
-ENV NODE_ENV=production
-WORKDIR /usr/src/app
-
-# Copy package files
-COPY package*.json ./
-COPY prisma ./prisma/
-
-# Install only production dependencies
-RUN npm ci --only=production
-
-# Copy built application from builder
-COPY --from=builder /usr/src/app/dist ./dist
-
-# Generate Prisma Client
-RUN npx prisma generate
-
-# Expose port
+# Expõe a porta padrão do NestJS
 EXPOSE 3000
 
-# Change ownership
-RUN chown -R node /usr/src/app
-USER node
-
-# Start the application (with migrations)
-CMD ["sh", "-c", "npx prisma migrate deploy && node dist/main"]
+# Comando para rodar em modo dev com hot reload
+CMD ["npm", "run", "start:dev"]

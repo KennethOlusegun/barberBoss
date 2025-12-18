@@ -13,7 +13,7 @@ export const environment: Environment = {
 
   api: {
     // 👇 URL ATUALIZADA PARA O SEU NGROK
-    baseUrl: 'https://5c8978c04be2.ngrok-free.app',
+    baseUrl: 'https://edacious-closer-catrice.ngrok-free.dev',
     apiPrefix: '',
     timeout: 30000,
   },

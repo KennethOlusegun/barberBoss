@@ -4,7 +4,7 @@ import { RouteReuseStrategy } from '@angular/router';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { AppComponent } from './app.component';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { NgrokHttpInterceptor } from './interceptors/http.interceptor';
+import { HttpConfigInterceptor } from './core/interceptors/http-config.interceptor';
 
 @NgModule({
   imports: [
@@ -15,7 +15,7 @@ import { NgrokHttpInterceptor } from './interceptors/http.interceptor';
   ],
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-    { provide: HTTP_INTERCEPTORS, useClass: NgrokHttpInterceptor, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: HttpConfigInterceptor, multi: true }
   ],
   // Standalone bootstrap será feito em main.ts
 })

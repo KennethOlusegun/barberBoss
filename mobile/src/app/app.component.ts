@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { environment } from 'src/environments/environment';
+import { LoadingController, AlertController } from '@ionic/angular';
 import { Location } from '@angular/common';
 import { Router, NavigationEnd, RouterModule } from '@angular/router';
 import { CommonModule, NgForOf, NgIf } from '@angular/common';
@@ -51,7 +53,7 @@ import { filter } from 'rxjs';
     IonFabButton,
   ],
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   appPages = [
     { title: 'Dashboard', url: '/dashboard', icon: 'dashboard' },
     { title: 'Agendamentos', url: '/barber/appointments', icon: 'event' },
@@ -67,6 +69,8 @@ export class AppComponent {
   constructor(
     private router: Router,
     private location: Location,
+    private loadingController: LoadingController,
+    private alertController: AlertController
   ) {
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
@@ -75,6 +79,59 @@ export class AppComponent {
         // Exibe o FAB apenas na rota de agendamentos
         this.showFab = this.selectedPath.startsWith('/barber/appointments');
       });
+  }
+
+  async ngOnInit() {
+    await this.checkBackendConnection();
+  }
+
+  private async checkBackendConnection() {
+    const loading = await this.loadingController.create({
+      message: 'Conectando ao servidor...',
+      duration: 5000,
+    });
+    await loading.present();
+
+    try {
+      // Aguarda 2s antes de tentar (evita race condition)
+      await new Promise(resolve => setTimeout(resolve, 2000));
+
+      const response = await fetch(environment.api.baseUrl + '/health', {
+        method: 'GET',
+        headers: {
+          'ngrok-skip-browser-warning': '69420',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Backend não respondeu');
+      }
+
+      console.log('✅ Backend conectado com sucesso');
+      await loading.dismiss();
+
+    } catch (error) {
+      console.error('❌ Erro ao conectar ao backend:', error);
+      await loading.dismiss();
+
+      const alert = await this.alertController.create({
+        header: 'Erro de Conexão',
+        message: 'Não foi possível conectar ao servidor. Verifique sua internet e tente novamente.',
+        buttons: [
+          {
+            text: 'Tentar Novamente',
+            handler: () => {
+              window.location.reload();
+            },
+          },
+          {
+            text: 'Cancelar',
+            role: 'cancel',
+          },
+        ],
+      });
+      await alert.present();
+    }
   }
 
   onFabClick() {
