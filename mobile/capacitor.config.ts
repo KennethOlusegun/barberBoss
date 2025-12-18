@@ -5,22 +5,36 @@ const config: CapacitorConfig = {
   appId: 'com.barberboss.app',
   appName: 'Barber Boss',
   webDir: 'www',
-  // allowNavigation moved to server property
+  bundledWebRuntime: false,
+
   server: {
     allowNavigation: [
-      '*',
-      'https://*.ngrok-free.app',
-      'https://*.ngrok.io'
+      'edacious-closer-catrice.ngrok-free.dev',
+      '*.ngrok-free.dev',
+      '*.ngrok.io',
+      'localhost',
     ],
-    cleartext: true,
-    androidScheme: 'https'
+    androidScheme: 'https',
+    cleartext: false, // Apenas HTTPS
   },
 
   android: {
-    allowMixedContent: true,
-    webContentsDebuggingEnabled: true
+    allowMixedContent: false,
+    webContentsDebuggingEnabled: true, // Para debug
+    loggingBehavior: 'debug',
   },
-  // plugins removed: CapacitorHttp não será mais usado
+
+  plugins: {
+    SplashScreen: {
+      launchShowDuration: 2000,
+      launchAutoHide: true,
+      backgroundColor: '#1e293b',
+      showSpinner: false,
+    },
+    CapacitorHttp: {
+      enabled: true,
+    },
+  },
 };
 
 export default config;

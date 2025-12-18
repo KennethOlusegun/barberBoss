@@ -1,26 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  🔥 ARQUIVO CRÍTICO - SEM ELE O APP MOBILE NÃO FUNCIONA
+
+  Caminho: android/app/src/main/res/xml/network_security_config.xml
+
+  Este arquivo permite que o Android aceite conexões HTTPS do Ngrok
+  Android 9+ bloqueia por padrão certificados não confiáveis
+-->
 <network-security-config>
-    <!-- Configuração base: permite HTTP para desenvolvimento -->
-    <base-config cleartextTrafficPermitted="true">
+    <!--
+      Configuração base: Permite cleartext (HTTP) e certificados do sistema
+      ATENÇÃO: Em produção, mude cleartextTrafficPermitted="false"
+    -->
+    <base-config cleartextTrafficPermitted="false">
         <trust-anchors>
+            <!-- Certificados do sistema Android -->
             <certificates src="system" />
+            <!-- Certificados instalados pelo usuário -->
             <certificates src="user" />
         </trust-anchors>
     </base-config>
 
-    <!-- Domínios específicos que podem usar HTTP -->
+    <!--
+      🔥 NGROK - Permite todos os domínios .ngrok-free.app e .ngrok.io
+      Necessário porque o Ngrok usa certificados próprios
+    -->
+    <domain-config cleartextTrafficPermitted="false">
+        <domain includeSubdomains="true">ngrok-free.app</domain>
+        <domain includeSubdomains="true">ngrok-free.dev</domain>
+        <domain includeSubdomains="true">ngrok.io</domain>
+        <domain includeSubdomains="true">edacious-closer-catrice.ngrok-free.dev</domain>
+
+        <trust-anchors>
+            <certificates src="system" />
+            <certificates src="user" />
+        </trust-anchors>
+    </domain-config>
+
+    <!--
+      LOCALHOST - Para testes locais
+    -->
     <domain-config cleartextTrafficPermitted="true">
-        <!-- Localhost -->
         <domain includeSubdomains="true">localhost</domain>
         <domain includeSubdomains="true">127.0.0.1</domain>
-
-        <!-- Seu IP local (ajuste conforme necessário) -->
-        <domain includeSubdomains="true">192.168.0.8</domain>
-
-        <!-- Emulador Android -->
         <domain includeSubdomains="true">10.0.2.2</domain>
-
-        <!-- Adicione outros IPs da sua rede se necessário -->
-        <!-- <domain includeSubdomains="true">192.168.1.X</domain> -->
-    </domain-config>
+      </domain-config>
 </network-security-config>

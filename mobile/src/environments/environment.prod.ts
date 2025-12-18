@@ -10,9 +10,9 @@ export const environment: Environment = {
   production: true,
 
   api: {
-    baseUrl: 'https://5c8978c04be2.ngrok-free.app', // TODO: Update with your production API URL
+    baseUrl: 'https://edacious-closer-catrice.ngrok-free.dev',
     apiPrefix: '',
-    timeout: 30000,
+    timeout: 45000, // AUMENTADO: 45s para conexões instáveis
   },
 
   auth: {
@@ -22,28 +22,28 @@ export const environment: Environment = {
   },
 
   app: {
-    name: 'Barber Boss',
-    version: '0.0.1',
+    name: 'Barber Boss Beta',
+    version: '0.0.1-beta',
     defaultLanguage: 'pt-BR',
     supportedLanguages: ['pt-BR', 'en-US'],
   },
 
   features: {
-    enableDebugMode: false,
-    enableAnalytics: true,
-    enablePushNotifications: true,
+    enableDebugMode: true, // ATIVADO para beta testing
+    enableAnalytics: false,
+    enablePushNotifications: false,
     enableOfflineMode: true,
   },
 
   logging: {
-    enableConsoleLogging: false,
-    logLevel: 'error',
-    enableRemoteLogging: true,
+    enableConsoleLogging: true, // ATIVADO para debug
+    logLevel: 'debug',
+    enableRemoteLogging: false,
   },
 
   storage: {
-    prefix: 'bb_',
-    type: 'indexedDB',
+    prefix: 'bb_beta_',
+    type: 'localStorage',
   },
 
   business: {
