@@ -70,6 +70,22 @@ web_modules/
 .env.*
 !.env.example
 
+# Backend env (segredos)
+backend/.env
+
+# node_modules (garantir para todos os pacotes)
+backend/node_modules/
+mobile/node_modules/
+
+# Dados do Postgres (volume local)
+pgdata/
+
+# Arquivos sensíveis
+*.local
+*.secret
+*.bak
+*.tmp
+
 # parcel-bundler cache (https://parceljs.org/)
 .cache
 .parcel-cache
@@ -139,3 +155,4 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
+android/app/src/main/res/xml/network_security_config.xml
