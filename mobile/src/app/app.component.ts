@@ -53,8 +53,10 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
     NgForOf,
     NgIf
   ],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA]
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  standalone: true
 })
+
 export class AppComponent implements OnInit {
   appPages = [
     { title: 'Dashboard', url: '/dashboard', icon: 'dashboard' },
@@ -65,8 +67,10 @@ export class AppComponent implements OnInit {
     { title: 'Perfil', url: '/barber/profile', icon: 'account_circle' },
   ];
   selectedPath = '';
-
   showFab = false;
+  isPublicPage = false;
+
+  private publicRoutes = ['/login', '/register', '/forgot-password'];
 
   constructor(
     private router: Router,
@@ -80,6 +84,8 @@ export class AppComponent implements OnInit {
         this.selectedPath = event.urlAfterRedirects;
         // Exibe o FAB apenas na rota de agendamentos
         this.showFab = this.selectedPath.startsWith('/barber/appointments');
+        // Verifica se está em uma página pública
+        this.isPublicPage = this.publicRoutes.some(route => this.selectedPath.includes(route));
       });
   }
 

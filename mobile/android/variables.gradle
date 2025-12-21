@@ -1,10 +1,13 @@
 ext {
     minSdkVersion = 23
+    // 👇 O compilador precisa ser 35 para entender o código do Capacitor
     compileSdkVersion = 35
-    targetSdkVersion = 35
+    // 👇 O alvo continua 34 para evitar o bug dos botões travados
+    targetSdkVersion = 34
+
     jdkVersion = 17
 
-    // Versão do Kotlin (importante para evitar conflitos)
+    // Versão do Kotlin
     kotlinVersion = '1.9.10'
 
     // Versões Estáveis
@@ -15,6 +18,7 @@ ext {
     androidxFragmentVersion = '1.6.2'
     coreSplashScreenVersion = '1.0.1'
     androidxWebkitVersion = '1.9.0'
+
     junitVersion = '4.13.2'
     androidxJunitVersion = '1.1.5'
     androidxEspressoCoreVersion = '3.5.1'

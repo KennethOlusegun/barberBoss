@@ -1,6 +1,7 @@
 <ion-app>
   <!-- Sidebar Rail (Mobile Drawer) -->
   <ion-menu
+    *ngIf="!isPublicPage"
     side="start"
     menuId="main-menu"
     contentId="main-content"
@@ -23,7 +24,7 @@
     </ion-content>
   </ion-menu>
 
-  <div class="app-shell">
+  <div *ngIf="!isPublicPage" class="app-shell">
     <!-- Sidebar Rail (Desktop Only) -->
     <nav class="rail-desktop">
       <ul>
@@ -37,7 +38,7 @@
 
     <div class="main-content" id="main-content">
       <!-- Header -->
-      <ion-header class="app-header">
+      <ion-header class="app-header" *ngIf="!isPublicPage">
         <ion-toolbar>
           <!-- Hamburger for mobile -->
           <ion-buttons slot="start" class="show-mobile">
@@ -64,21 +65,24 @@
       </ion-header>
 
       <!-- Page Content -->
-      <ion-content>
-        <router-outlet></router-outlet>
-        <!-- FAB -->
-        <ion-fab
-          *ngIf="showFab"
-          slot="fixed"
-          vertical="bottom"
-          horizontal="end"
-          class="main-fab"
-        >
-          <ion-fab-button (click)="onFabClick()">
-            <mat-icon>add</mat-icon>
-          </ion-fab-button>
-        </ion-fab>
-      </ion-content>
+      <router-outlet></router-outlet>
+      <!-- FAB -->
+      <ion-fab
+        *ngIf="showFab && !isPublicPage"
+        slot="fixed"
+        vertical="bottom"
+        horizontal="end"
+        class="main-fab"
+      >
+        <ion-fab-button (click)="onFabClick()">
+          <mat-icon>add</mat-icon>
+        </ion-fab-button>
+      </ion-fab>
     </div>
+  </div>
+
+  <!-- Conteúdo para páginas públicas -->
+  <div *ngIf="isPublicPage" style="height: 100%; width: 100%;">
+    <router-outlet></router-outlet>
   </div>
 </ion-app>

@@ -33,7 +33,7 @@ $barber-grey-steel: #94a3b8;
     rgba(30, 41, 59, 0.5) 100%
   );
   position: relative;
-  z-index: 1000; // Garante que o login fique acima de overlays acidentais
+  /* z-index removido para evitar stacking context problemático no Android */
 
   @media (max-width: 768px) {
     padding: 1.5rem 1rem;
@@ -215,7 +215,6 @@ $barber-grey-steel: #94a3b8;
   font-size: 1rem;
   color: $barber-white-pure;
   padding: 0;
-  pointer-events: auto !important;
 
   &::placeholder {
     color: rgba(148, 163, 184, 0.5);
@@ -391,7 +390,6 @@ $barber-grey-steel: #94a3b8;
   min-height: 50px;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
-  pointer-events: auto !important;
 
   &:hover:not([disabled]) {
     background: #2563eb;

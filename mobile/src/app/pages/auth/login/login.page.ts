@@ -10,6 +10,7 @@ import {
 import { IonicModule } from '@ionic/angular';
 import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
+import { SplashScreen } from '@capacitor/splash-screen';
 import { AuthService } from '../../../core/services/auth/auth.service';
 import { LoginCredentials } from '../../../core/services/auth/auth.types';
 
@@ -42,14 +43,18 @@ export class LoginPage implements OnInit {
 
   ngOnInit() {
     this.initForm();
+  }
 
-    // Garantir que isLoading está false
-    this.isLoading = false;
-
-    // Forçar habilitação dos campos após render
-    setTimeout(() => {
-      this.loginForm.enable();
-    }, 100);
+  /**
+   * CRÍTICO: Remove camada transparente do SplashScreen no Android 12+/15
+   */
+  async ionViewDidEnter() {
+    try {
+      await SplashScreen.hide();
+      console.log('✅ SplashScreen hidden');
+    } catch (error) {
+      console.warn('⚠️ SplashScreen hide failed:', error);
+    }
   }
 
   private initForm(): void {
@@ -60,6 +65,7 @@ export class LoginPage implements OnInit {
   }
 
   togglePasswordVisibility(): void {
+    console.log('👁️ Toggle password');
     this.showPassword = !this.showPassword;
   }
 
@@ -78,15 +84,15 @@ export class LoginPage implements OnInit {
     };
 
     try {
-      // Executa o Observable do login corretamente
       const { firstValueFrom } = await import('rxjs');
       await firstValueFrom(this.authService.login(credentials));
+      console.log('✅ Login successful');
       this.router.navigate(['/tabs/tab1']);
     } catch (error: any) {
+      console.error('❌ Login error:', error);
       this.errorMessage =
         error?.error?.message ||
         'Erro ao fazer login. Verifique suas credenciais.';
-      console.error('Login error:', error);
     } finally {
       this.isLoading = false;
     }

@@ -53,10 +53,11 @@ export class HttpConfigInterceptor implements HttpInterceptor {
       catchError((error: HttpErrorResponse) => {
         return this.handleError(error);
       })
-    );
+    ) as Observable<HttpEvent<any>>; // <--- CORREÇÃO 1: Cast explícito para garantir tipagem
   }
 
-  private async handleError(error: HttpErrorResponse): Promise<Observable<never>> {
+  // <--- CORREÇÃO 2: Removido 'async' e alterado retorno para Observable<never>
+  private handleError(error: HttpErrorResponse): Observable<never> {
     let errorMessage = 'Erro desconhecido';
 
     if (error.error instanceof ErrorEvent) {
@@ -73,8 +74,9 @@ export class HttpConfigInterceptor implements HttpInterceptor {
     }
 
     // Exibir toast apenas para erros críticos
+    // <--- CORREÇÃO 3: Chamada do Toast sem 'await' para não bloquear o fluxo síncrono do Observable
     if (error.status !== 401 && error.status !== 400) {
-      await this.showErrorToast(errorMessage);
+      this.showErrorToast(errorMessage);
     }
 
     return throwError(() => error);
@@ -100,6 +102,7 @@ export class HttpConfigInterceptor implements HttpInterceptor {
     }
   }
 
+  // Este método continua async pois lida com a UI do Ionic, mas é chamado sem await no handleError
   private async showErrorToast(message: string): Promise<void> {
     const toast = await this.toastController.create({
       message: message,
