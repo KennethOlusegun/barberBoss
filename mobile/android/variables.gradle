@@ -4,7 +4,10 @@ ext {
     targetSdkVersion = 35
     jdkVersion = 17
 
-    // Versões Estáveis (Compatíveis com seu Gradle 8.2)
+    // Versão do Kotlin (importante para evitar conflitos)
+    kotlinVersion = '1.9.10'
+
+    // Versões Estáveis
     androidxActivityVersion = '1.8.0'
     androidxAppCompatVersion = '1.6.1'
     androidxCoordinatorLayoutVersion = '1.2.0'

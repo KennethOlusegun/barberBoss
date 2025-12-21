@@ -31,6 +31,8 @@ export class LoginPage implements OnInit {
   isLoading = false;
   showPassword = false;
   errorMessage = '';
+  emailFocused = false;
+  passwordFocused = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -40,6 +42,14 @@ export class LoginPage implements OnInit {
 
   ngOnInit() {
     this.initForm();
+
+    // Garantir que isLoading está false
+    this.isLoading = false;
+
+    // Forçar habilitação dos campos após render
+    setTimeout(() => {
+      this.loginForm.enable();
+    }, 100);
   }
 
   private initForm(): void {

@@ -1,0 +1,15 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "build-mobile-apk",
+			"type": "shell",
+			"command": "npm run build && npx cap sync android && cd android && ./gradlew assembleDebug",
+			"args": [],
+			"problemMatcher": [
+				"$tsc"
+			],
+			"group": "build"
+		}
+	]
+}

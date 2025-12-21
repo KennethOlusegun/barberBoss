@@ -1,16 +1,20 @@
 // Arquivo: android/build.gradle
 
 buildscript {
+    // IMPORTANTE: Aplicar o variables.gradle ANTES de usar as variáveis
+    apply from: "variables.gradle"
+    
     repositories {
         google()
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.2.1'
+        classpath 'com.android.tools.build:gradle:8.2.1' 
         classpath 'com.google.gms:google-services:4.4.0'
     }
 }
 
+// Aplicar novamente para disponibilizar em todos os projetos
 apply from: "variables.gradle"
 
 allprojects {
@@ -18,23 +22,23 @@ allprojects {
         google()
         mavenCentral()
     }
+    
+    // Força todas as dependências Kotlin a usarem a mesma versão
+    configurations.all {
+        resolutionStrategy {
+            force 'org.jetbrains.kotlin:kotlin-stdlib:1.9.10'
+            force 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.10'
+            force 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.10'
+        }
+    }
 }
 
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
 
+// Configuração do Java para todos os subprojetos
 subprojects {
-    // 1. Correção de duplicidade do Kotlin
-    project.configurations.all {
-        resolutionStrategy {
-            force 'org.jetbrains.kotlin:kotlin-stdlib:1.8.22'
-            force 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.22'
-            force 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.22'
-        }
-    }
-
-    // 2. Forçar Java 17 em tudo (Resolve o erro "source release: 21")
     afterEvaluate { project ->
         if (project.hasProperty("android")) {
             project.android {

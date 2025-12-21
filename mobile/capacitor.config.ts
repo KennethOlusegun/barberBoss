@@ -4,26 +4,14 @@ import type { CapacitorConfig } from '@capacitor/cli';
 const config: CapacitorConfig = {
   appId: 'com.barberboss.app',
   appName: 'Barber Boss',
-  webDir: 'www',
+  webDir: 'www', // Detectado via package.json
   bundledWebRuntime: false,
-
   server: {
-    allowNavigation: [
-      'edacious-closer-catrice.ngrok-free.dev',
-      '*.ngrok-free.dev',
-      '*.ngrok.io',
-      'localhost',
-    ],
     androidScheme: 'https',
-    cleartext: false, // Apenas HTTPS
+    allowNavigation: ['localhost', '*.barberboss.app'],
+    iosScheme: 'ionic',
+    hostname: 'localhost'
   },
-
-  android: {
-    allowMixedContent: false,
-    webContentsDebuggingEnabled: true, // Para debug
-    loggingBehavior: 'debug',
-  },
-
   plugins: {
     SplashScreen: {
       launchShowDuration: 2000,
@@ -31,10 +19,25 @@ const config: CapacitorConfig = {
       backgroundColor: '#1e293b',
       showSpinner: false,
     },
-    CapacitorHttp: {
-      enabled: true,
+    Keyboard: {
+      resize: 'body',
+      style: 'dark',
+      resizeOnFullScreen: true
     },
+    StatusBar: {
+      style: 'dark',
+      backgroundColor: '#1e293b'
+    }
   },
+  android: {
+    webContentsDebuggingEnabled: true,
+    allowMixedContent: false,
+    loggingBehavior: 'debug',
+  },
+  ios: {
+    contentInset: 'automatic',
+    webContentsDebuggingEnabled: true
+  }
 };
 
 export default config;

@@ -2,12 +2,10 @@
   <div class="login-container">
     <!-- Logo e Header Premium -->
     <div class="header-section">
-      <div
-        class="logo-container barber-card barber-card--center barber-card--no-padding"
-      >
+      <div class="logo-container">
         <mat-icon class="logo-icon">content_cut</mat-icon>
       </div>
-      <h1 class="barber-header barber-header--decorated">BarberBoss</h1>
+      <h1 class="app-title">BarberBoss</h1>
       <p class="app-subtitle">Gerencie seu salão com facilidade</p>
     </div>
 
@@ -15,96 +13,93 @@
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
       <!-- Campo de Email -->
       <div class="form-group">
-        <ion-item
-          lines="none"
-          class="input-item barber-card barber-card--no-padding"
-          [class.invalid]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
+        <div 
+          class="input-wrapper"
+          [class.input-wrapper--invalid]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
+          [class.input-wrapper--focused]="emailFocused"
         >
-          <mat-icon slot="start" class="input-icon">mail_outline</mat-icon>
-          <ion-input
+          <mat-icon class="input-icon">mail_outline</mat-icon>
+          <input
+            class="input-field"
             formControlName="email"
             type="email"
             placeholder="E-mail"
-            [clearInput]="true"
             autocomplete="email"
-          >
-          </ion-input>
-        </ion-item>
+            (focus)="emailFocused = true"
+            (blur)="emailFocused = false"
+          />
+        </div>
         <div
           class="error-message"
           *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
         >
-          <ion-text color="danger">
-            <small>{{ getErrorMessage('email') }}</small>
-          </ion-text>
+          {{ getErrorMessage('email') }}
         </div>
       </div>
 
       <!-- Campo de Senha -->
-      <div class="form-group password-field-wrapper">
-        <ion-item
-          lines="none"
-          class="input-item input-item-password barber-card barber-card--no-padding"
-          [class.invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
+      <div class="form-group">
+        <div 
+          class="input-wrapper"
+          [class.input-wrapper--invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
+          [class.input-wrapper--focused]="passwordFocused"
         >
-          <mat-icon slot="start" class="input-icon">lock_outline</mat-icon>
-          <ion-input
+          <mat-icon class="input-icon">lock_outline</mat-icon>
+          <input
+            class="input-field input-field--password"
             formControlName="password"
             [type]="showPassword ? 'text' : 'password'"
             placeholder="Senha"
             autocomplete="current-password"
-          >
-          </ion-input>
+            (focus)="passwordFocused = true"
+            (blur)="passwordFocused = false"
+          />
           <button
             type="button"
             class="eye-icon-btn"
             (click)="togglePasswordVisibility()"
+            (mousedown)="$event.preventDefault()"
+            tabindex="-1"
           >
-            <mat-icon
-              >{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon
-            >
+            <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
           </button>
-        </ion-item>
+        </div>
         <div
           class="error-message"
           *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
         >
-          <ion-text color="danger">
-            <small>{{ getErrorMessage('password') }}</small>
-          </ion-text>
+          {{ getErrorMessage('password') }}
         </div>
       </div>
 
       <!-- Link Esqueci a Senha -->
       <div class="forgot-password-section">
-        <ion-button
-          fill="clear"
-          size="small"
-          (click)="goToForgotPassword()"
+        <button
+          type="button"
           class="forgot-password-btn"
+          (click)="goToForgotPassword()"
         >
           Esqueceu a senha?
-        </ion-button>
+        </button>
       </div>
 
       <!-- Mensagem de Erro -->
-      <ion-text color="danger" *ngIf="errorMessage" class="error-alert">
-        <div class="error-box status-line status-line--danger">
+      <div *ngIf="errorMessage" class="error-alert">
+        <div class="error-box">
           <mat-icon>error_outline</mat-icon>
           <span>{{ errorMessage }}</span>
         </div>
-      </ion-text>
+      </div>
 
       <!-- Botão de Login -->
-      <ion-button
-        expand="block"
+      <button
         type="submit"
+        class="login-btn"
         [disabled]="isLoading"
-        class="login-btn glow-fab"
       >
-        <ion-spinner name="crescent" *ngIf="isLoading"></ion-spinner>
         <span *ngIf="!isLoading">Entrar</span>
-      </ion-button>
+        <span *ngIf="isLoading">Carregando...</span>
+      </button>
 
       <!-- Divider -->
       <div class="divider">
@@ -112,24 +107,23 @@
       </div>
 
       <!-- Botão de Registro -->
-      <ion-button
-        expand="block"
-        fill="outline"
+      <button
+        type="button"
+        class="register-btn"
         (click)="goToRegister()"
         [disabled]="isLoading"
-        class="register-btn"
       >
         Criar uma conta
-      </ion-button>
+      </button>
     </form>
 
     <!-- Footer -->
     <div class="footer-section">
       <p class="footer-text">
         Ao continuar, você concorda com nossos
-        <a href="#" class="footer-link">Termos de Uso</a>
+        <a href="#" class="footer-link" (click)="$event.preventDefault()">Termos de Uso</a>
         e
-        <a href="#" class="footer-link">Política de Privacidade</a>
+        <a href="#" class="footer-link" (click)="$event.preventDefault()">Política de Privacidade</a>
       </p>
     </div>
   </div>

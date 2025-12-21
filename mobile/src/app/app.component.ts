@@ -7,13 +7,11 @@ import { CommonModule, NgForOf, NgIf } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import {
   IonApp,
-  IonRouterOutlet,
   IonMenu,
   IonContent,
   IonList,
   IonMenuToggle,
   IonItem,
-  IonIcon,
   IonHeader,
   IonToolbar,
   IonButtons,
@@ -23,9 +21,10 @@ import {
   IonAvatar,
   IonFab,
   IonFabButton,
-  IonFabList,
 } from '@ionic/angular/standalone';
-import { filter } from 'rxjs';
+import { filter } from 'rxjs/operators';
+
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 @Component({
   selector: 'app-root',
@@ -34,8 +33,8 @@ import { filter } from 'rxjs';
   imports: [
     CommonModule,
     RouterModule,
-    NgForOf,
     MatIconModule,
+    // Ionic Standalone Modules
     IonApp,
     IonMenu,
     IonContent,
@@ -51,7 +50,10 @@ import { filter } from 'rxjs';
     IonAvatar,
     IonFab,
     IonFabButton,
+    NgForOf,
+    NgIf
   ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class AppComponent implements OnInit {
   appPages = [

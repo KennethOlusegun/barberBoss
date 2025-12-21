@@ -20,10 +20,6 @@ $barber-grey-steel: #94a3b8;
 .login-content {
   --background: #{$barber-midnight-navy};
   background-color: $barber-midnight-navy;
-
-  ion-content {
-    --background: #{$barber-midnight-navy};
-  }
 }
 
 .login-container {
@@ -36,6 +32,8 @@ $barber-grey-steel: #94a3b8;
     rgba(11, 17, 32, 0.95) 0%,
     rgba(30, 41, 59, 0.5) 100%
   );
+  position: relative;
+  z-index: 1000; // Garante que o login fique acima de overlays acidentais
 
   @media (max-width: 768px) {
     padding: 1.5rem 1rem;
@@ -100,6 +98,27 @@ $barber-grey-steel: #94a3b8;
   }
 }
 
+.app-title {
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    "Helvetica Neue",
+    sans-serif;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: $barber-white-pure;
+  text-align: center;
+  margin: 0;
+  letter-spacing: -0.5px;
+
+  @media (max-width: 480px) {
+    font-size: 2rem;
+  }
+}
+
 .app-subtitle {
   font-family:
     "Inter",
@@ -142,70 +161,115 @@ $barber-grey-steel: #94a3b8;
   gap: 0.5rem;
 }
 
-.input-item {
-  --padding-start: 1rem;
-  --padding-end: 1rem;
-  --padding-top: 0.75rem;
-  --padding-bottom: 0.75rem;
-  --background: #{$barber-slate-grey};
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
   background-color: $barber-slate-grey;
   border-radius: 8px;
   border: 2px solid transparent;
+  padding: 0.75rem 1rem;
   transition: all 300ms ease-in-out;
-  overflow: hidden;
 
-  ion-input {
-    font-family:
-      "Inter",
-      -apple-system,
-      BlinkMacSystemFont,
-      "Segoe UI",
-      Roboto,
-      "Helvetica Neue",
-      sans-serif;
-    font-size: 1rem;
-    color: $barber-white-pure;
-
-    &::placeholder {
-      color: rgba(148, 163, 184, 0.5);
-    }
-  }
-
-  &:focus-within {
+  &--focused {
     border-color: $barber-royal-blue;
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
     background-color: rgba(30, 41, 59, 0.8);
+
+    .input-icon {
+      color: $barber-royal-blue;
+    }
   }
 
-  &.invalid {
+  &--invalid {
     border-color: $barber-vintage-red;
     box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
   }
 
   @media (max-width: 480px) {
-    --padding-start: 0.75rem;
-    --padding-end: 0.75rem;
+    padding: 0.65rem 0.75rem;
   }
 }
 
 .input-icon {
   color: $barber-grey-steel;
-  margin-right: 0.5rem;
+  margin-right: 0.75rem;
   font-size: 1.25rem;
   transition: color 300ms ease-in-out;
+  flex-shrink: 0;
 }
 
-.input-item:focus-within .input-icon {
-  color: $barber-royal-blue;
+.input-field {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    "Helvetica Neue",
+    sans-serif;
+  font-size: 1rem;
+  color: $barber-white-pure;
+  padding: 0;
+  pointer-events: auto !important;
+
+  &::placeholder {
+    color: rgba(148, 163, 184, 0.5);
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  &--password {
+    padding-right: 2.5rem;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 0.95rem;
+  }
 }
 
-.password-toggle {
-  --color: #{$barber-grey-steel};
-  height: 100%;
-  margin: 0;
+.eye-icon-btn {
+  position: absolute;
+  right: 0.5rem;
+  background: transparent;
+  border: none;
+  padding: 0.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.5rem;
+  min-width: 2.5rem;
+  outline: none;
+  border-radius: 6px;
+  transition: background-color 200ms ease;
+  -webkit-tap-highlight-color: transparent;
 
   &:hover {
-    --color: #{$barber-royal-blue};
+    background-color: rgba(59, 130, 246, 0.1);
+  }
+
+  &:active {
+    background-color: rgba(59, 130, 246, 0.2);
+  }
+
+  mat-icon {
+    color: $barber-grey-steel;
+    font-size: 1.375rem;
+    width: 1.375rem;
+    height: 1.375rem;
+    transition: color 200ms;
+    pointer-events: none;
+  }
+
+  &:hover mat-icon {
+    color: $barber-royal-blue;
   }
 }
 
@@ -236,7 +300,9 @@ $barber-grey-steel: #94a3b8;
 }
 
 .forgot-password-btn {
-  --color: $barber-royal-blue;
+  background: transparent;
+  border: none;
+  color: $barber-royal-blue;
   font-family:
     "Inter",
     -apple-system,
@@ -249,15 +315,12 @@ $barber-grey-steel: #94a3b8;
   font-weight: 600;
   text-transform: none;
   padding: 0;
-  height: auto;
-  --padding-bottom: 0;
-  --padding-end: 0;
-  --padding-start: 0;
-  --padding-top: 0;
-  letter-spacing: 0;
+  cursor: pointer;
+  transition: all 200ms ease;
+  -webkit-tap-highlight-color: transparent;
 
   &:hover {
-    --color: #4f8cff;
+    color: #4f8cff;
     text-decoration: underline;
   }
 }
@@ -298,50 +361,16 @@ $barber-grey-steel: #94a3b8;
     flex-shrink: 0;
     color: $barber-vintage-red;
   }
-  // Estilo para botão do olho de senha
-  .password-field-wrapper {
-    position: relative;
-  }
-
-  .eye-icon-btn {
-    position: absolute;
-    top: 50%;
-    right: 1.5rem;
-    transform: translateY(-50%);
-    background: transparent;
-    border: none;
-    padding: 0;
-    z-index: 1000;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 2.5rem;
-    width: 2.5rem;
-    outline: none;
-
-    mat-icon {
-      color: $barber-grey-steel;
-      font-size: 1.5rem;
-      width: 1.5rem;
-      height: 1.5rem;
-      transition: color 300ms;
-    }
-
-    &:hover mat-icon {
-      color: $barber-royal-blue;
-    }
-  }
 }
 
 // ============================================================================
-// 7. BOTÃO DE LOGIN (COM GLOW EFFECT)
+// 7. BOTÃO DE LOGIN
 // ============================================================================
 
 .login-btn {
-  --background: #{$barber-royal-blue};
-  --background-activated: #2563eb;
-  --color: #{$barber-white-pure};
+  width: 100%;
+  background: $barber-royal-blue;
+  color: $barber-white-pure;
   font-family:
     "Inter",
     -apple-system,
@@ -355,13 +384,17 @@ $barber-grey-steel: #94a3b8;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   padding: 0.875rem 1.5rem;
+  border: none;
   border-radius: 8px;
   box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
   transition: all 300ms ease-in-out;
-  height: auto;
   min-height: 50px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  pointer-events: auto !important;
 
   &:hover:not([disabled]) {
+    background: #2563eb;
     box-shadow: 0 8px 25px rgba(59, 130, 246, 0.5);
     transform: translateY(-2px);
   }
@@ -374,10 +407,6 @@ $barber-grey-steel: #94a3b8;
   &[disabled] {
     opacity: 0.7;
     cursor: not-allowed;
-  }
-
-  ion-spinner {
-    margin-right: 0.5rem;
   }
 
   @media (max-width: 480px) {
@@ -424,8 +453,9 @@ $barber-grey-steel: #94a3b8;
 // ============================================================================
 
 .register-btn {
-  --border-color: #{$barber-royal-blue};
-  --color: #{$barber-royal-blue};
+  width: 100%;
+  background: transparent;
+  color: $barber-royal-blue;
   font-family:
     "Inter",
     -apple-system,
@@ -439,14 +469,15 @@ $barber-grey-steel: #94a3b8;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   padding: 0.875rem 1.5rem;
-  border-radius: 8px;
   border: 2px solid $barber-royal-blue;
-  height: auto;
+  border-radius: 8px;
   min-height: 50px;
   transition: all 300ms ease-in-out;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 
   &:hover:not([disabled]) {
-    --background: rgba(59, 130, 246, 0.1);
+    background: rgba(59, 130, 246, 0.1);
     box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
     transform: translateY(-2px);
   }
