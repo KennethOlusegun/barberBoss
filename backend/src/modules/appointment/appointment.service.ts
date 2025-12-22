@@ -268,6 +268,7 @@ export class AppointmentService {
             userId: createAppointmentDto.userId,
             clientName: createAppointmentDto.clientName?.trim(),
             serviceId: createAppointmentDto.serviceId,
+            barberId: createAppointmentDto.barberId,
           },
           include: {
             user: true,

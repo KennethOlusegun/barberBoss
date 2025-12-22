@@ -59,6 +59,13 @@ export class CreateAppointmentDto {
   clientName?: string;
 
   /**
+   * ID do barbeiro responsável pelo atendimento
+   */
+  @IsNotEmpty({ message: 'barberId é obrigatório' })
+  @IsUUID('4', { message: 'barberId deve ser um UUID válido (formato v4)' })
+  barberId: string;
+
+  /**
    * ID do serviço a ser agendado
    */
   @IsNotEmpty({ message: 'serviceId é obrigatório' })

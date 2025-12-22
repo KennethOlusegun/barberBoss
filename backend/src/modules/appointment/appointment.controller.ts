@@ -53,23 +53,18 @@ export class AppointmentController {
   @ApiResponse({ status: 401, description: 'Não autorizado' })
   create(
     @Body() createAppointmentDto: CreateAppointmentDto,
-    @CurrentUser() user?: { id: string; role: string } | undefined,
+    // CORREÇÃO 1: Removido "| undefined" redundante
+    @CurrentUser() user?: { id: string; role: string },
   ) {
-    // LOG DE DEBUG: início do método create (controller)
-
     console.log('--- [DEBUG] AppointmentController.create ---');
     console.log('DTO recebido:', JSON.stringify(createAppointmentDto, null, 2));
 
-    // Se o usuário está autenticado e não forneceu userId, usar o ID do usuário logado
     if (user?.id && !createAppointmentDto.userId) {
       createAppointmentDto.userId = user.id;
     }
 
-    // Definir timezone padrão se não fornecido
     const timezone = createAppointmentDto.timezone || 'America/Sao_Paulo';
 
-    // Não converter a data recebida, apenas repassar para o service
-    // O service já faz o parsing correto e validação de timezone
     return this.appointmentService.create({
       ...createAppointmentDto,
       timezone,
@@ -87,33 +82,40 @@ export class AppointmentController {
     status: 200,
     description: 'Lista de agendamentos retornada com sucesso',
   })
-  findAll(@Query() filter: AppointmentFilterDto) {
-    const { date, userId, barberId, status, page, offset, limit } = filter;
+  findAll(
+    @Query() filter: AppointmentFilterDto,
+    @CurrentUser() user: { id: string; role: string },
+  ) {
+    // CORREÇÃO 2: Removidos 'userId' e 'status' que não estavam sendo usados
+    const { date, barberId, page, offset, limit } = filter;
 
-    // Converter offset para page se necessário
     const paginationDto: PaginationDto = { limit: limit || 10 };
     if (page) {
       paginationDto.page = page;
     } else if (offset !== undefined) {
-      // Converter offset para page: page = (offset / limit) + 1
       paginationDto.page = Math.floor((offset || 0) / (limit || 10)) + 1;
     } else {
       paginationDto.page = 1;
     }
 
     if (date) {
-      return this.appointmentService.findByDate(new Date(date), paginationDto);
+      return this.appointmentService.findByDate(
+        dayjs(date).toDate(),
+        paginationDto,
+      );
     }
-    if (barberId) {
-      return this.appointmentService.findByBarber(barberId, paginationDto);
+
+    // Lógica para Barbeiro/Admin ver sua própria agenda
+    if (user.role === Role.BARBER || user.role === Role.ADMIN) {
+      const targetBarberId = barberId || user.id;
+      return this.appointmentService.findByBarber(
+        targetBarberId,
+        paginationDto,
+      );
     }
-    if (userId) {
-      return this.appointmentService.findByUser(userId, paginationDto);
-    }
-    if (status) {
-      return this.appointmentService.findByStatus(status, paginationDto);
-    }
-    return this.appointmentService.findAll(paginationDto);
+
+    // Lógica para Cliente ver seus agendamentos
+    return this.appointmentService.findByUser(user.id, paginationDto);
   }
 
   @Get(':id')
@@ -147,7 +149,6 @@ export class AppointmentController {
     @Body() updateAppointmentDto: UpdateAppointmentDto,
     @CurrentUser() user: { id: string; role: string },
   ) {
-    // Se for CLIENT, só pode atualizar/cancelar o próprio agendamento
     if (user?.role === 'CLIENT') {
       return this.appointmentService.findOne(id).then((appointment) => {
         if (appointment.userId !== user.id) {
@@ -176,22 +177,11 @@ export class AppointmentController {
   }
 
   @Get('available-slots/search')
-  @Public() // Endpoint público para clientes consultarem disponibilidade
+  @Public()
   @ApiOperation({
     summary: 'Buscar horários disponíveis para agendamento',
     description:
       'Retorna lista de horários disponíveis para um serviço em uma data específica',
-  })
-  @ApiQuery({
-    name: 'date',
-    required: true,
-    description: 'Data para buscar horários (ISO 8601)',
-    example: '2025-12-10',
-  })
-  @ApiQuery({
-    name: 'serviceId',
-    required: true,
-    description: 'UUID do serviço',
   })
   @ApiResponse({
     status: 200,
@@ -216,11 +206,11 @@ export class AppointmentController {
   })
   @ApiResponse({ status: 400, description: 'Data ou serviço inválido' })
   @ApiResponse({ status: 404, description: 'Serviço não encontrado' })
-  async getAvailableSlots(
-    @Query('date') date: string,
-    @Query('serviceId') serviceId: string,
-  ) {
-    return this.appointmentService.getAvailableSlots(date, serviceId);
+  async getAvailableSlots(@Query() query: GetAvailableSlotsDto) {
+    return this.appointmentService.getAvailableSlots(
+      query.date,
+      query.serviceId,
+    );
   }
 
   @Get('client-history')
@@ -229,48 +219,12 @@ export class AppointmentController {
   @ApiOperation({
     summary:
       'Buscar histórico de agendamentos de um cliente por nome ou telefone',
-    description:
-      'Retorna o histórico paginado de agendamentos de um cliente. ' +
-      'Busca por nome (parcial, case-insensitive) ou telefone. ' +
-      'Pelo menos um dos parâmetros (clientName ou phone) deve ser fornecido.',
+    description: 'Retorna o histórico paginado...',
   })
-  @ApiQuery({
-    name: 'clientName',
-    required: false,
-    description: 'Nome do cliente (busca parcial)',
-    example: 'João',
-  })
-  @ApiQuery({
-    name: 'phone',
-    required: false,
-    description: 'Telefone do cliente',
-    example: '11987654321',
-  })
-  @ApiQuery({
-    name: 'page',
-    required: false,
-    description: 'Número da página',
-    example: 1,
-  })
-  @ApiQuery({
-    name: 'limit',
-    required: false,
-    description: 'Quantidade de itens por página',
-    example: 10,
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Histórico de agendamentos encontrado com sucesso',
-  })
-  @ApiResponse({
-    status: 400,
-    description: 'É necessário fornecer nome ou telefone',
-  })
-  @ApiResponse({ status: 401, description: 'Não autorizado' })
-  @ApiResponse({
-    status: 403,
-    description: 'Acesso negado (apenas Admin e Barber)',
-  })
+  @ApiQuery({ name: 'clientName', required: false })
+  @ApiQuery({ name: 'phone', required: false })
+  @ApiQuery({ name: 'page', required: false })
+  @ApiQuery({ name: 'limit', required: false })
   async getClientHistory(
     @Query('clientName') clientName?: string,
     @Query('phone') phone?: string,

@@ -52,9 +52,7 @@ async function bootstrap() {
   const getAllowedOrigins = (): string[] => {
     if (process.env.NODE_ENV === 'production') {
       if (!process.env.ALLOWED_ORIGINS) {
-        throw new Error(
-          'ALLOWED_ORIGINS deve ser configurado em produção',
-        );
+        throw new Error('ALLOWED_ORIGINS deve ser configurado em produção');
       }
       return process.env.ALLOWED_ORIGINS.split(',').map((origin) =>
         origin.trim(),
@@ -72,8 +70,9 @@ async function bootstrap() {
       'http://192.168.0.8:4200',
       'http://192.168.0.9:8100',
       'capacitor://localhost', // 🔥 CRÍTICO: App Capacitor no iOS
-      'ionic://localhost',      // 🔥 CRÍTICO: App Capacitor no Android
-      'http://localhost',       // 🔥 CRÍTICO: Capacitor genérico
+      'ionic://localhost', // 🔥 CRÍTICO: App Capacitor no Android
+      'http://localhost', // 🔥 CRÍTICO: Capacitor genérico
+      'https://edacious-closer-catrice.ngrok-free.dev', // 🔥 NGROK DOMÍNIO FIXO
     ];
   };
 
@@ -98,16 +97,12 @@ async function bootstrap() {
       } else {
         console.warn(`❌ CORS bloqueou origin: ${origin}`);
         console.warn(`✅ Origins permitidas: ${allowedOrigins.join(', ')}`);
-        
+
         // Em DEV: Permitir mesmo assim (log de warning)
         if (process.env.NODE_ENV !== 'production') {
           callback(null, true);
         } else {
-          callback(
-            new Error(
-              `Origin ${origin} não permitida pelo CORS`,
-            ),
-          );
+          callback(new Error(`Origin ${origin} não permitida pelo CORS`));
         }
       }
     },
