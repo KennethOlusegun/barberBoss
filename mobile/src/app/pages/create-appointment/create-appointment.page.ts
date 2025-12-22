@@ -54,6 +54,7 @@ export class CreateAppointmentPage implements OnInit {
           requiresAuth: false,
         })
         .toPromise();
+      console.log('[DEBUG] Resultado da busca de barbeiros:', result);
       if (Array.isArray(result)) {
         this.barbers = result.map((u: any) => new User(u));
       } else if (result && Array.isArray(result.data)) {
@@ -61,7 +62,9 @@ export class CreateAppointmentPage implements OnInit {
       } else {
         this.barbers = [];
       }
+      console.log('[DEBUG] Barbeiros carregados:', this.barbers);
     } catch (err) {
+      console.error('[DEBUG] Erro ao buscar barbeiros:', err);
       this.barbers = [];
     }
   }

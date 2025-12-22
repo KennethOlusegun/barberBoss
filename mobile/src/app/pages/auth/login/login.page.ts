@@ -87,7 +87,7 @@ export class LoginPage implements OnInit {
       const { firstValueFrom } = await import('rxjs');
       await firstValueFrom(this.authService.login(credentials));
       console.log('✅ Login successful');
-      this.router.navigate(['/tabs/tab1']);
+      this.router.navigate(['/dashboard']);
     } catch (error: any) {
       console.error('❌ Login error:', error);
       this.errorMessage =

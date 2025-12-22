@@ -21,10 +21,13 @@ import {
   IonAvatar,
   IonFab,
   IonFabButton,
+  IonRouterOutlet, // <--- 1. IMPORTADO AQUI
 } from '@ionic/angular/standalone';
 import { filter } from 'rxjs/operators';
-
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+
+// StatusBar
+import { StatusBar, Style } from '@capacitor/status-bar';
 
 @Component({
   selector: 'app-root',
@@ -34,7 +37,6 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
     CommonModule,
     RouterModule,
     MatIconModule,
-    // Ionic Standalone Modules
     IonApp,
     IonMenu,
     IonContent,
@@ -50,13 +52,13 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
     IonAvatar,
     IonFab,
     IonFabButton,
+    IonRouterOutlet, // <--- 2. ADICIONADO AQUI
     NgForOf,
     NgIf
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   standalone: true
 })
-
 export class AppComponent implements OnInit {
   appPages = [
     { title: 'Dashboard', url: '/dashboard', icon: 'dashboard' },
@@ -82,15 +84,23 @@ export class AppComponent implements OnInit {
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe((event: any) => {
         this.selectedPath = event.urlAfterRedirects;
-        // Exibe o FAB apenas na rota de agendamentos
         this.showFab = this.selectedPath.startsWith('/barber/appointments');
-        // Verifica se está em uma página pública
         this.isPublicPage = this.publicRoutes.some(route => this.selectedPath.includes(route));
       });
   }
 
   async ngOnInit() {
+    await this.configureStatusBar();
     await this.checkBackendConnection();
+  }
+
+  private async configureStatusBar() {
+    try {
+      await StatusBar.setOverlaysWebView({ overlay: true });
+      await StatusBar.setStyle({ style: Style.Dark }); 
+    } catch (error) {
+      console.warn('StatusBar plugin não disponível (web mode)');
+    }
   }
 
   private async checkBackendConnection() {
@@ -101,7 +111,6 @@ export class AppComponent implements OnInit {
     await loading.present();
 
     try {
-      // Aguarda 2s antes de tentar (evita race condition)
       await new Promise(resolve => setTimeout(resolve, 2000));
 
       const response = await fetch(environment.api.baseUrl + '/health', {
@@ -143,7 +152,6 @@ export class AppComponent implements OnInit {
   }
 
   onFabClick() {
-    // Navega para a tela de criação de agendamento
     this.router.navigate(['/barber/appointments/create']);
   }
 }

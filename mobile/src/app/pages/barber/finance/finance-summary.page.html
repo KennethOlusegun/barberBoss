@@ -1,102 +1,94 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>Resumo Financeiro</ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content class="ion-padding">
 
-<ion-content>
-  <div *ngIf="loading" class="loading-container">
-    <ion-spinner name="crescent"></ion-spinner>
-    <p>Carregando dados...</p>
-  </div>
-  <div *ngIf="!loading && error" class="error-container">
-    <ion-text color="danger">
-      <h2>Erro</h2>
-      <p>{{ error }}</p>
-    </ion-text>
-  </div>
-  <div *ngIf="!loading && !error">
-    <ion-card>
-      <ion-card-header>
-        <ion-card-title>Receita Total</ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        <h2>R$ {{ financeSummary?.total | number:'1.2-2' }}</h2>
-        <div class="resumo-grid">
-          <div class="resumo-item">
-            <h3>R$ {{ financeSummary?.completed | number:'1.2-2' }}</h3>
-            <p>Concluídos</p>
-          </div>
-          <div class="resumo-item">
-            <h3>R$ {{ financeSummary?.pending | number:'1.2-2' }}</h3>
-            <p>Pendentes</p>
-          </div>
-        </div>
-      </ion-card-content>
-    </ion-card>
-    <ion-list class="extrato-list" *ngIf="financeSummary?.appointments?.length">
-      <ion-list-header>Agendamentos</ion-list-header>
-      <ion-item
-        *ngFor="let ag of financeSummary.appointments"
-        class="extrato-item"
-        lines="none"
-      >
-        <!-- Indicador de status -->
-        <div
-          class="status-indicator"
-          [ngClass]="{
-            'confirmado': ag.status === 'CONFIRMED',
-            'pendente': ag.status === 'PENDING'
-          }"
-          slot="start"
-        >
-          <mat-icon
-            *ngIf="ag.status === 'CONFIRMED'"
-            color="primary"
-            fontIcon="check_circle"
-            class="icon-status"
-            >check_circle</mat-icon
-          >
-          <mat-icon
-            *ngIf="ag.status === 'PENDING'"
-            color="warn"
-            fontIcon="schedule"
-            class="icon-status"
-            >schedule</mat-icon
-          >
-        </div>
+  <div class="content-wrapper">
 
-        <!-- Informações do serviço -->
-        <div class="extrato-info">
-          <div class="servico-nome">{{ ag.service?.name }}</div>
-          <div class="servico-detalhes">
-            <span class="data">{{ ag.startsAt | date: 'dd MMM' }}</span>
-            <span class="cliente" *ngIf="ag.user?.name"
-              >• {{ ag.user.name }}</span
-            >
+    <div class="main-section">
+
+      <h2 class="page-title">RESUMO FINANCEIRO</h2>
+
+      <div *ngIf="loading" class="loading-container">
+        <ion-spinner name="crescent"></ion-spinner>
+        <p>Carregando dados...</p>
+      </div>
+
+      <div *ngIf="!loading && error" class="error-container">
+        <ion-text color="danger">
+          <h2>Erro</h2>
+          <p>{{ error }}</p>
+        </ion-text>
+      </div>
+
+      <div *ngIf="!loading && !error">
+        <div class="summary-card">
+          <div class="summary-header">
+            <span>Receita Total</span>
+            <h2 class="total-value">R$ {{ financeSummary?.total | number:'1.2-2' }}</h2>
+          </div>
+
+          <div class="summary-grid">
+            <div class="summary-item completed">
+              <span class="label">Concluídos</span>
+              <span class="value">R$ {{ financeSummary?.completed | number:'1.2-2' }}</span>
+            </div>
+            <div class="summary-divider"></div>
+            <div class="summary-item pending">
+              <span class="label">Pendentes</span>
+              <span class="value">R$ {{ financeSummary?.pending | number:'1.2-2' }}</span>
+            </div>
           </div>
         </div>
 
-        <!-- Valores -->
-        <div class="extrato-valores" slot="end">
+        <h3 class="section-title" *ngIf="financeSummary?.appointments?.length">
+          Histórico Recente
+        </h3>
+
+        <div class="transactions-list" *ngIf="financeSummary?.appointments?.length">
           <div
-            class="comissao"
-            [ngClass]="{ 'confirmado': ag.status === 'CONFIRMED', 'pendente': ag.status === 'PENDING' }"
+            class="transaction-card"
+            *ngFor="let ag of financeSummary.appointments"
+            [class.status-pending]="ag.status === 'PENDING'"
           >
-            +R$ {{ (ag.service?.price ? (ag.service.price *
-            (ag.service.barberCommission ?? 0.5)) : 0 ) | number: '1.2-2' }}
-          </div>
-          <div class="valor-servico">
-            <span>Serviço: R$ {{ ag.service?.price | number: '1.2-2' }}</span>
+            <div class="card-row top">
+              <div class="service-info">
+                <mat-icon *ngIf="ag.status === 'CONFIRMED'" class="icon-success">check_circle</mat-icon>
+                <mat-icon *ngIf="ag.status === 'PENDING'" class="icon-pending">schedule</mat-icon>
+                <span class="service-name">{{ ag.service?.name }}</span>
+              </div>
+              <div class="commission-value" [class.pending]="ag.status === 'PENDING'">
+                +R$ {{ (ag.service?.price ? (ag.service.price * (ag.service.barberCommission ?? 0.5)) : 0 ) | number: '1.2-2' }}
+              </div>
+            </div>
+
+            <div class="card-row bottom">
+              <div class="meta-info">
+                <span class="date">{{ ag.startsAt | date: 'dd MMM, HH:mm' }}</span>
+                <span class="client" *ngIf="ag.user?.name || ag.clientName">
+                  • {{ ag.user?.name || ag.clientName }}
+                </span>
+              </div>
+              <div class="full-price">
+                Total: R$ {{ ag.service?.price | number: '1.2-2' }}
+              </div>
+            </div>
           </div>
         </div>
-      </ion-item>
-    </ion-list>
-    <div
-      *ngIf="financeSummary && !financeSummary.appointments.length"
-      class="empty-state"
-    >
-      Nenhum agendamento encontrado.
+
+        <div
+          *ngIf="financeSummary && !financeSummary.appointments.length"
+          class="empty-state"
+        >
+          <mat-icon>attach_money</mat-icon>
+          <p>Nenhum registro financeiro encontrado.</p>
+        </div>
+      </div>
     </div>
+
+    <div class="bottom-actions" *ngIf="!loading">
+      <ion-button expand="block" class="action-button" (click)="fetchFinanceSummary()">
+        <mat-icon slot="start">refresh</mat-icon>
+        Atualizar Dados
+      </ion-button>
+    </div>
+
   </div>
 </ion-content>

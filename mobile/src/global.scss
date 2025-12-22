@@ -8,9 +8,6 @@
  */
 
 @import "~material-design-icons-iconfont/dist/material-design-icons.css";
-// ============================================================================
-// 0. IMPORTAÇÕES SASS
-// ============================================================================
 
 // ============================================================================
 // 1. CORE CSS IONIC
@@ -29,17 +26,32 @@
 @import "@ionic/angular/css/palettes/dark.system.css";
 
 // ============================================================================
-// 2. CORREÇÃO CRÍTICA DE SAFE AREA (ANDROID 14/15)
+// 2. CORREÇÃO CRÍTICA DE SAFE AREA (EDGE-TO-EDGE)
 // ============================================================================
-// Isso garante que o conteúdo não fique escondido atrás da barra de status
-// e resolve problemas de toque nas bordas em modo Edge-to-Edge.
 
-body {
+/* FIX: Aplica o espaçamento NO HEADER, não no body.
+   Isso empurra os botões para baixo (área clicável) mas mantém o fundo lá em cima. */
+ion-header {
   padding-top: env(safe-area-inset-top);
+  background-color: #1e293b; /* Mesma cor do toolbar para continuidade */
+  
+  /* Garante que o header fique sobre tudo */
+  z-index: 999; 
+}
+
+/* Garante que o toolbar não fique com tamanho errado */
+ion-toolbar {
+  --padding-top: 0;
+  min-height: 56px;
+}
+
+/* Ajuste fino para o body preencher tudo sem cortes brancos */
+body {
+  padding-top: 0; /* REMOVIDO: O Header cuida disso agora */
   padding-bottom: env(safe-area-inset-bottom);
   padding-left: env(safe-area-inset-left);
   padding-right: env(safe-area-inset-right);
-  background-color: $barber-midnight-navy; // Evita flashes brancos
+  background-color: $barber-midnight-navy;
 }
 
 // ============================================================================
@@ -94,25 +106,6 @@ ion-card {
   border: none;
   margin: 0;
   overflow: hidden;
-}
-
-// Header (Toolbar)
-ion-header {
-  ion-toolbar {
-    --background: #{$barber-midnight-navy};
-    --border-style: none;
-    border: none;
-    background-color: $barber-midnight-navy;
-
-    ion-title {
-      color: $barber-white-pure;
-      font-family: "Oswald", sans-serif;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      font-size: 1.5rem;
-    }
-  }
 }
 
 // Footer
@@ -392,25 +385,4 @@ ion-badge {
   .barber-card { padding: 0.75rem; margin-bottom: 0.5rem; }
   .barber-header { font-size: 1.5rem; padding: 1rem; }
   .price-tag { font-size: 0.75rem; padding: 0.35rem 0.75rem; }
-}
-
-// Correção para Tab Bar flutuante
-ion-tab-bar {
-  position: fixed;
-  left: 50%;
-  bottom: 2rem;
-  transform: translateX(-50%);
-  width: calc(100% - 2.5rem);
-  max-width: 420px;
-  border-radius: 2rem;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.18);
-  background: $barber-midnight-navy;
-  border: 1px solid $barber-slate-grey;
-  z-index: 100;
-  padding: 0.5rem 0.5rem;
-}
-
-// Espaço extra no final para não cobrir conteúdo com a tab bar
-ion-content {
-  padding-bottom: 6rem !important;
 }
