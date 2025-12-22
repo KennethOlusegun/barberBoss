@@ -1,0 +1,52 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="dark">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/barber/services"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ isEdit ? 'Editar Serviço' : 'Novo Serviço' }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="service-form-content ion-padding">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="service-form">
+    
+    <div class="form-card">
+      <div class="custom-input-group">
+        <label>Nome do Serviço <span class="required">*</span></label>
+        <ion-input class="custom-input" formControlName="name" type="text" placeholder="Ex: Corte Masculino"></ion-input>
+      </div>
+
+      <div class="custom-input-group">
+        <label>Descrição</label>
+        <ion-textarea class="custom-input" formControlName="description" placeholder="Detalhes do serviço" rows="3"></ion-textarea>
+      </div>
+
+      <div class="custom-input-group">
+        <label>Preço (R$) <span class="required">*</span></label>
+        <ion-input class="custom-input" formControlName="price" type="number" min="0" placeholder="0.00"></ion-input>
+      </div>
+
+      <div class="custom-input-group">
+        <label>Duração (minutos) <span class="required">*</span></label>
+        <ion-input class="custom-input" formControlName="duration" type="number" placeholder="Ex: 30"></ion-input>
+      </div>
+
+      <div class="custom-input-group">
+        <label>Comissão do Barbeiro (%) <span class="required">*</span></label>
+        <ion-input class="custom-input" formControlName="commission" type="number" min="0" max="100" placeholder="50"></ion-input>
+      </div>
+
+      <div class="toggle-group">
+        <label>Serviço Ativo</label>
+        <ion-toggle formControlName="active" mode="ios" color="primary"></ion-toggle>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <ion-button expand="block" type="submit" class="save-btn" [disabled]="form.invalid || loading">
+        <ion-spinner name="crescent" *ngIf="loading"></ion-spinner>
+        <span *ngIf="!loading">SALVAR</span>
+      </ion-button>
+    </div>
+  </form>
+</ion-content>

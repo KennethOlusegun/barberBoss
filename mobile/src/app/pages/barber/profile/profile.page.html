@@ -1,34 +1,41 @@
-<ion-header>
-  <ion-toolbar>
+<ion-header class="ion-no-border">
+  <ion-toolbar color="dark">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
     <ion-title>Meu Perfil</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <form [formGroup]="profileForm" (ngSubmit)="submit()">
-    <ion-item>
-      <ion-label position="floating">Nome</ion-label>
-      <ion-input type="text" formControlName="name"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-label position="floating">E-mail</ion-label>
-      <ion-input type="email" formControlName="email"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-label position="floating">Telefone</ion-label>
-      <ion-input type="tel" formControlName="phone"></ion-input>
-    </ion-item>
-    <ion-button
-      expand="block"
-      type="submit"
-      [disabled]="!profileForm.valid || loading"
-    >
-      Salvar
-    </ion-button>
+<ion-content class="profile-content ion-padding">
+  <form [formGroup]="profileForm" (ngSubmit)="submit()" class="profile-form">
+    <div class="form-card">
+      <div class="custom-input-group">
+        <label>Nome</label>
+        <ion-input class="custom-input" type="text" formControlName="name" placeholder="Seu nome"></ion-input>
+      </div>
+
+      <div class="custom-input-group">
+        <label>E-mail</label>
+        <ion-input class="custom-input" type="email" formControlName="email" placeholder="seu@email.com"></ion-input>
+      </div>
+
+      <div class="custom-input-group">
+        <label>Telefone</label>
+        <ion-input class="custom-input" type="tel" formControlName="phone" placeholder="(00) 00000-0000"></ion-input>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <ion-button expand="block" type="submit" class="save-btn" [disabled]="!profileForm.valid || loading">
+        <ion-spinner name="crescent" *ngIf="loading"></ion-spinner>
+        <span *ngIf="!loading">SALVAR ALTERAÇÕES</span>
+      </ion-button>
+
+      <ion-button expand="block" fill="outline" class="change-password-btn" routerLink="/barber/profile/change-password" [disabled]="loading">
+        <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
+        ALTERAR SENHA
+      </ion-button>
+    </div>
   </form>
-  <ion-spinner
-    *ngIf="loading"
-    name="crescent"
-    style="margin-top: 16px"
-  ></ion-spinner>
 </ion-content>

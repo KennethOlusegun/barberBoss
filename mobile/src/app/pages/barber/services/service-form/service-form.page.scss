@@ -1,19 +1,18 @@
-/* Fundo da tela */
-.password-content {
+.service-form-content {
   --background: #0f172a;
+  /* IMPORTANTE: Sem display: flex aqui */
 }
 
-/* Container do formulário */
-.password-form {
+.service-form {
   width: 100%;
   max-width: 420px;
-  margin: 30px auto;
+  margin: 20px auto;
   display: flex;
   flex-direction: column;
   gap: 24px;
+  padding-bottom: 40px;
 }
 
-/* Card Escuro */
 .form-card {
   background: #1e293b;
   border-radius: 18px;
@@ -22,10 +21,8 @@
   flex-direction: column;
   gap: 20px;
   border: 1px solid rgba(255, 255, 255, 0.05);
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
-/* Labels e Inputs */
 .custom-input-group {
   display: flex;
   flex-direction: column;
@@ -34,43 +31,43 @@
   label {
     color: #94a3b8;
     font-size: 0.9rem;
-    margin-left: 4px;
     font-weight: 500;
+    margin-left: 4px;
+    .required { color: #f87171; }
   }
 }
 
 .custom-input {
   --background: #232a36;
   --color: #fff;
-  --placeholder-color: #64748b;
-  --placeholder-opacity: 1;
   --padding-start: 16px;
   --padding-end: 16px;
   --padding-top: 14px;
   --padding-bottom: 14px;
   --border-radius: 12px;
-  
-  border: 1px solid transparent;
   border-radius: 12px;
   background: #232a36;
-  min-height: 52px;
-
+  min-height: 52px; /* Garante área de toque */
+  
   &.ion-focused {
-    border-color: #3b82f6;
+    border: 1px solid #3b82f6;
     background: #1e293b;
   }
 }
 
-/* Botão */
-.form-actions {
-  margin-top: 10px;
+.toggle-group {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 4px;
+  label { color: #fff; font-size: 1rem; }
 }
 
 .save-btn {
   --background: #3b82f6;
   --color: #fff;
   --border-radius: 14px;
-  height: 54px;
+  height: 56px;
   font-weight: 600;
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+  box-shadow: 0 4px 12px rgba(59,130,246,0.3);
 }

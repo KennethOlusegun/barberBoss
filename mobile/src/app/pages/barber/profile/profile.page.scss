@@ -1,7 +1,70 @@
-ion-content {
-  --padding-top: 16px;
+.profile-content {
+  --background: #0f172a;
 }
 
-ion-item {
-  margin-bottom: 12px;
+.profile-form {
+  width: 100%;
+  max-width: 420px;
+  margin: 30px auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.form-card {
+  background: #1e293b;
+  border-radius: 18px;
+  padding: 24px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.custom-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  label { color: #94a3b8; font-size: 0.9rem; margin-left: 4px; font-weight: 500; }
+}
+
+.custom-input {
+  --background: #232a36;
+  --color: #fff;
+  --padding-start: 16px;
+  --padding-end: 16px;
+  --padding-top: 14px;
+  --padding-bottom: 14px;
+  --border-radius: 12px;
+  border-radius: 12px;
+  background: #232a36;
+  min-height: 52px;
+}
+
+.form-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 10px;
+}
+
+.save-btn {
+  --background: #3b82f6;
+  --color: #fff;
+  --border-radius: 14px;
+  height: 54px;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+  margin: 0;
+}
+
+.change-password-btn {
+  --color: #3b82f6;
+  --border-color: #3b82f6;
+  --border-width: 1px;
+  --border-radius: 14px;
+  --background: transparent;
+  height: 54px;
+  font-weight: 600;
+  margin: 0;
 }

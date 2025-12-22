@@ -14,13 +14,14 @@ import {
   IonicModule,
 } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router'; // <--- Importante adicionar
 
 @Component({
   selector: 'app-barber-profile',
   templateUrl: './profile.page.html',
   styleUrls: ['./profile.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, ReactiveFormsModule, FormsModule],
+  imports: [IonicModule, CommonModule, ReactiveFormsModule, FormsModule, RouterModule], // <--- Adicionar RouterModule aqui
 })
 export class ProfilePage implements OnInit {
   profileForm: FormGroup;
@@ -42,15 +43,24 @@ export class ProfilePage implements OnInit {
   }
 
   ngOnInit() {
+    this.loadUserData();
+  }
+
+  loadUserData() {
     this.authService.getCurrentUser().subscribe({
       next: (user) => {
-        this.userId = user.id;
-        this.profileForm.patchValue({
-          name: user.name,
-          email: user.email,
-          phone: user.phone || '',
-        });
+        if (user) {
+          console.log('Dados do usuário carregados:', user);
+          this.userId = user.id;
+          
+          this.profileForm.patchValue({
+            name: user.name,
+            email: user.email,
+            phone: user.phone || '',
+          });
+        }
       },
+      error: (err) => console.error('Erro ao carregar usuário', err)
     });
   }
 
@@ -59,7 +69,9 @@ export class ProfilePage implements OnInit {
     this.loading = true;
     const loading = await this.loadingCtrl.create({ message: 'Salvando...' });
     await loading.present();
+    
     const payload = { ...this.profileForm.value };
+    
     this.apiService
       .patch(`/users/${this.userId}`, payload, { requiresAuth: true })
       .subscribe({
@@ -69,8 +81,10 @@ export class ProfilePage implements OnInit {
             message: 'Perfil atualizado!',
             color: 'success',
             duration: 2000,
+            position: 'top'
           });
           toast.present();
+          this.authService.refreshUser(); 
         },
         error: async () => {
           await loading.dismiss();
@@ -78,6 +92,7 @@ export class ProfilePage implements OnInit {
             message: 'Erro ao atualizar perfil',
             color: 'danger',
             duration: 2000,
+            position: 'top'
           });
           toast.present();
         },

@@ -1,39 +1,51 @@
-<ion-header>
+<ion-header class="ion-no-border">
   <ion-toolbar>
-    <ion-title>Serviços</ion-title>
+    <ion-title>SERVIÇOS</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content class="ion-padding">
   <ion-refresher slot="fixed" (ionRefresh)="fetchServices()">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <ion-list *ngIf="!loading && services.length">
-    <ion-item *ngFor="let service of services">
+  <ion-list *ngIf="!loading && services.length" class="service-list">
+    <ion-item *ngFor="let service of services" lines="none" class="service-card">
       <ion-label>
-        <h2>{{ service.name }}</h2>
-        <p>Duração: {{ service.getFormattedDuration() }}</p>
-        <p *ngIf="service.price">Preço: R$ {{ service.price }}</p>
+        <div class="header-row">
+          <h2 class="service-name">{{ service.name }}</h2>
+          <span class="price-tag">R$ {{ service.price | number:'1.2-2' }}</span>
+        </div>
+        <p class="duration-text">
+          <ion-icon name="time-outline"></ion-icon>
+          {{ service.durationMin }} min
+        </p>
       </ion-label>
-      <!-- Botão para editar -->
+      
       <ion-button
         fill="clear"
         slot="end"
-        [routerLink]="['/barber/services', service.id]"
+        [routerLink]="['/barber/services/edit', service.id]"
       >
-        <ion-icon name="create-outline"></ion-icon>
+        <ion-icon name="create-outline" slot="icon-only"></ion-icon>
       </ion-button>
     </ion-item>
   </ion-list>
 
   <div *ngIf="!loading && !services.length" class="empty-state">
-    Nenhum serviço encontrado.
+    <ion-icon name="cut-outline"></ion-icon>
+    <p>Nenhum serviço cadastrado.</p>
   </div>
 
-  <ion-spinner
-    *ngIf="loading"
-    name="crescent"
-    style="margin-top: 16px"
-  ></ion-spinner>
+  <div class="loading-container" *ngIf="loading">
+    <ion-spinner name="crescent"></ion-spinner>
+  </div>
+
+  <div class="spacer-bottom"></div>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button routerLink="/barber/services/new">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>

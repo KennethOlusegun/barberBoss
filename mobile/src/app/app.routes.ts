@@ -36,14 +36,14 @@ export const routes: Routes = [
     ],
   },
 
-  // Atalho para reset (opcional, mantive do seu código)
+  // Atalho para reset
   {
     path: 'reset-password',
     redirectTo: 'auth/reset-password',
     pathMatch: 'full',
   },
 
-  // === ÁREA PROTEGIDA (DASHBOARD É A HOME) ===
+  // === ÁREA PROTEGIDA ===
   {
     path: 'dashboard',
     loadComponent: () => import('./pages/dashboard/dashboard.page').then(m => m.DashboardPage),
@@ -79,12 +79,24 @@ export const routes: Routes = [
     canActivate: [AuthGuard],
   },
 
-  // Outros Serviços e Financeiro
+  // Serviços
   {
     path: 'barber/services',
     loadComponent: () => import('./pages/barber/services/services-list.page').then(m => m.ServicesListPage),
     canActivate: [AuthGuard],
   },
+  {
+    path: 'barber/services/new',
+    loadComponent: () => import('./pages/barber/services/service-form/service-form.page').then(m => m.ServiceFormPage),
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'barber/services/edit/:id',
+    loadComponent: () => import('./pages/barber/services/service-form/service-form.page').then(m => m.ServiceFormPage),
+    canActivate: [AuthGuard],
+  },
+
+  // Financeiro
   {
     path: 'barber/finance',
     loadComponent: () => import('./pages/barber/finance/finance-summary.page').then(m => m.FinanceSummaryPage),
@@ -95,11 +107,21 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/barber/finance/finance-list.page').then(m => m.FinanceListPage),
     canActivate: [AuthGuard],
   },
+
+  // Perfil e Senha
   {
     path: 'barber/profile',
     loadComponent: () => import('./pages/barber/profile/profile.page').then(m => m.ProfilePage),
     canActivate: [AuthGuard],
   },
+  // --- CORREÇÃO AQUI ---
+  {
+    path: 'barber/profile/change-password',
+    // Removemos a pasta '/change-password' do caminho, pois o arquivo está direto em 'profile'
+    loadComponent: () => import('./pages/barber/profile/change-password.page').then(m => m.ChangePasswordPage),
+    canActivate: [AuthGuard],
+  },
+  // ---------------------------------
 
   // Admin
   {
@@ -133,6 +155,4 @@ export const routes: Routes = [
       },
     ],
   },
-
-  // OBS: Removi a rota 'tabs' para evitar confusão se você não for usá-la.
 ];
