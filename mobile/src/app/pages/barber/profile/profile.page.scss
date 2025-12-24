@@ -1,51 +1,76 @@
+/* Fundo */
 .profile-content {
   --background: #0f172a;
 }
 
+/* Container Principal - CORREÇÃO CRÍTICA */
 .profile-form {
   width: 100%;
   max-width: 420px;
   margin: 30px auto;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
+  display: block; /* MUDADO DE FLEX PARA BLOCK */
 }
 
+/* Cartão do Formulário - CORREÇÃO CRÍTICA */
 .form-card {
   background: #1e293b;
   border-radius: 18px;
   padding: 24px 18px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+  display: block; /* MUDADO DE FLEX PARA BLOCK */
   border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
+/* Grupo de Input */
 .custom-input-group {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  label { color: #94a3b8; font-size: 0.9rem; margin-left: 4px; font-weight: 500; }
+  margin-bottom: 24px; /* Margem substitui o gap do pai */
+  position: relative;
+
+  label {
+    color: #94a3b8;
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-left: 4px;
+  }
 }
 
+/* Input Customizado */
 .custom-input {
   --background: #232a36;
   --color: #fff;
+  --placeholder-color: #64748b;
+  --placeholder-opacity: 1;
   --padding-start: 16px;
   --padding-end: 16px;
   --padding-top: 14px;
   --padding-bottom: 14px;
   --border-radius: 12px;
+
+  border: 1px solid transparent;
   border-radius: 12px;
   background: #232a36;
   min-height: 52px;
+
+  /* GARANTE O CLIQUE */
+  position: relative;
+  z-index: 10;
+  pointer-events: auto !important;
+
+  &.ion-focused {
+    border-color: #3b82f6;
+    background: #1e293b;
+  }
 }
 
+/* Botões */
 .form-actions {
+  margin-top: 24px;
   display: flex;
   flex-direction: column;
   gap: 16px;
-  margin-top: 10px;
 }
 
 .save-btn {

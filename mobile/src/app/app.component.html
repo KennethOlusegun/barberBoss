@@ -20,6 +20,14 @@
             <ion-label>{{ p.title }}</ion-label>
           </ion-item>
         </ion-menu-toggle>
+
+        <ion-menu-toggle auto-hide="false">
+          <ion-item button (click)="logout()" lines="none" class="logout-item">
+            <mat-icon slot="start" style="color: #ef4444;">logout</mat-icon>
+            <ion-label style="color: #ef4444;">Sair</ion-label>
+          </ion-item>
+        </ion-menu-toggle>
+
       </ion-list>
     </ion-content>
   </ion-menu>
@@ -30,6 +38,12 @@
         <li *ngFor="let p of appPages" [class.active]="selectedPath === p.url">
           <a [routerLink]="p.url">
             <mat-icon>{{ p.icon }}</mat-icon>
+          </a>
+        </li>
+
+        <li style="margin-top: auto; cursor: pointer;" (click)="logout()">
+          <a title="Sair">
+            <mat-icon style="color: #ef4444;">logout</mat-icon>
           </a>
         </li>
       </ul>
@@ -50,17 +64,16 @@
             <ion-button>
               <mat-icon>notifications_none</mat-icon>
             </ion-button>
-            <ion-button>
-              <ion-avatar>
-                <img src="assets/avatar.png" alt="Perfil" />
-              </ion-avatar>
+            <!-- 🔥 AVATAR CORRIGIDO: Removido temporariamente -->
+            <ion-button [routerLink]="['/barber/profile']">
+              <mat-icon>account_circle</mat-icon>
             </ion-button>
           </ion-buttons>
         </ion-toolbar>
       </ion-header>
 
-      <ion-router-outlet style="flex: 1"></ion-router-outlet>
-      
+      <ion-router-outlet></ion-router-outlet>
+
       <ion-fab
         *ngIf="showFab && !isPublicPage"
         slot="fixed"
@@ -75,7 +88,7 @@
     </div>
   </div>
 
-  <div *ngIf="isPublicPage" style="height: 100%; width: 100%;">
+  <div *ngIf="isPublicPage" class="public-page-wrapper">
     <ion-router-outlet></ion-router-outlet>
   </div>
 </ion-app>

@@ -1,4 +1,3 @@
-// ...existing code...
 import {
   Component,
   OnInit,
@@ -13,13 +12,21 @@ import { CommonModule } from '@angular/common';
 import { NgIf, NgFor } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon'; // 👈 ADICIONADO
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.page.html',
   styleUrls: ['./dashboard.page.scss'],
   standalone: true,
-  imports: [CommonModule, NgIf, NgFor, IonicModule, RouterModule],
+  imports: [
+    CommonModule,
+    NgIf,
+    NgFor,
+    IonicModule,
+    RouterModule,
+    MatIconModule // 👈 ADICIONADO
+  ],
   changeDetection: ChangeDetectionStrategy.Default,
 })
 export class DashboardPage implements OnInit {

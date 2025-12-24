@@ -13,15 +13,24 @@ import { Observable } from 'rxjs';
 @Injectable()
 export class NgrokInterceptor implements HttpInterceptor {
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    if (req.url.includes('ngrok-free.app') || req.url.includes('ngrok.io')) {
+    // 🔥 CORRIGIDO: Inclui todos os domínios ngrok possíveis
+    if (
+      req.url.includes('ngrok-free.dev') ||  // 👈 SEU DOMÍNIO ATUAL
+      req.url.includes('ngrok-free.app') ||
+      req.url.includes('ngrok.io') ||
+      req.url.includes('ngrok.app')
+    ) {
       const cloned = req.clone({
         setHeaders: {
-          'ngrok-skip-browser-warning': 'true',
+          'ngrok-skip-browser-warning': '69420',  // 👈 Valor recomendado pela doc do ngrok
           'Content-Type': 'application/json',
         }
       });
+
+      console.log('🔧 NgrokInterceptor aplicado:', req.url);
       return next.handle(cloned);
     }
+
     return next.handle(req);
   }
 }

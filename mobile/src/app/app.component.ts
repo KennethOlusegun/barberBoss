@@ -1,10 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { environment } from 'src/environments/environment';
-import { LoadingController, AlertController } from '@ionic/angular';
+import { LoadingController, AlertController, ToastController } from '@ionic/angular';
 import { Location } from '@angular/common';
 import { Router, NavigationEnd, RouterModule } from '@angular/router';
 import { CommonModule, NgForOf, NgIf } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
+import { AuthService } from './core/services/auth/auth.service';
+
+// IMPORTANTE: Importação do Plugin da Splash Screen
+import { SplashScreen } from '@capacitor/splash-screen';
+
 import {
   IonApp,
   IonMenu,
@@ -18,15 +23,14 @@ import {
   IonMenuButton,
   IonSearchbar,
   IonButton,
-  IonAvatar,
   IonFab,
   IonFabButton,
-  IonRouterOutlet, // <--- 1. IMPORTADO AQUI
+  IonRouterOutlet,
+  IonLabel,
+  IonIcon
 } from '@ionic/angular/standalone';
 import { filter } from 'rxjs/operators';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-
-// StatusBar
 import { StatusBar, Style } from '@capacitor/status-bar';
 
 @Component({
@@ -49,10 +53,10 @@ import { StatusBar, Style } from '@capacitor/status-bar';
     IonMenuButton,
     IonSearchbar,
     IonButton,
-    IonAvatar,
     IonFab,
     IonFabButton,
-    IonRouterOutlet, // <--- 2. ADICIONADO AQUI
+    IonRouterOutlet,
+    IonLabel,
     NgForOf,
     NgIf
   ],
@@ -78,7 +82,9 @@ export class AppComponent implements OnInit {
     private router: Router,
     private location: Location,
     private loadingController: LoadingController,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private toastController: ToastController,
+    private authService: AuthService
   ) {
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
@@ -86,72 +92,106 @@ export class AppComponent implements OnInit {
         this.selectedPath = event.urlAfterRedirects;
         this.showFab = this.selectedPath.startsWith('/barber/appointments');
         this.isPublicPage = this.publicRoutes.some(route => this.selectedPath.includes(route));
+
+        // 🔥 LIMPADOR AUTOMÁTICO: Remove loadings travados a cada navegação
+        this.cleanupStuckLoadings();
       });
   }
 
   async ngOnInit() {
     await this.configureStatusBar();
-    await this.checkBackendConnection();
+
+    // CORREÇÃO: Esconde a Splash Screen assim que o Angular inicia
+    try {
+      await SplashScreen.hide();
+    } catch (e) {
+      console.warn('SplashScreen hide falhou ou não está disponível (web mode):', e);
+    }
+
+    // 🔥 HEALTH CHECK NÃO-BLOQUEANTE (sem loading!)
+    // Roda em background sem travar a UI
+    this.checkBackendConnectionSilent();
+
+    // 🔥 LIMPEZA INICIAL: Remove qualquer loading preso ao iniciar
+    setTimeout(() => this.cleanupStuckLoadings(), 1000);
   }
 
   private async configureStatusBar() {
     try {
       await StatusBar.setOverlaysWebView({ overlay: true });
-      await StatusBar.setStyle({ style: Style.Dark }); 
+      await StatusBar.setStyle({ style: Style.Dark });
     } catch (error) {
       console.warn('StatusBar plugin não disponível (web mode)');
     }
   }
 
-  private async checkBackendConnection() {
-    const loading = await this.loadingController.create({
-      message: 'Conectando ao servidor...',
-      duration: 5000,
-    });
-    await loading.present();
-
+  // 🔥 HEALTH CHECK SILENCIOSO - NÃO cria loading!
+  private async checkBackendConnectionSilent() {
     try {
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      console.log('🔍 Verificando conexão com backend (background - sem loading)...');
 
-      const response = await fetch(environment.api.baseUrl + '/health', {
+      const response = await fetch(environment.api.baseUrl + '/auth/me', {
         method: 'GET',
         headers: {
           'ngrok-skip-browser-warning': '69420',
+          'Authorization': `Bearer ${localStorage.getItem('barber_boss_token')}`
         },
       });
 
-      if (!response.ok) {
-        throw new Error('Backend não respondeu');
+      if (response.ok) {
+        console.log('✅ Backend conectado e acessível');
+      } else {
+        console.warn('⚠️ Backend respondeu com erro:', response.status);
+        // 🔥 Toast discreto - NÃO bloqueia UI
+        this.showConnectionToast('Problemas de conexão com servidor', 'warning');
       }
-
-      console.log('✅ Backend conectado com sucesso');
-      await loading.dismiss();
-
     } catch (error) {
       console.error('❌ Erro ao conectar ao backend:', error);
-      await loading.dismiss();
+      // 🔥 Toast discreto - NÃO bloqueia UI
+      this.showConnectionToast('Servidor offline - funcionando no modo cache', 'danger');
+    }
+  }
 
-      const alert = await this.alertController.create({
-        header: 'Erro de Conexão',
-        message: 'Não foi possível conectar ao servidor. Verifique sua internet e tente novamente.',
-        buttons: [
-          {
-            text: 'Tentar Novamente',
-            handler: () => {
-              window.location.reload();
-            },
-          },
-          {
-            text: 'Cancelar',
-            role: 'cancel',
-          },
-        ],
+  // 🔥 NOVO: Remove loadings/backdrops travados automaticamente
+  private cleanupStuckLoadings() {
+    setTimeout(() => {
+      const stuckElements = document.querySelectorAll('ion-loading, ion-backdrop');
+
+      if (stuckElements.length > 0) {
+        console.warn('⚠️ [AppComponent] Encontrados', stuckElements.length, 'elementos travados. Removendo...');
+
+        stuckElements.forEach((el) => {
+          console.log('🗑️ Removendo:', el.tagName);
+          el.remove();
+        });
+
+        console.log('✅ Limpeza de loadings concluída');
+      }
+    }, 500); // Aguarda 500ms após navegação para limpar
+  }
+
+  // 🔥 Toast discreto - NÃO usa loading bloqueante
+  private async showConnectionToast(message: string, color: 'warning' | 'danger') {
+    try {
+      const toast = await this.toastController.create({
+        message,
+        color,
+        duration: 3000,
+        position: 'bottom',
+        buttons: [{ text: 'OK', role: 'cancel' }]
       });
-      await alert.present();
+      await toast.present();
+    } catch (error) {
+      console.error('Erro ao exibir toast:', error);
     }
   }
 
   onFabClick() {
     this.router.navigate(['/barber/appointments/create']);
+  }
+
+  logout() {
+    this.authService.logout();
+    this.router.navigate(['/auth/login'], { replaceUrl: true });
   }
 }

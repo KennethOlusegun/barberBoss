@@ -64,13 +64,19 @@ export class AuthService {
 
   login(credentials: LoginCredentials): Observable<User> {
     this.updateLoadingState(true);
-
+    const url = AUTH_ENDPOINTS.LOGIN;
+    console.log('🌐 AuthService.login() - URL:', url);
+    console.log('📦 Payload:', { email: credentials.email, password: '***' });
     return this.apiService
-      .post<AuthResponse>(AUTH_ENDPOINTS.LOGIN, credentials)
+      .post<AuthResponse>(url, credentials)
       .pipe(
-        tap((response) => this.handleAuthResponse(response)),
+        tap((response) => {
+          console.log('✅ Resposta do login:', response);
+          this.handleAuthResponse(response);
+        }),
         map((response) => response.user),
         catchError((error) => {
+          console.error('❌ Erro na requisição de login:', error);
           this.updateLoadingState(false);
           return throwError(() => error);
         }),
@@ -134,16 +140,24 @@ export class AuthService {
   // ==================== User Profile ====================
 
   getCurrentUser(): Observable<User> {
+    console.log('🔍 AuthService.getCurrentUser() chamado');
+    console.log('📍 URL:', AUTH_ENDPOINTS.ME);
+    console.log('🔑 Token disponível?', !!this.getToken());
     return this.apiService
       .get<User>(AUTH_ENDPOINTS.ME, { requiresAuth: true })
       .pipe(
         tap((user) => {
+          console.log('✅ getCurrentUser - Usuário recebido:', user);
           this.updateAuthState({
             ...this.authStateSubject.value,
             user,
           });
           this.storeUser(user);
         }),
+        catchError((error) => {
+          console.error('❌ getCurrentUser - Erro:', error);
+          throw error;
+        })
       );
   }
 
@@ -215,7 +229,7 @@ export class AuthService {
     try {
       const payload = this.decodeToken(token);
       if (!payload.exp) {
-        return true; 
+        return true;
       }
 
       const now = Math.floor(Date.now() / 1000);

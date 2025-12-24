@@ -8,32 +8,57 @@
 </ion-header>
 
 <ion-content class="profile-content ion-padding">
+  <!-- 🔥 SEMPRE MOSTRA O FORMULÁRIO -->
   <form [formGroup]="profileForm" (ngSubmit)="submit()" class="profile-form">
     <div class="form-card">
       <div class="custom-input-group">
         <label>Nome</label>
-        <ion-input class="custom-input" type="text" formControlName="name" placeholder="Seu nome"></ion-input>
+        <ion-input
+          class="custom-input"
+          type="text"
+          formControlName="name"
+          placeholder="Seu nome">
+        </ion-input>
       </div>
 
       <div class="custom-input-group">
         <label>E-mail</label>
-        <ion-input class="custom-input" type="email" formControlName="email" placeholder="seu@email.com"></ion-input>
+        <ion-input
+          class="custom-input"
+          type="email"
+          formControlName="email"
+          placeholder="seu@email.com">
+        </ion-input>
       </div>
 
       <div class="custom-input-group">
         <label>Telefone</label>
-        <ion-input class="custom-input" type="tel" formControlName="phone" placeholder="(00) 00000-0000"></ion-input>
+        <ion-input
+          class="custom-input"
+          type="tel"
+          formControlName="phone"
+          placeholder="(00) 00000-0000">
+        </ion-input>
       </div>
     </div>
 
     <div class="form-actions">
-      <ion-button expand="block" type="submit" class="save-btn" [disabled]="!profileForm.valid || loading">
+      <ion-button
+        expand="block"
+        type="submit"
+        class="save-btn"
+        [disabled]="!profileForm.valid || loading">
         <ion-spinner name="crescent" *ngIf="loading"></ion-spinner>
         <span *ngIf="!loading">SALVAR ALTERAÇÕES</span>
       </ion-button>
 
-      <ion-button expand="block" fill="outline" class="change-password-btn" routerLink="/barber/profile/change-password" [disabled]="loading">
-        <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
+      <ion-button
+        expand="block"
+        fill="outline"
+        class="change-password-btn"
+        routerLink="/barber/profile/change-password"
+        [disabled]="loading">
+        <mat-icon slot="start">lock</mat-icon>
         ALTERAR SENHA
       </ion-button>
     </div>

@@ -2,14 +2,11 @@ import { Routes } from '@angular/router';
 import { AuthGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
-  // Rota raiz redireciona para login (Padrão)
   {
     path: '',
     redirectTo: 'auth/login',
     pathMatch: 'full',
   },
-
-  // Rotas Públicas (Auth)
   {
     path: 'auth',
     children: [
@@ -29,14 +26,11 @@ export const routes: Routes = [
         path: 'reset-password',
         loadComponent: () => import('./pages/auth/reset-password/reset-password.page').then(m => m.ResetPasswordPage),
       },
-      {
-        path: 'logout',
-        loadComponent: () => import('./pages/auth/logout.page').then(m => m.LogoutPage),
-      },
     ],
   },
 
-  // Atalho para reset
+  // ... resto das suas rotas (dashboard, barber, admin, etc) ...
+
   {
     path: 'reset-password',
     redirectTo: 'auth/reset-password',
@@ -49,8 +43,6 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/dashboard/dashboard.page').then(m => m.DashboardPage),
     canActivate: [AuthGuard],
   },
-
-  // Agendamentos
   {
     path: 'barber/appointments',
     loadComponent: () => import('./pages/barber/appointments/appointments-list.page').then(m => m.AppointmentsListPage),
@@ -61,8 +53,6 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/barber/appointments/appointments-form.page').then(m => m.AppointmentsFormPage),
     canActivate: [AuthGuard],
   },
-
-  // Clientes
   {
     path: 'barber/clients',
     loadComponent: () => import('./pages/barber/clients/clients-list.page').then(m => m.ClientsListPage),
@@ -78,8 +68,6 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/barber/clients/client-form.page').then(m => m.ClientFormPage),
     canActivate: [AuthGuard],
   },
-
-  // Serviços
   {
     path: 'barber/services',
     loadComponent: () => import('./pages/barber/services/services-list.page').then(m => m.ServicesListPage),
@@ -95,8 +83,6 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/barber/services/service-form/service-form.page').then(m => m.ServiceFormPage),
     canActivate: [AuthGuard],
   },
-
-  // Financeiro
   {
     path: 'barber/finance',
     loadComponent: () => import('./pages/barber/finance/finance-summary.page').then(m => m.FinanceSummaryPage),
@@ -107,23 +93,18 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/barber/finance/finance-list.page').then(m => m.FinanceListPage),
     canActivate: [AuthGuard],
   },
-
-  // Perfil e Senha
   {
     path: 'barber/profile',
     loadComponent: () => import('./pages/barber/profile/profile.page').then(m => m.ProfilePage),
     canActivate: [AuthGuard],
   },
-  // --- CORREÇÃO AQUI ---
+  // === AQUI ESTAVA O ERRO ===
   {
     path: 'barber/profile/change-password',
-    // Removemos a pasta '/change-password' do caminho, pois o arquivo está direto em 'profile'
     loadComponent: () => import('./pages/barber/profile/change-password.page').then(m => m.ChangePasswordPage),
     canActivate: [AuthGuard],
   },
-  // ---------------------------------
-
-  // Admin
+  // ==========================
   {
     path: 'admin',
     canActivate: [AuthGuard],

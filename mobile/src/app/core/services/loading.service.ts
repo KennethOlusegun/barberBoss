@@ -29,13 +29,18 @@ export class LoadingService {
   private loading: HTMLIonLoadingElement | null = null;
   private loadingSubject = new BehaviorSubject<boolean>(false);
   private requestCount = 0;
+  private maxRequestCount = 100; // 🔥 NOVO: Prevenir overflow
+  private autoCleanupTimeout: any = null; // 🔥 NOVO: Timer de segurança
 
   /**
    * Observable that emits the current loading state
    */
   public isLoading$: Observable<boolean> = this.loadingSubject.asObservable();
 
-  constructor(private loadingController: LoadingController) {}
+  constructor(private loadingController: LoadingController) {
+    // 🔥 NOVO: Limpeza automática a cada 30 segundos
+    this.startAutoCleanup();
+  }
 
   /**
    * Show loading indicator
@@ -43,27 +48,48 @@ export class LoadingService {
    * @param duration Optional duration in milliseconds (0 = indefinite)
    */
   async show(message?: string, duration: number = 0): Promise<void> {
-    this.requestCount++;
+    try {
+      this.requestCount++;
 
-    // If loading is already shown, just update the message
-    if (this.loading) {
-      if (message) {
-        this.loading.message = message;
+      // 🔥 NOVO: Prevenir overflow de requisições
+      if (this.requestCount > this.maxRequestCount) {
+        console.warn('⚠️ RequestCount muito alto! Resetando...');
+        this.requestCount = 1;
+        await this.forceCleanup();
       }
-      return;
+
+      console.log('📊 LoadingService.show() - requestCount:', this.requestCount);
+
+      // Se loading já está sendo exibido, apenas atualiza mensagem
+      if (this.loading) {
+        if (message) {
+          this.loading.message = message;
+        }
+        return;
+      }
+
+      // Criar novo loading
+      console.log('🔄 Criando loading...');
+      this.loading = await this.loadingController.create({
+        message: message || 'Carregando...',
+        duration: duration,
+        spinner: 'crescent',
+        cssClass: 'custom-loading',
+        backdropDismiss: false,
+      });
+
+      await this.loading.present();
+      this.loadingSubject.next(true);
+      console.log('✅ Loading exibido');
+
+      // 🔥 NOVO: Timer de segurança (10 segundos)
+      this.resetAutoCleanupTimer();
+
+    } catch (error) {
+      console.error('❌ Erro ao exibir loading:', error);
+      this.loading = null;
+      this.loadingSubject.next(false);
     }
-
-    // Create and show new loading indicator
-    this.loading = await this.loadingController.create({
-      message: message || 'Carregando...',
-      duration: duration,
-      spinner: 'crescent',
-      cssClass: 'custom-loading',
-      backdropDismiss: false,
-    });
-
-    await this.loading.present();
-    this.loadingSubject.next(true);
   }
 
   /**
@@ -71,23 +97,26 @@ export class LoadingService {
    * Only hides when all requests are complete
    */
   async hide(): Promise<void> {
-    this.requestCount--;
+    try {
+      this.requestCount--;
 
-    // Don't hide if there are still pending requests
-    if (this.requestCount > 0) {
-      return;
-    }
+      // 🔥 CORREÇÃO: Garantir que nunca fica negativo
+      if (this.requestCount < 0) {
+        console.warn('⚠️ RequestCount negativo! Resetando para 0');
+        this.requestCount = 0;
+      }
 
-    // Ensure count doesn't go negative
-    if (this.requestCount < 0) {
-      this.requestCount = 0;
-    }
+      console.log('📊 LoadingService.hide() - requestCount:', this.requestCount);
 
-    // Hide loading if it exists
-    if (this.loading) {
-      await this.loading.dismiss();
-      this.loading = null;
-      this.loadingSubject.next(false);
+      // 🔥 NOVO: Se requestCount for 0, remove o loading
+      if (this.requestCount === 0) {
+        await this.dismissLoading();
+      }
+
+    } catch (error) {
+      console.error('❌ Erro ao esconder loading:', error);
+      // 🔥 Em caso de erro, força limpeza
+      await this.forceCleanup();
     }
   }
 
@@ -96,12 +125,105 @@ export class LoadingService {
    * Useful for error scenarios or manual control
    */
   async forceHide(): Promise<void> {
+    console.log('🔥 ForceHide chamado');
     this.requestCount = 0;
+    await this.dismissLoading();
+  }
 
-    if (this.loading) {
-      await this.loading.dismiss();
-      this.loading = null;
+  /**
+   * 🔥 NOVO: Método privado para remover loading com segurança
+   */
+  private async dismissLoading(): Promise<void> {
+    try {
+      if (this.loading) {
+        console.log('🔄 Removendo loading...');
+        await this.loading.dismiss();
+        this.loading = null;
+        this.loadingSubject.next(false);
+        console.log('✅ Loading removido com sucesso');
+
+        // Limpar timer de segurança
+        this.clearAutoCleanupTimer();
+      }
+    } catch (error) {
+      console.error('❌ Erro ao remover loading via dismiss():', error);
+      // 🔥 Fallback: Forçar remoção via DOM
+      await this.forceCleanup();
+    }
+  }
+
+  /**
+   * 🔥 NOVO: Limpeza forçada via DOM (último recurso)
+   */
+  private async forceCleanup(): Promise<void> {
+    console.warn('⚠️ Executando limpeza forçada via DOM...');
+
+    try {
+      // Remover via dismiss() primeiro
+      if (this.loading) {
+        try {
+          await this.loading.dismiss();
+        } catch (e) {
+          console.warn('Dismiss falhou, continuando com limpeza DOM');
+        }
+        this.loading = null;
+      }
+
+      // Remover todos os loadings/backdrops do DOM
+      const stuckElements = document.querySelectorAll('ion-loading, ion-backdrop');
+
+      if (stuckElements.length > 0) {
+        console.log('🗑️ Removendo', stuckElements.length, 'elementos via DOM');
+        stuckElements.forEach((el) => el.remove());
+      }
+
+      // Resetar estado
+      this.requestCount = 0;
       this.loadingSubject.next(false);
+      this.clearAutoCleanupTimer();
+
+      console.log('✅ Limpeza forçada concluída');
+
+    } catch (error) {
+      console.error('❌ Erro crítico na limpeza forçada:', error);
+    }
+  }
+
+  /**
+   * 🔥 NOVO: Timer de segurança automático
+   */
+  private startAutoCleanup(): void {
+    // Verificar a cada 30 segundos se há loadings travados
+    setInterval(() => {
+      const stuckElements = document.querySelectorAll('ion-loading, ion-backdrop');
+
+      if (stuckElements.length > 0 && this.requestCount === 0) {
+        console.warn('⚠️ Detectados loadings travados! Limpando automaticamente...');
+        this.forceCleanup();
+      }
+    }, 30000); // 30 segundos
+  }
+
+  /**
+   * 🔥 NOVO: Reset do timer de segurança (10 segundos após show)
+   */
+  private resetAutoCleanupTimer(): void {
+    this.clearAutoCleanupTimer();
+
+    // Se o loading não for removido em 10 segundos, limpa automaticamente
+    this.autoCleanupTimeout = setTimeout(() => {
+      console.warn('⚠️ Loading ativo por mais de 10 segundos! Forçando limpeza...');
+      this.forceCleanup();
+    }, 10000); // 10 segundos
+  }
+
+  /**
+   * 🔥 NOVO: Limpar timer de segurança
+   */
+  private clearAutoCleanupTimer(): void {
+    if (this.autoCleanupTimeout) {
+      clearTimeout(this.autoCleanupTimeout);
+      this.autoCleanupTimeout = null;
     }
   }
 

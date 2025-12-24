@@ -13,7 +13,7 @@
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
       <!-- Campo de Email -->
       <div class="form-group">
-        <div 
+        <div
           class="input-wrapper"
           [class.input-wrapper--invalid]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
           [class.input-wrapper--focused]="emailFocused"
@@ -39,7 +39,7 @@
 
       <!-- Campo de Senha -->
       <div class="form-group">
-        <div 
+        <div
           class="input-wrapper"
           [class.input-wrapper--invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
           [class.input-wrapper--focused]="passwordFocused"
@@ -95,7 +95,7 @@
       <button
         type="submit"
         class="login-btn"
-        [disabled]="isLoading"
+        [disabled]="isLoading || loginForm.invalid"
       >
         <span *ngIf="!isLoading">Entrar</span>
         <span *ngIf="isLoading">Carregando...</span>

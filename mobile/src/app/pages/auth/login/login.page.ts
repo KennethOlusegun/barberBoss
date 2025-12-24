@@ -70,7 +70,9 @@ export class LoginPage implements OnInit {
   }
 
   async onSubmit(): Promise<void> {
+    console.log('➡️ onSubmit chamado');
     if (this.loginForm.invalid) {
+      console.warn('⚠️ Formulário inválido', this.loginForm.value);
       this.markFormGroupTouched(this.loginForm);
       return;
     }
@@ -82,17 +84,23 @@ export class LoginPage implements OnInit {
       email: this.loginForm.value.email,
       password: this.loginForm.value.password,
     };
+    console.log('📤 Credenciais para login:', { email: credentials.email, password: '***' });
 
     try {
       const { firstValueFrom } = await import('rxjs');
+      console.log('🌐 Chamando AuthService.login()...');
       await firstValueFrom(this.authService.login(credentials));
-      console.log('✅ Login successful');
+      console.log('✅ Login realizado com sucesso');
       this.router.navigate(['/dashboard']);
     } catch (error: any) {
-      console.error('❌ Login error:', error);
-      this.errorMessage =
-        error?.error?.message ||
-        'Erro ao fazer login. Verifique suas credenciais.';
+      console.error('❌ Erro no login:', error);
+      if (error?.status === 0) {
+        this.errorMessage = 'Erro de conexão com o servidor. Verifique sua internet ou tente novamente.';
+      } else {
+        this.errorMessage =
+          error?.error?.message ||
+          'Erro ao fazer login. Verifique suas credenciais.';
+      }
     } finally {
       this.isLoading = false;
     }
