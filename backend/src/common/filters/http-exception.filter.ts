@@ -36,15 +36,18 @@ export class HttpExceptionFilter implements ExceptionFilter {
           : HttpStatus[status],
     };
 
-    // Log do erro
-    this.logger.error(
-      `HTTP Exception: ${request.method} ${request.url}`,
-      JSON.stringify({
-        ...errorResponse,
-        user: (request as Request & { user?: { id?: string } }).user?.id,
-        body: request.body,
-      }),
-    );
+
+    // Não logar exceções da rota /health para evitar poluição de logs
+    if (request.url !== '/health') {
+      this.logger.error(
+        `HTTP Exception: ${request.method} ${request.url}`,
+        JSON.stringify({
+          ...errorResponse,
+          user: (request as Request & { user?: { id?: string } }).user?.id,
+          body: request.body,
+        }),
+      );
+    }
 
     response.status(status).json(errorResponse);
   }

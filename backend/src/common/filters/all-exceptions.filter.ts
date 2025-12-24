@@ -47,16 +47,18 @@ export class AllExceptionsFilter implements ExceptionFilter {
       error,
     };
 
-    // Log completo do erro
-    this.logger.error(
-      `Unhandled Exception: ${request.method} ${request.url}`,
-      exception instanceof Error ? exception.stack : JSON.stringify(exception),
-      JSON.stringify({
-        ...errorResponse,
-        user: (request as Request & { user?: { id?: string } }).user?.id,
-        body: request.body,
-      }),
-    );
+    // Não logar exceções da rota /health para evitar poluição de logs
+    if (request.url !== '/health') {
+      this.logger.error(
+        `Unhandled Exception: ${request.method} ${request.url}`,
+        exception instanceof Error ? exception.stack : JSON.stringify(exception),
+        JSON.stringify({
+          ...errorResponse,
+          user: (request as Request & { user?: { id?: string } }).user?.id,
+          body: request.body,
+        }),
+      );
+    }
 
     response.status(status).json(errorResponse);
   }
