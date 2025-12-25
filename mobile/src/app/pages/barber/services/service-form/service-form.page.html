@@ -1,52 +1,158 @@
 <ion-header class="ion-no-border">
-  <ion-toolbar color="dark">
+  <ion-toolbar color="light">
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/barber/services"></ion-back-button>
+      <ion-button routerLink="/barber/services" routerDirection="back" color="light">
+        <mat-icon>arrow_back</mat-icon>
+      </ion-button>
     </ion-buttons>
-    <ion-title>{{ isEdit ? 'Editar Serviço' : 'Novo Serviço' }}</ion-title>
+    <ion-title class="toolbar-title">
+      {{ isEdit ? 'EDITAR SERVIÇO' : 'NOVO SERVIÇO' }}
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button fill="clear" (click)="onSubmit()" [disabled]="form.invalid || isSubmitting">
+        <span class="save-text">SALVAR</span>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="service-form-content ion-padding">
-  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="service-form">
-    
-    <div class="form-card">
-      <div class="custom-input-group">
-        <label>Nome do Serviço <span class="required">*</span></label>
-        <ion-input class="custom-input" formControlName="name" type="text" placeholder="Ex: Corte Masculino"></ion-input>
+<ion-content class="ion-padding content-bg">
+  <form [formGroup]="form" class="service-form">
+
+    <!-- ✅ Input de Nome -->
+    <ion-item class="form-item" lines="none">
+      <ion-input
+        label="Nome do Serviço"
+        labelPlacement="stacked"
+        formControlName="name"
+        type="text"
+        placeholder="Ex: Corte Degradê"
+        maxlength="100"
+        errorText="Nome obrigatório"
+        class="custom-input"
+      ></ion-input>
+    </ion-item>
+
+    <!-- ✅ Grid: Tipo + Preço -->
+    <div class="grid-row">
+      <div class="grid-col">
+        <ion-item class="form-item" lines="none">
+          <ion-select
+            label="Tipo"
+            labelPlacement="stacked"
+            formControlName="priceType"
+            interface="popover"
+            placeholder="Selecione"
+            class="custom-input"
+            toggleIcon="arrow_drop_down"
+          >
+            <ion-select-option value="fixed">Fixo</ion-select-option>
+            <ion-select-option value="range">A partir</ion-select-option>
+          </ion-select>
+        </ion-item>
       </div>
 
-      <div class="custom-input-group">
-        <label>Descrição</label>
-        <ion-textarea class="custom-input" formControlName="description" placeholder="Detalhes do serviço" rows="3"></ion-textarea>
-      </div>
-
-      <div class="custom-input-group">
-        <label>Preço (R$) <span class="required">*</span></label>
-        <ion-input class="custom-input" formControlName="price" type="number" min="0" placeholder="0.00"></ion-input>
-      </div>
-
-      <div class="custom-input-group">
-        <label>Duração (minutos) <span class="required">*</span></label>
-        <ion-input class="custom-input" formControlName="duration" type="number" placeholder="Ex: 30"></ion-input>
-      </div>
-
-      <div class="custom-input-group">
-        <label>Comissão do Barbeiro (%) <span class="required">*</span></label>
-        <ion-input class="custom-input" formControlName="commission" type="number" min="0" max="100" placeholder="50"></ion-input>
-      </div>
-
-      <div class="toggle-group">
-        <label>Serviço Ativo</label>
-        <ion-toggle formControlName="active" mode="ios" color="primary"></ion-toggle>
+      <div class="grid-col">
+        <ion-item class="form-item" lines="none">
+          <div slot="start" class="currency-prefix">R$</div>
+          <ion-input
+            label="Preço"
+            labelPlacement="stacked"
+            formControlName="price"
+            type="number"
+            placeholder="0.00"
+            class="custom-input"
+          ></ion-input>
+        </ion-item>
       </div>
     </div>
 
+    <!-- ✅ Select de Duração -->
+    <ion-item class="form-item" lines="none">
+      <ion-select
+        label="Duração"
+        labelPlacement="stacked"
+        formControlName="durationMin"
+        interface="action-sheet"
+        placeholder="Selecione"
+        class="custom-input"
+        toggleIcon="arrow_drop_down"
+      >
+        <ion-select-option *ngFor="let duration of durationOptions" [value]="duration">
+          {{ duration }} min
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <!-- ✅ CATEGORIA (Fake Input Clicável) - COM PROTEÇÃO CONTRA FOCO -->
+    <ion-item 
+      class="form-item category-item" 
+      lines="none" 
+      (click)="openCategoryModal($event)"
+      [tabindex]="-1"
+    >
+      <div class="fake-input-wrapper">
+        <span class="fake-label">CATEGORIA</span>
+        <div class="fake-value-row">
+          <span class="fake-value">{{ selectedCategory || 'Sem categoria' }}</span>
+          <mat-icon class="chevron-icon">chevron_right</mat-icon>
+        </div>
+      </div>
+    </ion-item>
+
+    <!-- ✅ COR NA AGENDA (Fake Input Clicável) - COM PROTEÇÃO CONTRA FOCO -->
+    <ion-item 
+      class="form-item color-item" 
+      lines="none" 
+      (click)="openColorPicker($event)"
+      [tabindex]="-1"
+    >
+      <div class="fake-input-wrapper">
+        <span class="fake-label">COR NA AGENDA</span>
+        <div class="color-row">
+          <div class="color-circle" [style.background-color]="selectedColor"></div>
+          <span class="color-name">{{ selectedColorName }}</span>
+        </div>
+      </div>
+    </ion-item>
+
+    <!-- ✅ Textarea de Descrição -->
+    <ion-item class="form-item" lines="none">
+      <ion-textarea
+        label="Descrição"
+        labelPlacement="stacked"
+        formControlName="description"
+        placeholder="Detalhes do serviço (opcional)"
+        rows="3"
+        maxlength="500"
+        class="custom-input"
+      ></ion-textarea>
+    </ion-item>
+
+    <!-- ✅ Botões de Ação (Fixos no Bottom) -->
     <div class="form-actions">
-      <ion-button expand="block" type="submit" class="save-btn" [disabled]="form.invalid || loading">
-        <ion-spinner name="crescent" *ngIf="loading"></ion-spinner>
-        <span *ngIf="!loading">SALVAR</span>
+      <ion-button
+        expand="block"
+        class="save-button"
+        (click)="onSubmit()"
+        [disabled]="form.invalid || isSubmitting"
+      >
+        <ion-spinner *ngIf="isSubmitting" name="dots"></ion-spinner>
+        <span *ngIf="!isSubmitting">SALVAR</span>
+      </ion-button>
+
+      <ion-button
+        *ngIf="isEdit"
+        expand="block"
+        fill="outline"
+        color="danger"
+        class="delete-button"
+        (click)="onDelete()"
+        [disabled]="isSubmitting"
+      >
+        DELETAR
       </ion-button>
     </div>
+
   </form>
 </ion-content>

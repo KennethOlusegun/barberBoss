@@ -1,51 +1,76 @@
 <ion-header class="ion-no-border">
-  <ion-toolbar>
-    <ion-title>SERVIÇOS</ion-title>
+  <ion-toolbar color="light">
+    <ion-title class="toolbar-title">Serviços</ion-title>
+    <ion-buttons slot="end">
+      <ion-button fill="clear" (click)="openSearch()">
+        <mat-icon slot="icon-only">search</mat-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
-  <ion-refresher slot="fixed" (ionRefresh)="fetchServices()">
-    <ion-refresher-content></ion-refresher-content>
-  </ion-refresher>
+<ion-content class="ion-no-padding">
+  <ion-segment
+    [(ngModel)]="activeSegment"
+    (ionChange)="onSegmentChange()"
+    class="segment-container"
+  >
+    <ion-segment-button value="services" class="segment-button">
+      <span>Serviços</span>
+    </ion-segment-button>
+    <ion-segment-button value="products" class="segment-button">
+      <span>Produtos</span>
+    </ion-segment-button>
+  </ion-segment>
 
-  <ion-list *ngIf="!loading && services.length" class="service-list">
-    <ion-item *ngFor="let service of services" lines="none" class="service-card">
-      <ion-label>
-        <div class="header-row">
-          <h2 class="service-name">{{ service.name }}</h2>
-          <span class="price-tag">R$ {{ service.price | number:'1.2-2' }}</span>
-        </div>
-        <p class="duration-text">
-          <ion-icon name="time-outline"></ion-icon>
-          {{ service.durationMin }} min
-        </p>
-      </ion-label>
-      
-      <ion-button
-        fill="clear"
-        slot="end"
-        [routerLink]="['/barber/services/edit', service.id]"
+  <div class="content-wrapper" *ngIf="activeSegment === 'services'">
+    <ion-refresher slot="fixed" (ionRefresh)="onRefresh($event)">
+      <ion-refresher-content></ion-refresher-content>
+    </ion-refresher>
+
+    <ion-list *ngIf="!isLoading && filteredServices.length > 0" class="services-list">
+      <ion-item
+        *ngFor="let service of filteredServices; trackBy: trackByServiceId"
+        lines="full"
+        class="service-item"
+        button
+        detail="false"
+        (click)="navigateToEdit(service.id)"
       >
-        <ion-icon name="create-outline" slot="icon-only"></ion-icon>
-      </ion-button>
-    </ion-item>
-  </ion-list>
+        <mat-icon slot="start" class="drag-icon">drag_handle</mat-icon>
 
-  <div *ngIf="!loading && !services.length" class="empty-state">
-    <ion-icon name="cut-outline"></ion-icon>
-    <p>Nenhum serviço cadastrado.</p>
+        <ion-label class="service-label">
+          <h3 class="service-name">{{ service.name }}</h3>
+          <p class="service-duration">{{ service.durationMin }} min</p>
+        </ion-label>
+
+        <div slot="end" class="service-price">
+          <span class="price-value">R$ {{ service.price | number: '1.2-2' }}</span>
+          <mat-icon class="chevron-icon">chevron_right</mat-icon>
+        </div>
+      </ion-item>
+    </ion-list>
+
+    <div *ngIf="!isLoading && filteredServices.length === 0" class="empty-state">
+      <p class="empty-message">Nenhum serviço cadastrado</p>
+    </div>
+
+    <ion-spinner *ngIf="isLoading" name="dots" class="spinner-center"></ion-spinner>
   </div>
 
-  <div class="loading-container" *ngIf="loading">
-    <ion-spinner name="crescent"></ion-spinner>
+  <div class="content-wrapper" *ngIf="activeSegment === 'products'">
+    <div class="empty-state">
+      <p class="empty-message">Produtos em breve</p>
+    </div>
   </div>
-
-  <div class="spacer-bottom"></div>
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button routerLink="/barber/services/new">
-      <ion-icon name="add"></ion-icon>
+    <ion-fab-button
+      class="fab-button"
+      (click)="navigateToCreate()"
+      color="primary"
+    >
+      <mat-icon>add</mat-icon>
     </ion-fab-button>
   </ion-fab>
 </ion-content>

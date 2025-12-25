@@ -1,82 +1,214 @@
-.service-form-content {
-  --background: #0f172a;
+@use "../../../../../theme/variables.scss" as *;
+
+/* ========================================
+   TOOLBAR
+======================================== */
+ion-toolbar {
+  --background: #{$barber-slate-grey};
+  --color: #{$barber-white-pure};
+  --border-width: 0;
 }
 
-.service-form {
-  width: 100%;
-  max-width: 420px;
-  margin: 20px auto;
-  display: block; /* IMPORTANTE: BLOCK */
-  padding-bottom: 40px;
+.toolbar-title, .save-text {
+  font-family: "Oswald", sans-serif;
 }
 
-.form-card {
-  background: #1e293b;
-  border-radius: 18px;
-  padding: 24px 18px;
-  display: block; /* IMPORTANTE: BLOCK */
-  border: 1px solid rgba(255, 255, 255, 0.05);
+.save-text { 
+  color: #{$barber-royal-blue}; 
 }
 
-.custom-input-group {
+/* ========================================
+   CONTENT
+======================================== */
+.content-bg { 
+  --background: #{$barber-midnight-navy}; 
+}
+
+.service-form { 
+  padding-bottom: 100px; 
+}
+
+/* ========================================
+   FORM ITEMS (Card Style)
+======================================== */
+.form-item {
+  --background: #{$barber-slate-grey};
+  --color: #{$barber-white-pure};
+  --padding-start: 16px;
+  --inner-padding-end: 16px;
+  --min-height: 68px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  /* Remove linhas padrão */
+  --border-width: 0;
+  --inner-border-width: 0;
+  --highlight-height: 0;
+}
+
+/* ========================================
+   CUSTOM INPUTS (Ionic 7 Nova Sintaxe)
+======================================== */
+.custom-input {
+  --color: #{$barber-white-pure} !important; /* Texto digitado BRANCO */
+  --placeholder-color: #{$barber-grey-steel};
+  --placeholder-opacity: 0.6;
+  font-size: 1rem;
+  font-weight: 400;
+  margin-top: 4px;
+}
+
+/* Customiza a Label "Stacked" interna */
+ion-input::part(label), 
+ion-select::part(label), 
+ion-textarea::part(label) {
+  color: #{$barber-grey-steel};
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.5px;
+  font-family: "Inter", sans-serif;
+  margin-bottom: 4px;
+}
+
+/* ========================================
+   PREFIXO R$
+======================================== */
+.currency-prefix {
+  color: #{$barber-white-pure};
+  font-size: 1rem;
+  font-weight: 600;
+  margin-right: 8px;
+  margin-top: 26px; /* Alinhamento manual */
+  z-index: 10;
+}
+
+/* ========================================
+   GRID (Tipo + Preço)
+======================================== */
+.grid-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+/* ========================================
+   FAKE INPUTS (Categoria e Cor)
+======================================== */
+.fake-input-wrapper {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  margin-bottom: 24px; /* Espaçamento manual */
-  position: relative;
-
-  label {
-    color: #94a3b8;
-    font-size: 0.9rem;
-    font-weight: 500;
-    margin-left: 4px;
-    .required { color: #f87171; }
+  width: 100%;
+  padding: 12px 0;
+  pointer-events: none; /* ✅ Apenas o pai (ion-item) recebe eventos */
+  
+  * {
+    user-select: none; /* ✅ Previne seleção de texto */
   }
 }
 
-.custom-input {
-  --background: #232a36;
-  --color: #fff;
-  --padding-start: 16px;
-  --padding-end: 16px;
-  --padding-top: 14px;
-  --padding-bottom: 14px;
-  --border-radius: 12px;
-  border-radius: 12px;
-  background: #232a36;
-  min-height: 52px;
-
-  /* GARANTE O CLIQUE */
-  position: relative;
-  z-index: 10;
-  pointer-events: auto !important;
-
-  &.ion-focused {
-    border: 1px solid #3b82f6;
-    background: #1e293b;
-  }
+.fake-label {
+  color: #{$barber-grey-steel};
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  margin-bottom: 6px;
+  letter-spacing: 0.5px;
+  font-family: "Inter", sans-serif;
 }
 
-/* Ajuste específico para o Textarea */
-ion-textarea.custom-input {
-  min-height: 100px;
-}
-
-.toggle-group {
+.fake-value-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 4px;
-  margin-top: 10px;
-  label { color: #fff; font-size: 1rem; }
 }
 
-.save-btn {
-  --background: #3b82f6;
-  --color: #fff;
-  --border-radius: 14px;
-  height: 56px;
-  font-weight: 600;
-  box-shadow: 0 4px 12px rgba(59,130,246,0.3);
-  margin-top: 24px;
+.fake-value {
+  color: #{$barber-white-pure};
+  font-size: 1rem;
+}
+
+.chevron-icon {
+  color: #{$barber-grey-steel};
+  opacity: 0.7;
+  font-size: 20px;
+}
+
+/* ========================================
+   PROTEÇÃO CONTRA FOCO (CRÍTICO PARA ANDROID)
+======================================== */
+.category-item, .color-item {
+  cursor: pointer;
+  pointer-events: auto; /* ✅ Permite click no ion-item */
+  
+  /* Previne outline de foco */
+  &:focus, &:focus-within {
+    outline: none !important;
+  }
+  
+  /* Previne estados de foco do Ionic */
+  &.ion-focused, &.ion-activated {
+    --background: #{$barber-slate-grey} !important;
+  }
+  
+  /* Previne qualquer animação de ripple/foco */
+  &::part(native) {
+    outline: none !important;
+  }
+}
+
+/* ========================================
+   CORES (Color Picker)
+======================================== */
+.color-row { 
+  display: flex; 
+  align-items: center; 
+  gap: 12px; 
+}
+
+.color-circle {
+  width: 24px; 
+  height: 24px; 
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  flex-shrink: 0;
+}
+
+.color-name {
+  color: #{$barber-white-pure};
+  font-size: 1rem;
+}
+
+/* ========================================
+   BOTÕES DE AÇÃO (Fixos no Bottom)
+======================================== */
+.form-actions {
+  position: fixed; 
+  bottom: 0; 
+  left: 0; 
+  right: 0;
+  background: #{$barber-midnight-navy};
+  padding: 16px;
+  padding-bottom: calc(16px + env(safe-area-inset-bottom));
+  z-index: 100;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.save-button {
+  --background: #{$barber-royal-blue};
+  --color: white;
+  --border-radius: 8px;
+  font-family: "Oswald", sans-serif;
+  font-weight: 700;
+  height: 48px;
+  margin-bottom: 8px;
+}
+
+.delete-button {
+  --border-color: #ef4444;
+  --color: #ef4444;
+  --border-radius: 8px;
+  font-family: "Oswald", sans-serif;
+  font-weight: 700;
+  height: 48px;
 }
