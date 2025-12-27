@@ -2,7 +2,13 @@
 import axios, { AxiosError, AxiosInstance, InternalAxiosRequestConfig } from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ENV from '../config/env';
-import { ApiError } from '../types/api.types';
+// import { ApiError } from '../types/api.types';
+
+interface ApiError {
+  message: string;
+  errors?: any;
+  statusCode: number;
+}
 
 // Chave para armazenar o token
 const TOKEN_KEY = '@BarberBoss:token';

@@ -7,6 +7,6 @@
  */
 
 export * from './useDebounce';
-export * from './usePermission';
+export * from './userPermission';
 // useAuth is exported from AuthContext
 export { useAuth } from '../context/AuthContext';

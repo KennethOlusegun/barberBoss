@@ -31,7 +31,7 @@ export const usePermission = (): UsePermissionReturn => {
     if (!user) return false;
 
     const requiredRoles = Array.isArray(roles) ? roles : [roles];
-    return requiredRoles.includes(user.role);
+    return requiredRoles.includes(user.role as Role);
   };
 
   /**
