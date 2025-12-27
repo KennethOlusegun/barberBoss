@@ -1,5 +1,5 @@
 // src/screens/Auth/LoginScreen.tsx
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -9,7 +9,6 @@ import {
   Platform,
   TouchableOpacity,
   Alert,
-  Animated,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useForm, Controller } from 'react-hook-form';
@@ -47,9 +46,7 @@ export const LoginScreen: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
-  // Animation values
-  const fadeAnim = new Animated.Value(0);
-  const slideAnim = new Animated.Value(20);
+  console.log('ðŸ–¥ï¸ LoginScreen rendered');
 
   // React Hook Form
   const {
@@ -65,40 +62,22 @@ export const LoginScreen: React.FC = () => {
   });
 
   // ============================================================================
-  // LIFECYCLE & ANIMATIONS
-  // ============================================================================
-  useEffect(() => {
-    Animated.parallel([
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 600,
-        useNativeDriver: true,
-      }),
-      Animated.timing(slideAnim, {
-        toValue: 0,
-        duration: 600,
-        useNativeDriver: true,
-      }),
-    ]).start();
-  }, []);
-
-  // ============================================================================
   // HANDLERS
   // ============================================================================
   const onSubmit = async (data: LoginFormData) => {
-    console.log('📤 Login attempt:', { email: data.email, password: '***' });
+    console.log('ðŸ“¤ Login attempt:', { email: data.email, password: '***' });
 
     setIsLoading(true);
     setErrorMessage('');
 
     try {
       await signIn(data.email, data.password);
-      console.log('✅ Login successful');
+      console.log('âœ… Login successful');
     } catch (error: any) {
-      console.error('❌ Login error:', error);
+      console.error('âŒ Login error:', error);
 
       if (!error.statusCode || error.statusCode === 0) {
-        setErrorMessage('Erro de conexão. Verifique sua internet.');
+        setErrorMessage('Erro de conexÃ£o. Verifique sua internet.');
       } else {
         setErrorMessage(
           error.message || 'Erro ao fazer login. Verifique suas credenciais.'
@@ -130,161 +109,148 @@ export const LoginScreen: React.FC = () => {
   // ============================================================================
   return (
     <SafeAreaView style={styles.safeArea} edges={['top']}>
-      <LinearGradient
-        colors={[COLORS.midnight_navy + 'F2', COLORS.slate_grey + '80']}
-        style={styles.gradient}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-      >
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-          style={styles.keyboardView}
+      {/* Container opaco para prevenir ghost screen */}
+      <View style={styles.opaqueContainer}>
+        <LinearGradient
+          colors={[COLORS.midnight_navy, COLORS.slate_grey]}
+          style={styles.gradient}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
         >
-          <ScrollView
-            contentContainerStyle={styles.scrollContent}
-            keyboardShouldPersistTaps="handled"
-            showsVerticalScrollIndicator={false}
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+            style={styles.keyboardView}
           >
-            {/* HEADER SECTION */}
-            <Animated.View
-              style={[
-                styles.headerSection,
-                {
-                  opacity: fadeAnim,
-                  transform: [{ translateY: slideAnim }],
-                },
-              ]}
+            <ScrollView
+              contentContainerStyle={styles.scrollContent}
+              keyboardShouldPersistTaps="handled"
+              showsVerticalScrollIndicator={false}
             >
-              {/* Logo Container */}
-              <View style={[styles.logoContainer, SHADOWS.glowPrimary]}>
-                <MaterialCommunityIcons
-                  name="scissors-cutting"
-                  size={SIZES.iconXLarge}
-                  color={COLORS.white_pure}
+              {/* HEADER SECTION - SEM ANIMAÃ‡ÃƒO */}
+              <View style={styles.headerSection}>
+                {/* Logo Container */}
+                <View style={[styles.logoContainer, SHADOWS.glowPrimary]}>
+                  <MaterialCommunityIcons
+                    name="scissors-cutting"
+                    size={SIZES.iconXLarge}
+                    color={COLORS.white_pure}
+                  />
+                </View>
+
+                {/* App Title */}
+                <Text style={styles.appTitle}>BarberBoss</Text>
+
+                {/* Subtitle */}
+                <Text style={styles.appSubtitle}>
+                  Gerencie seu salÃ£o com facilidade
+                </Text>
+              </View>
+
+              {/* FORM SECTION - SEM ANIMAÃ‡ÃƒO */}
+              <View style={styles.formContainer}>
+                {/* Email Input */}
+                <Controller
+                  control={control}
+                  name="email"
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <Input
+                      icon="email-outline"
+                      placeholder="E-mail"
+                      keyboardType="email-address"
+                      value={value}
+                      onChangeText={onChange}
+                      onBlur={onBlur}
+                      error={errors.email?.message}
+                    />
+                  )}
+                />
+
+                {/* Password Input */}
+                <Controller
+                  control={control}
+                  name="password"
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <Input
+                      icon="lock"
+                      placeholder="Senha"
+                      showPasswordToggle={true}
+                      secureTextEntry={true}
+                      value={value}
+                      onChangeText={onChange}
+                      onBlur={onBlur}
+                      error={errors.password?.message}
+                    />
+                  )}
+                />
+
+                {/* Forgot Password Link */}
+                <View style={styles.forgotPasswordSection}>
+                  <TouchableOpacity
+                    onPress={handleForgotPassword}
+                    activeOpacity={0.7}
+                  >
+                    <Text style={styles.forgotPasswordText}>
+                      Esqueceu a senha?
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+
+                {/* Error Alert */}
+                {errorMessage ? (
+                  <View style={styles.errorAlert}>
+                    <View style={styles.errorBox}>
+                      <MaterialCommunityIcons
+                        name="alert-circle-outline"
+                        size={24}
+                        color={COLORS.vintage_red}
+                      />
+                      <Text style={styles.errorText}>{errorMessage}</Text>
+                    </View>
+                  </View>
+                ) : null}
+
+                {/* Login Button */}
+                <Button
+                  title={isLoading ? 'Carregando...' : 'Entrar'}
+                  onPress={handleSubmit(onSubmit)}
+                  variant="primary"
+                  size="large"
+                  fullWidth={true}
+                  loading={isLoading}
+                  disabled={isLoading}
+                  style={styles.loginButton}
+                />
+
+                {/* Divider */}
+                <View style={styles.divider}>
+                  <View style={styles.dividerLine} />
+                  <Text style={styles.dividerText}>ou</Text>
+                  <View style={styles.dividerLine} />
+                </View>
+
+                {/* Register Button */}
+                <Button
+                  title="Criar uma conta"
+                  onPress={handleRegister}
+                  variant="outline"
+                  size="large"
+                  fullWidth={true}
+                  disabled={isLoading}
                 />
               </View>
 
-              {/* App Title */}
-              <Text style={styles.appTitle}>BarberBoss</Text>
-
-              {/* Subtitle */}
-              <Text style={styles.appSubtitle}>
-                Gerencie seu salão com facilidade
-              </Text>
-            </Animated.View>
-
-            {/* FORM SECTION */}
-            <Animated.View
-              style={[
-                styles.formContainer,
-                {
-                  opacity: fadeAnim,
-                  transform: [{ translateY: slideAnim }],
-                },
-              ]}
-            >
-              {/* Email Input */}
-              <Controller
-                control={control}
-                name="email"
-                render={({ field: { onChange, onBlur, value } }) => (
-                  <Input
-                    icon="email-outline"
-                    placeholder="E-mail"
-                    keyboardType="email-address"
-                    value={value}
-                    onChangeText={onChange}
-                    onBlur={onBlur}
-                    error={errors.email?.message}
-                  />
-                )}
-              />
-
-              {/* Password Input */}
-              <Controller
-                control={control}
-                name="password"
-                render={({ field: { onChange, onBlur, value } }) => (
-                  <Input
-                    icon="lock"
-                    placeholder="Senha"
-                    showPasswordToggle={true}
-                    secureTextEntry={true}
-                    value={value}
-                    onChangeText={onChange}
-                    onBlur={onBlur}
-                    error={errors.password?.message}
-                  />
-                )}
-              />
-
-              {/* Forgot Password Link */}
-              <View style={styles.forgotPasswordSection}>
-                <TouchableOpacity
-                  onPress={handleForgotPassword}
-                  activeOpacity={0.7}
-                >
-                  <Text style={styles.forgotPasswordText}>
-                    Esqueceu a senha?
-                  </Text>
-                </TouchableOpacity>
+              {/* FOOTER SECTION */}
+              <View style={styles.footerSection}>
+                <Text style={styles.footerText}>
+                  Ao continuar, vocÃª concorda com nossos{' '}
+                  <Text style={styles.footerLink}>Termos de Uso</Text> e{' '}
+                  <Text style={styles.footerLink}>PolÃ­tica de Privacidade</Text>
+                </Text>
               </View>
-
-              {/* Error Alert */}
-              {errorMessage ? (
-                <View style={styles.errorAlert}>
-                  <View style={styles.errorBox}>
-                    <MaterialCommunityIcons
-                      name="alert-circle-outline"
-                      size={24}
-                      color={COLORS.vintage_red}
-                    />
-                    <Text style={styles.errorText}>{errorMessage}</Text>
-                  </View>
-                </View>
-              ) : null}
-
-              {/* Login Button */}
-              <Button
-                title={isLoading ? 'Carregando...' : 'Entrar'}
-                onPress={handleSubmit(onSubmit)}
-                variant="primary"
-                size="large"
-                fullWidth={true}
-                loading={isLoading}
-                disabled={isLoading}
-                style={styles.loginButton}
-              />
-
-              {/* Divider */}
-              <View style={styles.divider}>
-                <View style={styles.dividerLine} />
-                <Text style={styles.dividerText}>ou</Text>
-                <View style={styles.dividerLine} />
-              </View>
-
-              {/* Register Button */}
-              <Button
-                title="Criar uma conta"
-                onPress={handleRegister}
-                variant="outline"
-                size="large"
-                fullWidth={true}
-                disabled={isLoading}
-              />
-            </Animated.View>
-
-            {/* FOOTER SECTION */}
-            <View style={styles.footerSection}>
-              <Text style={styles.footerText}>
-                Ao continuar, você concorda com nossos{' '}
-                <Text style={styles.footerLink}>Termos de Uso</Text> e{' '}
-                <Text style={styles.footerLink}>Política de Privacidade</Text>
-              </Text>
-            </View>
-          </ScrollView>
-        </KeyboardAvoidingView>
-      </LinearGradient>
+            </ScrollView>
+          </KeyboardAvoidingView>
+        </LinearGradient>
+      </View>
     </SafeAreaView>
   );
 };
@@ -294,6 +260,12 @@ export const LoginScreen: React.FC = () => {
 // ============================================================================
 const styles = StyleSheet.create({
   safeArea: {
+    flex: 1,
+    backgroundColor: COLORS.midnight_navy,
+  },
+
+  // Container opaco para prevenir ghost screen
+  opaqueContainer: {
     flex: 1,
     backgroundColor: COLORS.midnight_navy,
   },
@@ -329,21 +301,19 @@ const styles = StyleSheet.create({
   },
 
   appTitle: {
-    ...FONTS.heading,
     fontSize: SIZES.h1,
     color: COLORS.white_pure,
     marginBottom: SIZES.sm,
     fontWeight: '700',
-    // Corrigir textTransform se necessário:
-    textTransform: 'none',
+    textTransform: 'uppercase',
+    letterSpacing: 1,
   },
 
   appSubtitle: {
-    ...FONTS.body,
     fontSize: SIZES.h5,
     color: COLORS.grey_steel,
     textAlign: 'center',
-    fontWeight: 400,
+    fontWeight: '400',
   },
 
   // Form Section
@@ -357,7 +327,6 @@ const styles = StyleSheet.create({
   },
 
   forgotPasswordText: {
-    ...FONTS.bodySemiBold,
     fontSize: SIZES.small,
     color: COLORS.royal_blue,
     fontWeight: '700',
@@ -379,7 +348,6 @@ const styles = StyleSheet.create({
   },
 
   errorText: {
-    ...FONTS.bodyMedium,
     fontSize: SIZES.small,
     color: COLORS.vintage_red,
     flex: 1,
@@ -403,11 +371,10 @@ const styles = StyleSheet.create({
   },
 
   dividerText: {
-    ...FONTS.bodyMedium,
     fontSize: SIZES.small,
     color: COLORS.grey_steel,
     marginHorizontal: SIZES.md,
-    fontWeight: '700', // Ensure this is a valid value for React Native
+    fontWeight: '700',
   },
 
   // Footer Section
@@ -419,17 +386,15 @@ const styles = StyleSheet.create({
   },
 
   footerText: {
-    ...FONTS.body,
     fontSize: SIZES.small,
     color: COLORS.grey_steel,
     textAlign: 'center',
     lineHeight: 20,
-    fontWeight: '400' as const,
+    fontWeight: '400',
   },
 
   footerLink: {
-    ...FONTS.bodySemiBold,
     color: COLORS.royal_blue,
-    fontWeight: '700' as const,
+    fontWeight: '700',
   },
 });
