@@ -1,4 +1,4 @@
-// src/screens/Dashboard/CreateAppointmentScreen.tsx
+// src/screens/Appointments/CreateAppointmentScreen.tsx
 import React, { useEffect, useState } from 'react';
 import {
     View,
@@ -141,30 +141,25 @@ const CreateAppointmentScreen: React.FC = () => {
 
     const handleDateChange = (event: any, date?: Date) => {
         if (Platform.OS === 'android') {
-            // Android: fechar o picker atual
             if (pickerMode === 'date') {
                 setShowDatePicker(false);
             } else {
                 setShowTimePicker(false);
             }
-            
-            // Só atualiza se o usuário confirmou
+
             if (event.type === 'set' && date) {
                 if (pickerMode === 'date') {
-                    // Atualiza apenas a data, mantém a hora
                     const newDate = new Date(selectedDate);
                     newDate.setFullYear(date.getFullYear());
                     newDate.setMonth(date.getMonth());
                     newDate.setDate(date.getDate());
                     setSelectedDate(newDate);
-                    
-                    // Abre o picker de hora automaticamente
+
                     setTimeout(() => {
                         setPickerMode('time');
                         setShowTimePicker(true);
                     }, 500);
                 } else {
-                    // Atualiza apenas a hora, mantém a data
                     const newDate = new Date(selectedDate);
                     newDate.setHours(date.getHours());
                     newDate.setMinutes(date.getMinutes());
@@ -172,12 +167,10 @@ const CreateAppointmentScreen: React.FC = () => {
                 }
             }
         } else {
-            // iOS: mantém o picker aberto e atualiza conforme o usuário rola
             if (date) {
                 setSelectedDate(date);
             }
-            
-            // Fecha quando o usuário cancela ou confirma
+
             if (event.type === 'dismissed') {
                 setShowDatePicker(false);
             }
@@ -186,11 +179,9 @@ const CreateAppointmentScreen: React.FC = () => {
 
     const openDateTimePicker = () => {
         if (Platform.OS === 'android') {
-            // Android: abre primeiro o picker de data
             setPickerMode('date');
             setShowDatePicker(true);
         } else {
-            // iOS: abre o picker datetime direto
             setShowDatePicker(true);
         }
     };
@@ -256,7 +247,6 @@ const CreateAppointmentScreen: React.FC = () => {
         }
     };
 
-    // Helpers para obter nomes selecionados
     const getSelectedServiceName = () => {
         const service = services.find(s => s.id === selectedService);
         return service?.name || 'Selecione o serviço...';
@@ -306,7 +296,6 @@ const CreateAppointmentScreen: React.FC = () => {
 
             <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
                 <View style={styles.form}>
-                    {/* SELEÇÃO DE BARBEIRO - Apenas para CLIENTE */}
                     {isClient && (
                         <View style={styles.formGroup}>
                             <Text style={styles.label}>
@@ -332,7 +321,6 @@ const CreateAppointmentScreen: React.FC = () => {
                         </View>
                     )}
 
-                    {/* SELEÇÃO DE CLIENTE - Apenas para BARBEIRO e ADMIN */}
                     {!isClient && (
                         <>
                             <View style={styles.formGroup}>
@@ -387,7 +375,6 @@ const CreateAppointmentScreen: React.FC = () => {
                         </>
                     )}
 
-                    {/* Serviço */}
                     <View style={styles.formGroup}>
                         <Text style={styles.label}>
                             Serviço <Text style={styles.required}>*</Text>
@@ -408,7 +395,6 @@ const CreateAppointmentScreen: React.FC = () => {
                         </View>
                     </View>
 
-                    {/* Data/Hora */}
                     <View style={styles.formGroup}>
                         <Text style={styles.label}>
                             Data e Hora <Text style={styles.required}>*</Text>
@@ -425,7 +411,6 @@ const CreateAppointmentScreen: React.FC = () => {
                         </TouchableOpacity>
                     </View>
 
-                    {/* Date Picker - Android separado */}
                     {showDatePicker && Platform.OS === 'android' && (
                         <DateTimePicker
                             value={selectedDate}
@@ -437,7 +422,6 @@ const CreateAppointmentScreen: React.FC = () => {
                         />
                     )}
 
-                    {/* Time Picker - Android separado */}
                     {showTimePicker && Platform.OS === 'android' && (
                         <DateTimePicker
                             value={selectedDate}
@@ -448,7 +432,6 @@ const CreateAppointmentScreen: React.FC = () => {
                         />
                     )}
 
-                    {/* DateTime Picker - iOS */}
                     {showDatePicker && Platform.OS === 'ios' && (
                         <DateTimePicker
                             value={selectedDate}
@@ -461,7 +444,6 @@ const CreateAppointmentScreen: React.FC = () => {
                         />
                     )}
 
-                    {/* Botão Salvar */}
                     <TouchableOpacity
                         style={[
                             styles.submitButton,
@@ -484,7 +466,6 @@ const CreateAppointmentScreen: React.FC = () => {
                 </View>
             </ScrollView>
 
-            {/* Modals */}
             <SelectModal
                 visible={showServiceModal}
                 title="Selecione o Serviço"
@@ -494,8 +475,8 @@ const CreateAppointmentScreen: React.FC = () => {
                     description: s.price != null
                         ? `R$ ${Number(s.price).toFixed(2)}${s.duration ? ` • ${s.duration}min` : ''}`
                         : s.duration
-                        ? `${s.duration} minutos`
-                        : undefined
+                            ? `${s.duration} minutos`
+                            : undefined
                 }))}
                 selectedId={selectedService}
                 onSelect={setSelectedService}

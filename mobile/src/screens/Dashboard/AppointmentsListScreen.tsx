@@ -9,8 +9,9 @@ import {
     RefreshControl,
     Alert,
     TouchableOpacity,
-    SafeAreaView,
+    Dimensions,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
@@ -18,6 +19,7 @@ import dayjs from 'dayjs';
 import { appointmentsService, Appointment, AppointmentStatus } from '../../api/appointmentsService';
 import { COLORS, SIZES, SHADOWS } from '../../constants/colors';
 import { useAuth } from '../../context/AuthContext';
+import { SideMenu, TopBar, FabButton } from '../../components/common/SideMenu';
 
 const STATUS_COLORS: Record<AppointmentStatus, string> = {
     PENDING: COLORS.warning,
@@ -42,6 +44,7 @@ type RootStackParamList = {
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
+
 const AppointmentsListScreen: React.FC = () => {
     const navigation = useNavigation<NavigationProp>();
     const { user } = useAuth();
@@ -49,6 +52,8 @@ const AppointmentsListScreen: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [menuVisible, setMenuVisible] = useState(false);
+    const [search, setSearch] = useState('');
 
     const fetchAppointments = useCallback(async () => {
         setLoading(true);
@@ -111,7 +116,7 @@ const AppointmentsListScreen: React.FC = () => {
     const renderItem = ({ item }: { item: Appointment }) => {
         const showClient = user?.role !== 'CLIENT';
         const showBarber = user?.role === 'CLIENT';
-        
+
         return (
             <View style={styles.card}>
                 <View style={styles.cardHeader}>
@@ -122,14 +127,14 @@ const AppointmentsListScreen: React.FC = () => {
                         </Text>
                     </View>
                 </View>
-                
+
                 <View style={styles.infoRow}>
                     <Ionicons name="calendar-outline" size={16} color={COLORS.textSecondary} />
                     <Text style={styles.date}>
                         {dayjs(item.startsAt).format('DD/MM/YYYY [às] HH:mm')}
                     </Text>
                 </View>
-                
+
                 {showClient && (
                     <View style={styles.infoRow}>
                         <Ionicons name="person-outline" size={16} color={COLORS.textSecondary} />
@@ -138,7 +143,7 @@ const AppointmentsListScreen: React.FC = () => {
                         </Text>
                     </View>
                 )}
-                
+
                 {showBarber && item.barber && (
                     <View style={styles.infoRow}>
                         <Ionicons name="cut-outline" size={16} color={COLORS.textSecondary} />
@@ -147,7 +152,7 @@ const AppointmentsListScreen: React.FC = () => {
                         </Text>
                     </View>
                 )}
-                
+
                 <View style={styles.actions}>
                     <TouchableOpacity
                         style={styles.actionBtn}
@@ -156,8 +161,8 @@ const AppointmentsListScreen: React.FC = () => {
                         <Ionicons name="create-outline" size={20} color={COLORS.primary} />
                         <Text style={styles.actionText}>Editar</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity 
-                        style={[styles.actionBtn, styles.deleteBtn]} 
+                    <TouchableOpacity
+                        style={[styles.actionBtn, styles.deleteBtn]}
                         onPress={() => handleDelete(item.id)}
                     >
                         <Ionicons name="trash-outline" size={20} color={COLORS.danger} />
@@ -168,54 +173,72 @@ const AppointmentsListScreen: React.FC = () => {
         );
     };
 
+    // Filtro de busca simples (nome do cliente ou serviço)
+    const filteredAppointments = appointments.filter(item => {
+        const client = getClientName(item).toLowerCase();
+        const service = (item.service?.name || '').toLowerCase();
+        return (
+            client.includes(search.toLowerCase()) ||
+            service.includes(search.toLowerCase())
+        );
+    });
+
     return (
         <SafeAreaView style={styles.safeArea}>
-            <View style={styles.header}>
-                <Text style={styles.headerTitle}>Agendamentos</Text>
+            <TopBar
+                onMenuPress={() => setMenuVisible(true)}
+                onBellPress={() => { }}
+                onProfilePress={() => { }}
+                searchValue={search}
+                onSearchChange={setSearch}
+            />
+            <SideMenu
+                visible={menuVisible}
+                onClose={() => setMenuVisible(false)}
+                onSelect={label => {
+                    setMenuVisible(false);
+                    // Navegação pode ser implementada aqui
+                }}
+            />
+            <View style={{ flex: 1 }}>
+                {loading ? (
+                    <View style={styles.centered}>
+                        <ActivityIndicator size="large" color={COLORS.primary} />
+                        <Text style={styles.loadingText}>Carregando...</Text>
+                    </View>
+                ) : error ? (
+                    <View style={styles.centered}>
+                        <Ionicons name="alert-circle-outline" size={64} color={COLORS.danger} />
+                        <Text style={styles.error}>{error}</Text>
+                        <TouchableOpacity style={styles.retryBtn} onPress={fetchAppointments}>
+                            <Text style={styles.retryText}>Tentar Novamente</Text>
+                        </TouchableOpacity>
+                    </View>
+                ) : filteredAppointments.length === 0 ? (
+                    <View style={styles.centered}>
+                        <Ionicons name="calendar-outline" size={64} color={COLORS.textSecondary} />
+                        <Text style={styles.empty}>Nenhum agendamento encontrado.</Text>
+                        <Text style={styles.emptySubtitle}>
+                            Toque no botão + para criar um novo agendamento
+                        </Text>
+                    </View>
+                ) : (
+                    <FlatList
+                        data={filteredAppointments}
+                        keyExtractor={item => item.id}
+                        renderItem={renderItem}
+                        refreshControl={
+                            <RefreshControl
+                                refreshing={refreshing}
+                                onRefresh={onRefresh}
+                                tintColor={COLORS.primary}
+                            />
+                        }
+                        contentContainerStyle={{ padding: SIZES.md }}
+                    />
+                )}
             </View>
-            {loading ? (
-                <View style={styles.centered}>
-                    <ActivityIndicator size="large" color={COLORS.primary} />
-                    <Text style={styles.loadingText}>Carregando...</Text>
-                </View>
-            ) : error ? (
-                <View style={styles.centered}>
-                    <Ionicons name="alert-circle-outline" size={64} color={COLORS.danger} />
-                    <Text style={styles.error}>{error}</Text>
-                    <TouchableOpacity style={styles.retryBtn} onPress={fetchAppointments}>
-                        <Text style={styles.retryText}>Tentar Novamente</Text>
-                    </TouchableOpacity>
-                </View>
-            ) : appointments.length === 0 ? (
-                <View style={styles.centered}>
-                    <Ionicons name="calendar-outline" size={64} color={COLORS.textSecondary} />
-                    <Text style={styles.empty}>Nenhum agendamento encontrado.</Text>
-                    <Text style={styles.emptySubtitle}>
-                        Toque no botão + para criar um novo agendamento
-                    </Text>
-                </View>
-            ) : (
-                <FlatList
-                    data={appointments}
-                    keyExtractor={item => item.id}
-                    renderItem={renderItem}
-                    refreshControl={
-                        <RefreshControl 
-                            refreshing={refreshing} 
-                            onRefresh={onRefresh}
-                            tintColor={COLORS.primary}
-                        />
-                    }
-                    contentContainerStyle={{ padding: SIZES.md }}
-                />
-            )}
-            <TouchableOpacity
-                style={styles.fab}
-                onPress={() => navigation.navigate('CreateAppointment')}
-                activeOpacity={0.8}
-            >
-                <Ionicons name="add" size={32} color={COLORS.textPrimary} />
-            </TouchableOpacity>
+            <FabButton onPress={() => navigation.navigate('CreateAppointment')} />
         </SafeAreaView>
     );
 };
