@@ -1,3 +1,6 @@
+import { PasswordForgotDto } from './dto/password-forgot.dto';
+import { PasswordResetDto } from './dto/password-reset.dto';
+import { PasswordForgotService } from './password-forgot.service';
 import { Controller, Post, Body, Get, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import {
@@ -17,7 +20,21 @@ import { ThrottleStrict } from '../../decorators/throttle.decorator';
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly passwordForgotService: PasswordForgotService,
+  ) {}
+  @Public()
+  @Post('forgot-password')
+  async forgotPassword(@Body() dto: PasswordForgotDto) {
+    return this.passwordForgotService.requestPasswordReset(dto);
+  }
+
+  @Public()
+  @Post('reset-password')
+  async resetPassword(@Body() dto: PasswordResetDto) {
+    return this.passwordForgotService.resetPassword(dto);
+  }
 
   @Public()
   @ThrottleStrict()
