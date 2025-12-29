@@ -9,12 +9,12 @@ import {
   ValidatorConstraint,
   ValidatorConstraintInterface,
   ValidationArguments,
+  IsBoolean,
 } from 'class-validator';
 import { AppointmentStatus } from '@prisma/client';
 
 /**
  * Validador customizado para UPDATE: garante que userId e clientName são mutuamente exclusivos
- * Diferente do Create, aqui permitimos que ambos sejam undefined (não alterados)
  */
 @ValidatorConstraint({ name: 'IsUserIdXorClientNameForUpdate', async: false })
 export class IsUserIdXorClientNameForUpdateConstraint implements ValidatorConstraintInterface {
@@ -24,12 +24,10 @@ export class IsUserIdXorClientNameForUpdateConstraint implements ValidatorConstr
       clientName?: string | null;
     };
 
-    // Se nenhum dos dois foi fornecido no update, está OK (não alterar)
     if (object.userId === undefined && object.clientName === undefined) {
       return true;
     }
 
-    // Se apenas um está sendo alterado (o outro é undefined), está OK
     if (
       (object.userId !== undefined && object.clientName === undefined) ||
       (object.userId === undefined && object.clientName !== undefined)
@@ -37,15 +35,10 @@ export class IsUserIdXorClientNameForUpdateConstraint implements ValidatorConstr
       return true;
     }
 
-    // Se ambos estão sendo alterados simultaneamente, NÃO está OK
-    // Exceto se um deles for explicitamente null (para remover)
     const hasUserId = object.userId !== undefined && object.userId !== null;
     const hasClientName =
       object.clientName !== undefined && object.clientName !== null;
 
-    // Permitir: userId=null + clientName="João" (trocar de cliente cadastrado para manual)
-    // Permitir: userId="abc" + clientName=null (trocar de manual para cadastrado)
-    // Bloquear: userId="abc" + clientName="João" (ambos preenchidos)
     if (hasUserId && hasClientName) {
       return false;
     }
@@ -58,19 +51,16 @@ export class IsUserIdXorClientNameForUpdateConstraint implements ValidatorConstr
   }
 }
 
-/**
- * DTO para atualização de agendamentos
- * Todos os campos são opcionais, mas seguem as mesmas regras de validação
- *
- * IMPORTANTE: Para alternar entre userId e clientName:
- * - De manual para cadastrado: { userId: "abc-123", clientName: null }
- * - De cadastrado para manual: { userId: null, clientName: "João Silva" }
- */
 export class UpdateAppointmentDto {
   /**
+   * Indica se a comissão já foi paga
+   */
+  @IsOptional()
+  @IsBoolean({ message: 'commissionPaid deve ser booleano' })
+  commissionPaid?: boolean;
+
+  /**
    * ID do usuário cadastrado no sistema
-   * Se fornecido com valor, clientName deve ser null ou undefined
-   * Use null explicitamente para remover userId existente
    */
   @IsOptional()
   @IsUUID('4', { message: 'userId deve ser um UUID válido (formato v4)' })
@@ -79,8 +69,6 @@ export class UpdateAppointmentDto {
 
   /**
    * Nome do cliente para agendamento manual
-   * Se fornecido com valor, userId deve ser null ou undefined
-   * Use null explicitamente para remover clientName existente
    */
   @IsOptional()
   @IsString({ message: 'clientName deve ser uma string' })
@@ -91,7 +79,6 @@ export class UpdateAppointmentDto {
 
   /**
    * ID do serviço a ser agendado
-   * Se alterado, endsAt será recalculado automaticamente
    */
   @IsOptional()
   @IsUUID('4', { message: 'serviceId deve ser um UUID válido (formato v4)' })
@@ -99,7 +86,6 @@ export class UpdateAppointmentDto {
 
   /**
    * Data/hora de início do agendamento (ISO 8601)
-   * Se alterado, endsAt será recalculado automaticamente (se não fornecido)
    */
   @IsOptional()
   @IsISO8601(
@@ -113,7 +99,6 @@ export class UpdateAppointmentDto {
 
   /**
    * Data/hora de término do agendamento (ISO 8601)
-   * Opcional: se não fornecido, será calculado automaticamente
    */
   @IsOptional()
   @IsISO8601(

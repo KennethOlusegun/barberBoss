@@ -10,6 +10,7 @@ import {
   ValidationArguments,
   ValidatorConstraint,
   ValidatorConstraintInterface,
+  IsBoolean,
 } from 'class-validator';
 import { AppointmentStatus } from '@prisma/client';
 
@@ -38,6 +39,13 @@ export class IsUserIdXorClientNameConstraint implements ValidatorConstraintInter
 }
 
 export class CreateAppointmentDto {
+  /**
+   * Indica se a comissão já foi paga
+   */
+  @IsOptional()
+  @IsBoolean({ message: 'commissionPaid deve ser booleano' })
+  commissionPaid?: boolean;
+
   /**
    * ID do usuário cadastrado no sistema (Fase 2)
    * Mutuamente exclusivo com clientName

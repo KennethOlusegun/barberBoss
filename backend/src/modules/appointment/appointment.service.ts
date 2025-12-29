@@ -1,3 +1,5 @@
+// ...existing code...
+
 import {
   Injectable,
   NotFoundException,
@@ -16,6 +18,54 @@ import dayjs from '../../config/dayjs.config';
 
 @Injectable()
 export class AppointmentService {
+    /**
+     * Busca agendamentos com filtros avançados, incluindo commissionPaid
+     */
+    async findAllWithFilters(filter: any, user: { id: string; role: string }) {
+      const { date, barberId, userId, status, commissionPaid, page, offset, limit } = filter;
+      const paginationDto: PaginationDto = { limit: limit || 10 };
+      if (page) {
+        paginationDto.page = page;
+      } else if (offset !== undefined) {
+        paginationDto.page = Math.floor((offset || 0) / (limit || 10)) + 1;
+      } else {
+        paginationDto.page = 1;
+      }
+
+      const where: any = {};
+      if (date) {
+        const d = dayjs(date);
+        where.startsAt = { gte: d.startOf('day').toDate(), lte: d.endOf('day').toDate() };
+      }
+      if (barberId) where.barberId = barberId;
+      if (userId) where.userId = userId;
+      if (status) where.status = status;
+      if (commissionPaid !== undefined) where.commissionPaid = commissionPaid === 'true' || commissionPaid === true;
+
+      // Permissões: admin/barber veem por barberId, client por userId
+      if (user.role === 'BARBER' || user.role === 'ADMIN') {
+        if (!barberId) where.barberId = user.id;
+      } else {
+        where.userId = user.id;
+      }
+
+      const pageNum = paginationDto.page || 1;
+      const lim = paginationDto.limit || 10;
+      const skip = (pageNum - 1) * lim;
+
+      const [appointments, total] = await Promise.all([
+        this.prisma.appointment.findMany({
+          skip,
+          take: lim,
+          where,
+          include: { user: true, service: true },
+          orderBy: { startsAt: 'asc' },
+        }),
+        this.prisma.appointment.count({ where }),
+      ]);
+      const appointmentEntities = appointments.map((appointment) => new Appointment(appointment));
+      return new PaginatedResult(appointmentEntities, total, pageNum, lim);
+    }
   constructor(
     private readonly prisma: PrismaService,
     private readonly settingsService: SettingsService,
@@ -265,10 +315,12 @@ export class AppointmentService {
             startsAt,
             endsAt,
             status: createAppointmentDto.status || 'CONFIRMED',
-            userId: createAppointmentDto.userId,
             clientName: createAppointmentDto.clientName?.trim(),
-            serviceId: createAppointmentDto.serviceId,
-            barberId: createAppointmentDto.barberId,
+            commissionPaid: typeof createAppointmentDto.commissionPaid === 'boolean' ? createAppointmentDto.commissionPaid : false,
+            // Relacionamentos
+            service: { connect: { id: createAppointmentDto.serviceId } },
+            ...(createAppointmentDto.userId && { user: { connect: { id: createAppointmentDto.userId } } }),
+            ...(createAppointmentDto.barberId && { barber: { connect: { id: createAppointmentDto.barberId } } }),
           },
           include: {
             user: true,
@@ -525,6 +577,9 @@ export class AppointmentService {
         }),
         ...(updateAppointmentDto.serviceId && {
           serviceId: updateAppointmentDto.serviceId,
+        }),
+        ...(updateAppointmentDto.commissionPaid !== undefined && {
+          commissionPaid: updateAppointmentDto.commissionPaid,
         }),
       },
       include: {
@@ -887,22 +942,8 @@ export class AppointmentService {
       this.prisma.appointment.findMany({
         where: whereConditions,
         include: {
-          service: {
-            select: {
-              id: true,
-              name: true,
-              price: true,
-              durationMin: true,
-            },
-          },
-          user: {
-            select: {
-              id: true,
-              name: true,
-              email: true,
-              phone: true,
-            },
-          },
+          service: true,
+          user: true,
         },
         orderBy: {
           startsAt: 'desc',
@@ -915,6 +956,7 @@ export class AppointmentService {
       }),
     ]);
 
-    return new PaginatedResult(appointments, total, page, limit);
+    const appointmentEntities = appointments.map((appointment) => new Appointment(appointment));
+    return new PaginatedResult(appointmentEntities, total, page, limit);
   }
 }

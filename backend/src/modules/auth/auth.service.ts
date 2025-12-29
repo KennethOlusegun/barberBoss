@@ -33,7 +33,7 @@ export class AuthService {
         name: registerDto.name,
         email: registerDto.email,
         password: hashedPassword,
-        phone: registerDto.phone,
+        phone: registerDto.phone || '', // fallback temporário para evitar undefined
         role: Role.CLIENT, // Sempre CLIENT
       },
       select: {

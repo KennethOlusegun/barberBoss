@@ -86,36 +86,8 @@ export class AppointmentController {
     @Query() filter: AppointmentFilterDto,
     @CurrentUser() user: { id: string; role: string },
   ) {
-    // CORREÇÃO 2: Removidos 'userId' e 'status' que não estavam sendo usados
-    const { date, barberId, page, offset, limit } = filter;
-
-    const paginationDto: PaginationDto = { limit: limit || 10 };
-    if (page) {
-      paginationDto.page = page;
-    } else if (offset !== undefined) {
-      paginationDto.page = Math.floor((offset || 0) / (limit || 10)) + 1;
-    } else {
-      paginationDto.page = 1;
-    }
-
-    if (date) {
-      return this.appointmentService.findByDate(
-        dayjs(date).toDate(),
-        paginationDto,
-      );
-    }
-
-    // Lógica para Barbeiro/Admin ver sua própria agenda
-    if (user.role === Role.BARBER || user.role === Role.ADMIN) {
-      const targetBarberId = barberId || user.id;
-      return this.appointmentService.findByBarber(
-        targetBarberId,
-        paginationDto,
-      );
-    }
-
-    // Lógica para Cliente ver seus agendamentos
-    return this.appointmentService.findByUser(user.id, paginationDto);
+    // Novo: passar todos os filtros para o service
+    return this.appointmentService.findAllWithFilters(filter, user);
   }
 
   @Get(':id')

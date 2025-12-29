@@ -55,6 +55,7 @@ export class FilterExamplesController {
         email: data.email,
         name: data.name,
         password: 'hashedPassword',
+        phone: '99999999999', // obrigatório para User
         role: 'CLIENT',
       },
     });

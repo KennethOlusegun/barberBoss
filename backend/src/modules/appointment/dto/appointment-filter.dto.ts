@@ -1,3 +1,4 @@
+import { IsBoolean } from 'class-validator';
 import {
   IsOptional,
   IsUUID,
@@ -6,9 +7,18 @@ import {
   IsInt,
   Min,
 } from 'class-validator';
-import { Type } from 'class-transformer';
+import { Type, Transform } from 'class-transformer';
 
 export class AppointmentFilterDto {
+  @IsOptional()
+  @IsBoolean({ message: 'commissionPaid deve ser booleano' })
+  @Transform(({ value }) => {
+    if (value === 'true') return true;
+    if (value === 'false') return false;
+    return value;
+  })
+  commissionPaid?: boolean;
+
   @IsOptional()
   @IsUUID('4', { message: 'userId deve ser um UUID válido (formato v4)' })
   userId?: string;
