@@ -7,6 +7,7 @@ export interface Client {
     email?: string;
 }
 
+
 export interface UserProfile {
     id: string;
     name: string;
@@ -25,19 +26,21 @@ export interface StaffMember {
     status: 'active' | 'inactive';
 }
 
+
 export const usersService = {
-    // --- MÉTODOS DE PERFIL (NOVOS) ---
-    async getMe(): Promise<UserProfile> {
+    // ... manter métodos existentes (getClients, createClient, etc) ...
+
+    getMe: async () => {
         const { data } = await apiClient.get<UserProfile>('/auth/me');
         return data;
     },
 
-    async updateProfile(id: string, data: { name: string; phone: string; email: string }): Promise<UserProfile> {
+    updateProfile: async (id: string, data: { name: string; phone: string; email: string }) => {
         const { data: response } = await apiClient.patch<UserProfile>(`/users/${id}`, data);
         return response;
     },
 
-    async changePassword(id: string, data: { currentPassword: string; newPassword: string }): Promise<void> {
+    changePassword: async (id: string, data: { currentPassword: string; newPassword: string }) => {
         await apiClient.patch(`/users/${id}/change-password`, data);
     },
 

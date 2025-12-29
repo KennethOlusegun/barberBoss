@@ -46,13 +46,13 @@ export const SideMenu: React.FC<SideMenuProps> = ({ visible, onClose, onSelect }
     const { user, signOut } = useAuth();
     // Cast seguro para usar avatarUrl sem erro
     const safeUser = user as unknown as AuthUserWithAvatar | null;
-    
+
     const navigation = useNavigation<any>();
     const insets = useSafeAreaInsets();
 
     const slideAnim = useRef(new Animated.Value(-MENU_WIDTH)).current;
     const fadeAnim = useRef(new Animated.Value(0)).current;
-    
+
     // Estado para controlar se o componente deve estar na árvore de renderização
     const [shouldRender, setShouldRender] = useState(visible);
 
@@ -62,16 +62,23 @@ export const SideMenu: React.FC<SideMenuProps> = ({ visible, onClose, onSelect }
         ];
 
         if (user) {
-            if (user.role !== 'CLIENT') {
-                 items.push({ icon: 'content-cut', label: 'Serviços' });
+            if (user.role === 'CLIENT') {
+                items.push({ icon: 'attach-money', label: 'Meus Gastos' });
             }
-            if (['ADMIN', 'BARBER'].includes(user.role)) {
+            if (user.role !== 'CLIENT') {
+                items.push({ icon: 'content-cut', label: 'Serviços' });
+            }
+            if (user.role === 'BARBER') {
                 items.push({ icon: 'groups', label: 'Clientes' });
             }
             if (user.role === 'ADMIN') {
+                items.push({ icon: 'groups', label: 'Clientes' });
                 items.push({ icon: 'supervisor-account', label: 'Equipe' });
+                items.push({ icon: 'attach-money', label: 'Comissões' });
             }
-            items.push({ icon: 'attach-money', label: 'Financeiro' });
+            if (user.role !== 'CLIENT') {
+                items.push({ icon: 'attach-money', label: 'Financeiro' });
+            }
         }
         return items;
     }, [user]);
@@ -114,13 +121,13 @@ export const SideMenu: React.FC<SideMenuProps> = ({ visible, onClose, onSelect }
                 <Pressable style={{ flex: 1 }} onPress={onClose} />
             </Animated.View>
 
-            <Animated.View 
+            <Animated.View
                 style={[
-                    styles.menuContainer, 
-                    { 
+                    styles.menuContainer,
+                    {
                         transform: [{ translateX: slideAnim }],
                         paddingTop: insets.top + 20,
-                        paddingBottom: insets.bottom + 20 
+                        paddingBottom: insets.bottom + 20
                     }
                 ]}
             >
@@ -145,14 +152,31 @@ export const SideMenu: React.FC<SideMenuProps> = ({ visible, onClose, onSelect }
                 <View style={styles.divider} />
 
                 <ScrollView style={styles.menuList} showsVerticalScrollIndicator={false}>
-                    {menuItems.map((item) => (
-                        <TouchableOpacity key={item.label} style={styles.menuItem} onPress={() => onSelect(item.label)}>
-                            <View style={styles.iconWrapper}>
-                                <MaterialIcons name={item.icon} size={22} color="#D1D5DB" />
-                            </View>
-                            <Text style={styles.menuItemText}>{item.label}</Text>
-                        </TouchableOpacity>
-                    ))}
+                    {menuItems.map((item) => {
+                        // Corrigir navegação do botão 'Meus Gastos' para CLIENT
+                        const handlePress = () => {
+                            // Só tratar o caso especial do CLIENT para "Meus Gastos"
+                            if (user?.role === 'CLIENT' && item.label === 'Meus Gastos') {
+                                onClose();
+                                navigation.navigate('ClientSpending');
+                                return;
+                            }
+                            if (item.label === 'Comissões') {
+                                onClose();
+                                navigation.navigate('CommissionPayout');
+                                return;
+                            }
+                            onSelect(item.label);
+                        };
+                        return (
+                            <TouchableOpacity key={item.label} style={styles.menuItem} onPress={handlePress}>
+                                <View style={styles.iconWrapper}>
+                                    <MaterialIcons name={item.icon} size={22} color="#D1D5DB" />
+                                </View>
+                                <Text style={styles.menuItemText}>{item.label}</Text>
+                            </TouchableOpacity>
+                        );
+                    })}
                 </ScrollView>
 
                 <View style={styles.footer}>
@@ -210,5 +234,5 @@ const styles = StyleSheet.create({
     iconBtn: { padding: 4 },
     searchBar: { flex: 1, flexDirection: 'row', alignItems: 'center', backgroundColor: '#111827', borderRadius: 8, marginHorizontal: 12, paddingHorizontal: 10, height: 40, borderWidth: 1, borderColor: '#374151' },
     input: { flex: 1, color: '#FFF', marginLeft: 8 },
-    fab: { position: 'absolute', right: 20, bottom: 30, backgroundColor: '#3B82F6', width: 56, height: 56, borderRadius: 28, justifyContent: 'center', alignItems: 'center', elevation: 8, shadowColor: '#3B82F6', shadowOpacity: 0.4, shadowOffset: {width:0, height:4} }
+    fab: { position: 'absolute', right: 20, bottom: 30, backgroundColor: '#3B82F6', width: 56, height: 56, borderRadius: 28, justifyContent: 'center', alignItems: 'center', elevation: 8, shadowColor: '#3B82F6', shadowOpacity: 0.4, shadowOffset: { width: 0, height: 4 } }
 });

@@ -7,6 +7,7 @@ import {
     TouchableOpacity,
     ActivityIndicator,
     StyleSheet,
+    RefreshControl,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -108,6 +109,11 @@ export default function FinanceSummaryScreen() {
         fetchFinanceSummary();
     };
 
+    // Navegação para acerto de comissões (payout)
+    const handleGoToPayout = () => {
+        navigation.navigate('CommissionPayout');
+    };
+
     // Estado de loading
     if (loading) {
         return (
@@ -153,15 +159,30 @@ export default function FinanceSummaryScreen() {
                     <MaterialIcons name="menu" size={28} color={COLORS.white_pure} />
                 </TouchableOpacity>
                 <Text style={styles.headerTitle}>RESUMO FINANCEIRO</Text>
-                <TouchableOpacity onPress={handleRefresh} style={styles.headerRefreshBtn} accessibilityLabel="Atualizar">
-                    <MaterialIcons name="refresh" size={28} color={COLORS.white_pure} />
-                </TouchableOpacity>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    {user?.role === 'ADMIN' && (
+                        <TouchableOpacity onPress={handleGoToPayout} style={{ marginRight: 8 }} accessibilityLabel="Ir para Acerto de Comissões">
+                            <MaterialIcons name="account-balance-wallet" size={28} color={COLORS.white_pure} />
+                        </TouchableOpacity>
+                    )}
+                    <TouchableOpacity onPress={handleRefresh} style={styles.headerRefreshBtn} accessibilityLabel="Atualizar">
+                        <MaterialIcons name="refresh" size={28} color={COLORS.white_pure} />
+                    </TouchableOpacity>
+                </View>
             </View>
 
             <ScrollView
                 style={{ flex: 1 }}
                 contentContainerStyle={{ paddingHorizontal: SIZES.padding, paddingVertical: 20, paddingBottom: 100 }}
                 showsVerticalScrollIndicator={false}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
+                        colors={[COLORS.royal_blue]}
+                        tintColor={COLORS.royal_blue}
+                    />
+                }
             >
                 {/* Card de Resumo */}
                 <LinearGradient
@@ -250,16 +271,7 @@ export default function FinanceSummaryScreen() {
                 )}
             </ScrollView>
 
-            {/* Botão fixo de atualizar dados */}
-            <TouchableOpacity
-                style={styles.fixedBtn}
-                onPress={handleRefresh}
-                activeOpacity={0.85}
-                accessibilityLabel="Atualizar Dados"
-            >
-                <MaterialIcons name="refresh" size={24} color={COLORS.white_pure} style={{ marginRight: 8 }} />
-                <Text style={styles.fixedBtnText}>ATUALIZAR DADOS</Text>
-            </TouchableOpacity>
+            {/* Botão fixo removido. Pull-to-refresh ativado no ScrollView. */}
         </View>
     );
 }
@@ -394,27 +406,7 @@ const styles = StyleSheet.create({
         fontWeight: 500,
         textAlign: 'center',
     },
-    fixedBtn: {
-        position: 'absolute',
-        left: 16,
-        right: 16,
-        bottom: 20,
-        backgroundColor: '#334155',
-        height: 54,
-        borderRadius: 12,
-        ...SHADOWS.md,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        zIndex: 10,
-    },
-    fixedBtnText: {
-        color: COLORS.white_pure,
-        fontSize: 16,
-        fontFamily: FONTS.bodySemiBold.fontFamily,
-        fontWeight: 600,
-        letterSpacing: 0.5,
-    },
+    // fixedBtn e fixedBtnText removidos
     historyTitle: {
         fontFamily: FONTS.bodySemiBold.fontFamily,
         fontWeight: 600,

@@ -16,12 +16,18 @@ import LoginScreen from "../screens/Auth/LoginScreen";
 import RegisterScreen from "../screens/Auth/RegisterScreen";
 import ForgotPasswordScreen from "../screens/Auth/ForgotPasswordScreen";
 
+
 // Dashboard Screens
 import AppointmentsListScreen from "../screens/Dashboard/AppointmentsListScreen";
 import CreateAppointmentScreen from "../screens/Dashboard/CreateAppointmentScreen";
 import FinanceSummaryScreen from "../screens/Dashboard/FinanceSummaryScreen";
 import ClientsManagementScreen from "../screens/Clients/ClientsManagementScreen";
 import TeamManagementScreen from "../screens/Dashboard/TeamManagementScreen";
+import CommissionPayoutScreen from '../screens/Finance/CommissionPayoutScreen';
+
+// Profile Screens
+import ProfileScreen from "../screens/Profile/ProfileScreen";
+import ChangePasswordScreen from "../screens/Profile/ChangePasswordScreen";
 
 // ============================================================================
 // TYPES
@@ -40,6 +46,9 @@ export type MainStackParamList = {
   TeamManagement: undefined;
   ServicesList: undefined;
   ServiceForm: { serviceId?: string } | undefined;
+  Profile: undefined;
+  ChangePassword: undefined;
+  CommissionPayout: undefined;
 };
 
 export type RootStackParamList = {
@@ -110,6 +119,18 @@ const MainNavigator: React.FC = () => {
       <MainStack.Screen
         name="ServiceForm"
         component={require('../screens/Services/ServiceFormScreen').default}
+      />
+      <MainStack.Screen
+        name="Profile"
+        component={ProfileScreen}
+      />
+      <MainStack.Screen
+        name="ChangePassword"
+        component={ChangePasswordScreen}
+      />
+      <MainStack.Screen
+        name="CommissionPayout"
+        component={CommissionPayoutScreen}
       />
     </MainStack.Navigator>
   );
