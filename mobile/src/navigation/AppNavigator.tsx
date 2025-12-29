@@ -21,6 +21,7 @@ import ForgotPasswordScreen from "../screens/Auth/ForgotPasswordScreen";
 // Dashboard Screens - NOVAS TELAS
 import AppointmentsListScreen from "../screens/Dashboard/AppointmentsListScreen";
 import CreateAppointmentScreen from "../screens/Dashboard/CreateAppointmentScreen";
+import FinanceSummaryScreen from "../screens/Dashboard/FinanceSummaryScreen";
 
 // ============================================================================
 // TYPES
@@ -34,6 +35,7 @@ export type AuthStackParamList = {
 export type MainStackParamList = {
   AppointmentsList: undefined;
   CreateAppointment: { appointmentId?: string } | undefined;
+  FinanceSummary: undefined; // ⬅️ NOVA TELA
   // Outras telas principais aqui
 };
 
@@ -87,6 +89,11 @@ const MainNavigator: React.FC = () => {
       <MainStack.Screen
         name="CreateAppointment"
         component={CreateAppointmentScreen}
+      />
+      <MainStack.Screen
+        name="FinanceSummary"
+        component={FinanceSummaryScreen}
+        options={{ headerShown: false }}
       />
       {/* Outras telas principais aqui */}
     </MainStack.Navigator>

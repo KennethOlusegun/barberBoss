@@ -40,6 +40,7 @@ const STATUS_LABELS: Record<AppointmentStatus, string> = {
 type RootStackParamList = {
     AppointmentsList: undefined;
     CreateAppointment: { appointmentId?: string } | undefined;
+    FinanceSummary: undefined; // Adicionado
 };
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -197,7 +198,9 @@ const AppointmentsListScreen: React.FC = () => {
                 onClose={() => setMenuVisible(false)}
                 onSelect={label => {
                     setMenuVisible(false);
-                    // Navegação pode ser implementada aqui
+                    if (label === 'Dashboard') navigation.navigate('AppointmentsList');
+                    else if (label === 'Agendamentos') navigation.navigate('AppointmentsList');
+                    else if (label === 'Financeiro') navigation.navigate('FinanceSummary');
                 }}
             />
             <View style={{ flex: 1 }}>

@@ -1,4 +1,3 @@
-// src/screens/Appointments/CreateAppointmentScreen.tsx
 import React, { useEffect, useState } from 'react';
 import {
     View,
@@ -13,7 +12,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack'; // ⬅️ UMA VEZ SÓ
 import type { RouteProp } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -23,6 +22,8 @@ import apiClient from '../../api/apiClient';
 import { useAuth } from '../../context/AuthContext';
 import { COLORS } from '../../constants/colors';
 import { SelectModal } from '../../components/common/SelectModal';
+import { SideMenu } from '../../components/common/SideMenu';
+import { MainStackParamList } from '../../navigation/AppNavigator'; // ⬅️ IMPORTAR TIPO
 
 interface Service {
     id: string;
@@ -43,16 +44,13 @@ interface Barber {
     email: string;
 }
 
-type RootStackParamList = {
-    AppointmentsList: undefined;
-    CreateAppointment: { appointmentId?: string } | undefined;
-};
-
-type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
-type RoutePropType = RouteProp<RootStackParamList, 'CreateAppointment'>;
+// ✅ Usar tipos importados do AppNavigator
+type NavigationProp = NativeStackNavigationProp<MainStackParamList>;
+type RoutePropType = RouteProp<MainStackParamList, 'CreateAppointment'>;
 
 const CreateAppointmentScreen: React.FC = () => {
     const navigation = useNavigation<NavigationProp>();
+    const [menuVisible, setMenuVisible] = useState(false);
     const route = useRoute<RoutePropType>();
     const { user } = useAuth();
 
@@ -265,14 +263,26 @@ const CreateAppointmentScreen: React.FC = () => {
     if (fetchingData) {
         return (
             <SafeAreaView style={styles.container}>
+                <SideMenu
+                    visible={menuVisible}
+                    onClose={() => setMenuVisible(false)}
+                    onSelect={label => {
+                        setMenuVisible(false);
+                        if (label === 'Dashboard') navigation.navigate('AppointmentsList');
+                        else if (label === 'Agendamentos') navigation.navigate('AppointmentsList');
+                        else if (label === 'Financeiro') navigation.navigate('FinanceSummary');
+                    }}
+                />
                 <View style={styles.header}>
-                    <TouchableOpacity onPress={() => navigation.goBack()}>
-                        <Ionicons name="arrow-back" size={24} color="#fff" />
+                    <TouchableOpacity onPress={() => setMenuVisible(true)} style={{ marginRight: 12 }} accessibilityLabel="Abrir menu">
+                        <Ionicons name="menu" size={28} color="#fff" />
                     </TouchableOpacity>
                     <Text style={styles.headerTitle}>
                         {isEditing ? 'Editar Agendamento' : 'Novo Agendamento'}
                     </Text>
-                    <View style={{ width: 24 }} />
+                    <TouchableOpacity onPress={() => navigation.goBack()}>
+                        <Ionicons name="arrow-back" size={24} color="#fff" />
+                    </TouchableOpacity>
                 </View>
                 <View style={styles.loadingContainer}>
                     <ActivityIndicator size="large" color={COLORS.primary} />
@@ -284,14 +294,26 @@ const CreateAppointmentScreen: React.FC = () => {
 
     return (
         <SafeAreaView style={styles.container}>
+            <SideMenu
+                visible={menuVisible}
+                onClose={() => setMenuVisible(false)}
+                onSelect={label => {
+                    setMenuVisible(false);
+                    if (label === 'Dashboard') navigation.navigate('AppointmentsList');
+                    else if (label === 'Agendamentos') navigation.navigate('AppointmentsList');
+                    else if (label === 'Financeiro') navigation.navigate('FinanceSummary');
+                }}
+            />
             <View style={styles.header}>
-                <TouchableOpacity onPress={() => navigation.goBack()}>
-                    <Ionicons name="arrow-back" size={24} color="#fff" />
+                <TouchableOpacity onPress={() => setMenuVisible(true)} style={{ marginRight: 12 }} accessibilityLabel="Abrir menu">
+                    <Ionicons name="menu" size={28} color="#fff" />
                 </TouchableOpacity>
                 <Text style={styles.headerTitle}>
                     {isEditing ? 'Editar Agendamento' : 'Novo Agendamento'}
                 </Text>
-                <View style={{ width: 24 }} />
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                    <Ionicons name="arrow-back" size={24} color="#fff" />
+                </TouchableOpacity>
             </View>
 
             <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
