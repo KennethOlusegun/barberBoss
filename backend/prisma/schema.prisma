@@ -39,7 +39,7 @@ model User {
   name      String
   email     String   @unique
   password  String   // Hash!
-  phone     String?  // Opcional por enquanto
+  phone     String   @unique // Obrigatório e único
   role      Role     @default(CLIENT)
   
   // Relacionamentos

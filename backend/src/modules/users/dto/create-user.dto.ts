@@ -4,6 +4,7 @@ import {
   IsOptional,
   IsString,
   MinLength,
+  Matches,
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
@@ -28,13 +29,16 @@ export class CreateUserDto {
   @IsNotEmpty()
   password: string;
 
-  @ApiPropertyOptional({
+  @ApiProperty({
     description: 'Telefone do usuário',
     example: '(11) 98765-4321',
   })
   @IsString()
-  @IsOptional()
-  phone?: string;
+  @IsNotEmpty()
+  @MinLength(10)
+  @Matches(/^\(?\d{2}\)?[\s-]?9?\d{4}-?\d{4}$/,
+    { message: 'Telefone inválido. Use o formato (99) 99999-9999' })
+  phone: string;
 
   @ApiPropertyOptional({
     description: 'Função do usuário',
