@@ -36,8 +36,9 @@ export class CreateUserDto {
   @IsString()
   @IsNotEmpty()
   @MinLength(10)
-  @Matches(/^\(?\d{2}\)?[\s-]?9?\d{4}-?\d{4}$/,
-    { message: 'Telefone inválido. Use o formato (99) 99999-9999' })
+  @Matches(/^\(?\d{2}\)?[\s-]?9?\d{4}-?\d{4}$/, {
+    message: 'Telefone inválido. Use o formato (99) 99999-9999',
+  })
   phone: string;
 
   @ApiPropertyOptional({

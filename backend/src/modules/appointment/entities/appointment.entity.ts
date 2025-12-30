@@ -5,7 +5,9 @@ import {
 import { Exclude } from 'class-transformer';
 
 export class Appointment implements PrismaAppointment {
-    commissionPaid: boolean;
+  commissionPaid: boolean;
+  price: any;
+  commission: any;
   id: string;
   startsAt: Date;
   endsAt: Date;

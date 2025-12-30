@@ -11,8 +11,17 @@ export class ServiceService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(createServiceDto: CreateServiceDto): Promise<Service> {
+    // Corrige o valor do preço se vier como string (ex: '35,00' ou '35.00')
+    let price = createServiceDto.price;
+    if (typeof price === 'string') {
+      const priceStr = price as string;
+      price = parseFloat(priceStr.replace(/\./g, '').replace(',', '.'));
+    }
     return await this.prisma.service.create({
-      data: createServiceDto,
+      data: {
+        ...createServiceDto,
+        price,
+      },
     });
   }
 

@@ -37,4 +37,26 @@ export class CreateServiceDto {
   @Min(1)
   @Type(() => Number)
   durationMin: number;
+
+  @ApiPropertyOptional({ description: 'Tipo de preço', example: 'range' })
+  @IsString()
+  @IsOptional()
+  priceType?: string;
+
+  @ApiPropertyOptional({
+    description: 'Categoria do serviço',
+    example: 'Cabelo',
+  })
+  @IsString()
+  @IsOptional()
+  category?: string;
+
+  @ApiPropertyOptional({ description: 'Cor do serviço', example: '#3b82f6' })
+  @IsString()
+  @IsOptional()
+  color?: string;
+
+  @ApiPropertyOptional({ description: 'Ativo', example: true })
+  @IsOptional()
+  active?: boolean;
 }

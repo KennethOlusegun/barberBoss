@@ -31,7 +31,6 @@ import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../../decorators/roles.decorator';
 import { CurrentUser } from '../../decorators/current-user.decorator';
 import { Role } from '@prisma/client';
-import dayjs from '../../config/dayjs.config';
 import {
   ThrottleModerate,
   ThrottleRelaxed,
@@ -42,6 +41,16 @@ import {
 @UseGuards(RolesGuard)
 export class AppointmentController {
   constructor(private readonly appointmentService: AppointmentService) {}
+
+  @Post('/barbers/:barberId/commissions/paid')
+  @Roles(Role.ADMIN)
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({ summary: 'Marcar todas as comissões do barbeiro como pagas' })
+  @ApiParam({ name: 'barberId', description: 'UUID do barbeiro' })
+  @ApiResponse({ status: 200, description: 'Comissões marcadas como pagas' })
+  markCommissionsAsPaid(@Param('barberId', ParseUUIDPipe) barberId: string) {
+    return this.appointmentService.markCommissionsAsPaid(barberId);
+  }
 
   @Post()
   @ThrottleModerate()

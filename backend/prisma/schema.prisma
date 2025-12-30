@@ -78,6 +78,11 @@ model Service {
   price       Decimal  @db.Decimal(10, 2) // Dinheiro sempre use Decimal, nunca Float!
   durationMin Int      // Ex: 30, 45, 60 (Minutos)
 
+  // Novos campos opcionais
+  priceType   String?  // Ex: "range", "fixed"
+  category    String?  // Ex: "Cabelo", "Barba"
+  color       String?  // Ex: "#3b82f6"
+
   // Comissão do barbeiro (percentual, ex: 0.5 para 50%)
   barberCommission Decimal? @db.Decimal(5, 4) // Opcional, padrão pode ser definido na aplicação
 
@@ -112,6 +117,8 @@ model Appointment {
 
 
   commissionPaid Boolean @default(false) // Indica se a comissão já foi paga
+  price      Decimal  @db.Decimal(10, 2) @default(0.00) // Valor do serviço no momento do agendamento
+  commission Decimal  @db.Decimal(10, 2) @default(0.00) // Comissão do barbeiro no momento do agendamento
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

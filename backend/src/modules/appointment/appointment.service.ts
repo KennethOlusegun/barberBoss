@@ -1,5 +1,3 @@
-// ...existing code...
-
 import {
   Injectable,
   NotFoundException,
@@ -14,63 +12,60 @@ import { TimeBlockService } from '../time-block/time-block.service';
 import { Appointment } from './entities/appointment.entity';
 import { PaginatedResult } from '../../common/interfaces/paginated-result.interface';
 import { PaginationDto } from '../../common/dto/pagination.dto';
+
 import dayjs from '../../config/dayjs.config';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class AppointmentService {
-    /**
-     * Busca agendamentos com filtros avançados, incluindo commissionPaid
-     */
-    async findAllWithFilters(filter: any, user: { id: string; role: string }) {
-      const { date, barberId, userId, status, commissionPaid, page, offset, limit } = filter;
-      const paginationDto: PaginationDto = { limit: limit || 10 };
-      if (page) {
-        paginationDto.page = page;
-      } else if (offset !== undefined) {
-        paginationDto.page = Math.floor((offset || 0) / (limit || 10)) + 1;
-      } else {
-        paginationDto.page = 1;
-      }
-
-      const where: any = {};
-      if (date) {
-        const d = dayjs(date);
-        where.startsAt = { gte: d.startOf('day').toDate(), lte: d.endOf('day').toDate() };
-      }
-      if (barberId) where.barberId = barberId;
-      if (userId) where.userId = userId;
-      if (status) where.status = status;
-      if (commissionPaid !== undefined) where.commissionPaid = commissionPaid === 'true' || commissionPaid === true;
-
-      // Permissões: admin/barber veem por barberId, client por userId
-      if (user.role === 'BARBER' || user.role === 'ADMIN') {
-        if (!barberId) where.barberId = user.id;
-      } else {
-        where.userId = user.id;
-      }
-
-      const pageNum = paginationDto.page || 1;
-      const lim = paginationDto.limit || 10;
-      const skip = (pageNum - 1) * lim;
-
-      const [appointments, total] = await Promise.all([
-        this.prisma.appointment.findMany({
-          skip,
-          take: lim,
-          where,
-          include: { user: true, service: true },
-          orderBy: { startsAt: 'asc' },
-        }),
-        this.prisma.appointment.count({ where }),
-      ]);
-      const appointmentEntities = appointments.map((appointment) => new Appointment(appointment));
-      return new PaginatedResult(appointmentEntities, total, pageNum, lim);
-    }
   constructor(
     private readonly prisma: PrismaService,
     private readonly settingsService: SettingsService,
     private readonly timeBlockService: TimeBlockService,
   ) {}
+
+  /**
+   * Parse uma data de agendamento respeitando timezone e offset
+   * @param dateInput - String ISO, Date object ou string sem timezone
+   * @param timezone - Timezone de referência (ex: 'America/Sao_Paulo')
+   * @returns Date em UTC pronto para persistir no banco
+   */
+  private parseAppointmentDate(
+    dateInput: string | Date,
+    timezone: string,
+  ): Date {
+    if (dateInput instanceof Date) {
+      console.log('🔍 parseAppointmentDate: input é Date, retorna direto', {
+        input: dateInput.toISOString(),
+        timezone,
+      });
+      return dateInput;
+    }
+
+    const dateStr = dateInput.trim();
+    // Detecta offset no final da string (ex: -03:00, +05:30, Z)
+    const hasOffset = /[+-]\d{2}:\d{2}$|Z$/.test(dateStr);
+
+    console.log('🔍 parseAppointmentDate:', {
+      input: dateStr,
+      hasOffset,
+      timezone,
+    });
+
+    let parsed: Date;
+
+    if (hasOffset) {
+      // String tem offset: parse direto mantendo momento absoluto
+      parsed = dayjs(dateStr).toDate();
+      console.log('✅ Parsed with offset → UTC:', parsed.toISOString());
+    } else {
+      // String sem offset: interpretar no timezone especificado
+      parsed = dayjs.tz(dateStr, timezone).toDate();
+      console.log('✅ Parsed in timezone → UTC:', parsed.toISOString());
+    }
+
+    return parsed;
+  }
 
   /**
    * Valida se uma data está dentro do horário comercial
@@ -84,18 +79,18 @@ export class AppointmentService {
     const settings = await this.settingsService.get();
 
     console.log('--- [DEBUG] validateBusinessHours ---');
-    console.log('date (original, Date):', date, '| ISO:', date.toISOString());
+    console.log('date (UTC):', date.toISOString());
 
-    const dateUtc = dayjs.utc(date);
-    console.log('dateUtc (dayjs.utc):', dateUtc.format());
-
-    const dateInTimezone = dateUtc.tz(timezone);
-    console.log(
-      'dateInTimezone:',
-      dateInTimezone.format(),
-      '| Timezone:',
-      timezone,
-    );
+    // Conversão direta: date já está em UTC do banco
+    const dateInTimezone = dayjs(date).tz(timezone);
+    console.log('🕐 validateBusinessHours:', {
+      input_utc: date.toISOString(),
+      timezone: timezone,
+      local_time: dateInTimezone.format('YYYY-MM-DD HH:mm:ss'),
+      day_of_week: dateInTimezone.day(),
+      hour: dateInTimezone.hour(),
+      minute: dateInTimezone.minute(),
+    });
 
     const day = dateInTimezone.day();
     console.log(
@@ -160,6 +155,71 @@ export class AppointmentService {
     }
   }
 
+  /**
+   * Busca agendamentos com filtros avançados, incluindo commissionPaid
+   */
+  async findAllWithFilters(filter: any, user: { id: string; role: string }) {
+    const {
+      date,
+      barberId,
+      userId,
+      status,
+      commissionPaid,
+      page,
+      offset,
+      limit,
+    } = filter;
+    const paginationDto: PaginationDto = { limit: limit || 10 };
+    if (page) {
+      paginationDto.page = page;
+    } else if (offset !== undefined) {
+      paginationDto.page = Math.floor((offset || 0) / (limit || 10)) + 1;
+    } else {
+      paginationDto.page = 1;
+    }
+
+    const where: any = {};
+    if (date) {
+      const d = dayjs(date);
+      where.startsAt = {
+        gte: d.startOf('day').toDate(),
+        lte: d.endOf('day').toDate(),
+      };
+    }
+    if (barberId) where.barberId = barberId;
+    if (userId) where.userId = userId;
+    if (status) where.status = status;
+    if (commissionPaid !== undefined)
+      where.commissionPaid =
+        commissionPaid === 'true' || commissionPaid === true;
+
+    // Permissões: admin/barber veem por barberId, client por userId
+    if (user.role === 'BARBER' || user.role === 'ADMIN') {
+      if (!barberId) where.barberId = user.id;
+    } else {
+      where.userId = user.id;
+    }
+
+    const pageNum = paginationDto.page || 1;
+    const lim = paginationDto.limit || 10;
+    const skip = (pageNum - 1) * lim;
+
+    const [appointments, total] = await Promise.all([
+      this.prisma.appointment.findMany({
+        skip,
+        take: lim,
+        where,
+        include: { user: true, service: true },
+        orderBy: { startsAt: 'asc' },
+      }),
+      this.prisma.appointment.count({ where }),
+    ]);
+    const appointmentEntities = appointments.map(
+      (appointment) => new Appointment(appointment),
+    );
+    return new PaginatedResult(appointmentEntities, total, pageNum, lim);
+  }
+
   async create(
     createAppointmentDto: CreateAppointmentDto,
   ): Promise<Appointment> {
@@ -203,10 +263,13 @@ export class AppointmentService {
     }
 
     const timezone = createAppointmentDto.timezone || 'America/Sao_Paulo';
-    const startsAt = dayjs.utc(createAppointmentDto.startsAt).toDate();
+    const startsAt = this.parseAppointmentDate(
+      createAppointmentDto.startsAt,
+      timezone,
+    );
     const endsAt = createAppointmentDto.endsAt
-      ? dayjs.utc(createAppointmentDto.endsAt).toDate()
-      : dayjs.utc(startsAt).add(service.durationMin, 'minutes').toDate();
+      ? this.parseAppointmentDate(createAppointmentDto.endsAt, timezone)
+      : dayjs(startsAt).add(service.durationMin, 'minutes').toDate();
 
     if (startsAt >= endsAt) {
       const startsAtStr = dayjs(startsAt)
@@ -284,7 +347,6 @@ export class AppointmentService {
           },
           include: {
             user: true,
-            service: true,
           },
           orderBy: {
             createdAt: 'asc',
@@ -305,10 +367,33 @@ export class AppointmentService {
             .tz(timezone)
             .format('DD/MM/YYYY');
 
+          // Buscar nome do serviço pelo serviceId
+          const conflictService = await this.prisma.service.findUnique({
+            where: { id: conflict.serviceId },
+          });
+          const conflictServiceName = conflictService?.name || 'Serviço';
+
           throw new ConflictException(
-            `Este horário já está reservado. ${conflictClient} tem um agendamento para "${conflict.service.name}" no dia ${conflictDate} das ${conflictStartTime} às ${conflictEndTime}. Por favor, escolha outro horário disponível.`,
+            `Este horário já está reservado. ${conflictClient} tem um agendamento para "${conflictServiceName}" no dia ${conflictDate} das ${conflictStartTime} às ${conflictEndTime}. Por favor, escolha outro horário disponível.`,
           );
         }
+
+
+        // Garantir que price seja numérico e não nulo, usando o service já buscado no início
+        const servicePrice = service.price 
+          ? (typeof service.price === 'string' ? parseFloat(service.price) : Number(service.price))
+          : 0;
+
+        const COMMISSION_RATE = 0.5;
+        const commissionValue = servicePrice * COMMISSION_RATE;
+
+        console.log('💰 [CREATE] Valores calculados:', {
+          servicePrice,
+          commissionValue,
+          servicePriceOriginal: service.price,
+          servicePriceType: typeof service.price,
+          serviceId: service.id
+        });
 
         return await tx.appointment.create({
           data: {
@@ -316,11 +401,20 @@ export class AppointmentService {
             endsAt,
             status: createAppointmentDto.status || 'CONFIRMED',
             clientName: createAppointmentDto.clientName?.trim(),
-            commissionPaid: typeof createAppointmentDto.commissionPaid === 'boolean' ? createAppointmentDto.commissionPaid : false,
-            // Relacionamentos
+            commissionPaid:
+              typeof createAppointmentDto.commissionPaid === 'boolean'
+                ? createAppointmentDto.commissionPaid
+                : false,
+            // Conversão explícita para Decimal
+            price: new Prisma.Decimal(servicePrice),
+            commission: new Prisma.Decimal(commissionValue),
             service: { connect: { id: createAppointmentDto.serviceId } },
-            ...(createAppointmentDto.userId && { user: { connect: { id: createAppointmentDto.userId } } }),
-            ...(createAppointmentDto.barberId && { barber: { connect: { id: createAppointmentDto.barberId } } }),
+            ...(createAppointmentDto.userId && {
+              user: { connect: { id: createAppointmentDto.userId } },
+            }),
+            ...(createAppointmentDto.barberId && {
+              barber: { connect: { id: createAppointmentDto.barberId } },
+            }),
           },
           include: {
             user: true,
@@ -411,7 +505,9 @@ export class AppointmentService {
         include: { service: true },
       });
 
+      const timezone = updateAppointmentDto.timezone || 'America/Sao_Paulo';
       let service = current!.service;
+
       if (
         updateAppointmentDto.serviceId &&
         updateAppointmentDto.serviceId !== current!.serviceId
@@ -436,17 +532,16 @@ export class AppointmentService {
       }
 
       const startsAt = updateAppointmentDto.startsAt
-        ? dayjs(updateAppointmentDto.startsAt).toDate()
+        ? this.parseAppointmentDate(updateAppointmentDto.startsAt, timezone)
         : current!.startsAt;
 
       const endsAt = updateAppointmentDto.endsAt
-        ? dayjs(updateAppointmentDto.endsAt).toDate()
+        ? this.parseAppointmentDate(updateAppointmentDto.endsAt, timezone)
         : updateAppointmentDto.startsAt
           ? dayjs(startsAt).add(service.durationMin, 'minutes').toDate()
           : current!.endsAt;
 
       if (startsAt >= endsAt) {
-        const timezone = updateAppointmentDto.timezone || 'America/Sao_Paulo';
         const startsAtStr = dayjs(startsAt)
           .tz(timezone)
           .format('DD/MM/YYYY HH:mm');
@@ -455,8 +550,6 @@ export class AppointmentService {
           `O horário de início (${startsAtStr}) deve ser anterior ao horário de término (${endsAtStr})`,
         );
       }
-
-      const timezone = updateAppointmentDto.timezone || 'America/Sao_Paulo';
 
       await this.validateBusinessHours(startsAt, timezone);
       await this.validateBusinessHours(endsAt, timezone);
@@ -478,6 +571,30 @@ export class AppointmentService {
         throw new BadRequestException(
           `Este horário está bloqueado (${typeLabel}${reason})`,
         );
+      }
+
+      // Buscar o service correto do banco antes de calcular a comissão
+      let commissionValue: Prisma.Decimal | undefined = undefined;
+      if (updateAppointmentDto.status === 'COMPLETED') {
+        // Garante que sempre pega o serviceId atualizado
+        const serviceIdToUse = updateAppointmentDto.serviceId || current!.serviceId;
+        const serviceForCommission = await this.prisma.service.findUnique({
+          where: { id: serviceIdToUse },
+        });
+        if (!serviceForCommission) {
+          throw new NotFoundException('Serviço não encontrado para cálculo de comissão');
+        }
+        const servicePrice = serviceForCommission.price
+          ? (typeof serviceForCommission.price === 'string' ? parseFloat(serviceForCommission.price) : Number(serviceForCommission.price))
+          : 0;
+        const COMMISSION_RATE = 0.5;
+        const calculatedCommission = servicePrice * COMMISSION_RATE;
+        console.log('💰 Update - Valores calculados:', {
+          servicePrice,
+          calculatedCommission,
+          servicePriceOriginal: serviceForCommission.price,
+        });
+        commissionValue = new Prisma.Decimal(calculatedCommission);
       }
 
       const appointment = await this.prisma.$transaction(
@@ -529,6 +646,9 @@ export class AppointmentService {
             );
           }
 
+          // commissionPaid só é alterado se vier explicitamente no DTO
+          const commissionPaidAuto = updateAppointmentDto.commissionPaid;
+
           return await tx.appointment.update({
             where: { id },
             data: {
@@ -545,6 +665,12 @@ export class AppointmentService {
               }),
               ...(updateAppointmentDto.serviceId && {
                 serviceId: updateAppointmentDto.serviceId,
+              }),
+              ...(commissionPaidAuto !== undefined && {
+                commissionPaid: commissionPaidAuto,
+              }),
+              ...(commissionValue !== undefined && {
+                commission: commissionValue,
               }),
             },
             include: {
@@ -563,6 +689,8 @@ export class AppointmentService {
       return new Appointment(appointment);
     }
 
+    // commissionPaid só é alterado se vier explicitamente no DTO
+    const commissionPaidAuto = updateAppointmentDto.commissionPaid;
     const appointment = await this.prisma.appointment.update({
       where: { id },
       data: {
@@ -578,8 +706,8 @@ export class AppointmentService {
         ...(updateAppointmentDto.serviceId && {
           serviceId: updateAppointmentDto.serviceId,
         }),
-        ...(updateAppointmentDto.commissionPaid !== undefined && {
-          commissionPaid: updateAppointmentDto.commissionPaid,
+        ...(commissionPaidAuto !== undefined && {
+          commissionPaid: commissionPaidAuto,
         }),
       },
       include: {
@@ -956,7 +1084,25 @@ export class AppointmentService {
       }),
     ]);
 
-    const appointmentEntities = appointments.map((appointment) => new Appointment(appointment));
+    const appointmentEntities = appointments.map(
+      (appointment) => new Appointment(appointment),
+    );
     return new PaginatedResult(appointmentEntities, total, page, limit);
+  }
+
+  /**
+   * Marca todas as comissões do barbeiro como pagas
+   */
+  async markCommissionsAsPaid(barberId: string): Promise<{ updated: number }> {
+    const result = await this.prisma.appointment.updateMany({
+      where: {
+        barberId,
+        commissionPaid: false,
+      },
+      data: {
+        commissionPaid: true,
+      },
+    });
+    return { updated: result.count };
   }
 }

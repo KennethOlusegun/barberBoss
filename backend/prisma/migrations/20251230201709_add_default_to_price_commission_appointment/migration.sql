@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Appointment" ADD COLUMN     "commission" DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+ADD COLUMN     "price" DECIMAL(10,2) NOT NULL DEFAULT 0.00;
