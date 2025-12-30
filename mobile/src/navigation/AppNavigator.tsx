@@ -3,12 +3,7 @@ import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useAuth } from "../context/AuthContext";
-import {
-  ActivityIndicator,
-  View,
-  Text,
-  StyleSheet,
-} from "react-native";
+import { ActivityIndicator, View, Text, StyleSheet } from "react-native";
 import { COLORS } from "../constants/colors";
 
 // Auth Screens
@@ -16,14 +11,13 @@ import LoginScreen from "../screens/Auth/LoginScreen";
 import RegisterScreen from "../screens/Auth/RegisterScreen";
 import ForgotPasswordScreen from "../screens/Auth/ForgotPasswordScreen";
 
-
 // Dashboard Screens
 import AppointmentsListScreen from "../screens/Dashboard/AppointmentsListScreen";
 import CreateAppointmentScreen from "../screens/Dashboard/CreateAppointmentScreen";
 import FinanceSummaryScreen from "../screens/Dashboard/FinanceSummaryScreen";
 import ClientsManagementScreen from "../screens/Clients/ClientsManagementScreen";
 import TeamManagementScreen from "../screens/Dashboard/TeamManagementScreen";
-import CommissionPayoutScreen from '../screens/Finance/CommissionPayoutScreen';
+import CommissionPayoutScreen from "../screens/Finance/CommissionPayoutScreen";
 
 // Profile Screens
 import ProfileScreen from "../screens/Profile/ProfileScreen";
@@ -114,16 +108,13 @@ const MainNavigator: React.FC = () => {
       />
       <MainStack.Screen
         name="ServicesList"
-        component={require('../screens/Services/ServicesListScreen').default}
+        component={require("../screens/Services/ServicesListScreen").default}
       />
       <MainStack.Screen
         name="ServiceForm"
-        component={require('../screens/Services/ServiceFormScreen').default}
+        component={require("../screens/Services/ServiceFormScreen").default}
       />
-      <MainStack.Screen
-        name="Profile"
-        component={ProfileScreen}
-      />
+      <MainStack.Screen name="Profile" component={ProfileScreen} />
       <MainStack.Screen
         name="ChangePassword"
         component={ChangePasswordScreen}

@@ -132,7 +132,7 @@ const ForgotPasswordScreen: React.FC = () => {
     setSuccessMessage("");
     setErrorMessage("");
     try {
-      await apiClient.post("/api/auth/forgot-password", {
+      await apiClient.post("/auth/forgot-password", {
         email: data.email.toLowerCase(),
       });
       setEmail(data.email.toLowerCase());
@@ -163,7 +163,7 @@ const ForgotPasswordScreen: React.FC = () => {
     setErrorMessage("");
     try {
       // Rota correta do backend: /api/auth/reset-password
-      await apiClient.post("/api/auth/reset-password", {
+      await apiClient.post("/auth/reset-password", {
         email: email,
         code: data.code,
         newPassword: data.newPassword,
@@ -179,7 +179,7 @@ const ForgotPasswordScreen: React.FC = () => {
       } else {
         setErrorMessage(
           error.response?.data?.message ||
-          "Código inválido ou expirado. Solicite um novo.",
+            "Código inválido ou expirado. Solicite um novo.",
         );
       }
     } finally {
@@ -194,7 +194,7 @@ const ForgotPasswordScreen: React.FC = () => {
     setSuccessMessage("");
     try {
       // Rota correta: /auth/password/forgot
-      await apiClient.post("/api/auth/forgot-password", { email });
+      await apiClient.post("/auth/forgot-password", { email });
       setCountdown(60);
       setSuccessMessage("Novo código enviado!");
     } catch (error: any) {
@@ -412,7 +412,7 @@ const ForgotPasswordScreen: React.FC = () => {
                         style={[
                           styles.resendLink,
                           (countdown > 0 || isLoading) &&
-                          styles.resendLinkDisabled,
+                            styles.resendLinkDisabled,
                         ]}
                       >
                         {countdown > 0

@@ -33,10 +33,10 @@ console.log("  ⚠️  ATENÇÃO: Se Base URL não tem /api, adicione no .env!")
 // Função para criar instância do Axios com fallback
 function createApiClient(baseURL: string): AxiosInstance {
   // 🔥 Garantir que /api está presente
-  const finalURL = baseURL.endsWith('/api') ? baseURL : `${baseURL}/api`;
-  
+  const finalURL = baseURL.endsWith("/api") ? baseURL : `${baseURL}/api`;
+
   console.log("🌐 Creating API client with URL:", finalURL);
-  
+
   return axios.create({
     baseURL: finalURL,
     timeout: parseInt(API_TIMEOUT || "15000"),
@@ -59,15 +59,18 @@ apiClient.interceptors.request.use(
         config.headers.Authorization = `Bearer ${token}`;
         console.log("🔑 Token attached");
       }
-      
+
       // 🔥 DEBUG CRÍTICO - Mostra URL completa
       console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-      console.log("🌐 Full request URL:", (config.baseURL || '') + (config.url || ''));
+      console.log(
+        "🌐 Full request URL:",
+        (config.baseURL || "") + (config.url || ""),
+      );
       console.log("📍 BaseURL:", config.baseURL);
       console.log("📍 Path:", config.url);
       console.log(`📤 [${timestamp}] ${config.method?.toUpperCase()}`);
       console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-      
+
       return config;
     } catch (error) {
       console.error("❌ Erro ao adicionar token:", error);
@@ -106,10 +109,13 @@ apiClient.interceptors.response.use(
       console.error("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
       console.error(`❌ [${timestamp}] HTTP ${status}`);
       console.error("📍 URL:", url);
-      console.error("🌐 Full URL:", (error.config?.baseURL || '') + (url || ''));
+      console.error(
+        "🌐 Full URL:",
+        (error.config?.baseURL || "") + (url || ""),
+      );
       console.error("📦 Error data:", error.response.data);
       console.error("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-      
+
       if (status === 401) {
         console.log("🔒 Token inválido - Fazendo logout...");
         await removeToken();

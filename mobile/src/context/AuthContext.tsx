@@ -20,7 +20,12 @@ interface AuthContextType {
   isLoading: boolean;
   isSignedIn: boolean;
   signIn: (email: string, password: string) => Promise<void>;
-  signUp: (email: string, password: string, name: string, phone: string) => Promise<void>;
+  signUp: (
+    email: string,
+    password: string,
+    name: string,
+    phone: string,
+  ) => Promise<void>;
   signOut: () => Promise<void>;
   restoreToken: () => Promise<void>;
   forgotPassword: (email: string) => Promise<void>;
@@ -61,10 +66,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           const response = await apiClient.get("/auth/me");
           const userData = response.data;
           setUser(userData);
-          console.log(
-            "✅ Token válido, usuário autenticado:",
-            userData.email,
-          );
+          console.log("✅ Token válido, usuário autenticado:", userData.email);
         } catch (error) {
           console.log("❌ Token inválido, removendo...");
           await removeToken();
