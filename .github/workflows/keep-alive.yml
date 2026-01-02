@@ -1,0 +1,15 @@
+name: Keep Render Alive
+
+on:
+  schedule:
+    - cron: '*/14 * * * *'
+  workflow_dispatch:
+
+jobs:
+  keep-alive:
+    runs-on: ubuntu-latest
+    env:
+      API_URL: https://barberboss-api.onrender.com/api
+    steps:
+      - name: Keep Render API awake
+        run: curl -I -L "$API_URL"
