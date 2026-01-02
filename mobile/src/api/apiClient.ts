@@ -31,9 +31,11 @@ console.log("  Timeout:", API_TIMEOUT);
 console.log("  ⚠️  ATENÇÃO: Se Base URL não tem /api, adicione no .env!");
 
 // Função para criar instância do Axios com fallback
-function createApiClient(baseURL: string): AxiosInstance {
+function createApiClient(baseURL?: string): AxiosInstance {
+  // Se não houver baseURL, usa localhost para dev local
+  const url = baseURL || "http://localhost:3000";
   // 🔥 Garantir que /api está presente
-  const finalURL = baseURL.endsWith("/api") ? baseURL : `${baseURL}/api`;
+  const finalURL = url.endsWith("/api") ? url : `${url}/api`;
 
   console.log("🌐 Creating API client with URL:", finalURL);
 
@@ -48,7 +50,7 @@ function createApiClient(baseURL: string): AxiosInstance {
   });
 }
 
-let apiClient = createApiClient(API_BASE_URL || "");
+let apiClient = createApiClient(API_BASE_URL);
 
 // ========== REQUEST INTERCEPTOR ===========
 apiClient.interceptors.request.use(
