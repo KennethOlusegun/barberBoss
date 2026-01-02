@@ -150,8 +150,11 @@ async function bootstrap() {
   }
 
   // ===== START SERVER =====
-  const port = process.env.PORT ?? 3000;
-  await app.listen(port, '0.0.0.0'); // 🔥 CRÍTICO: 0.0.0.0 para Docker
+  // O Render injeta a porta automaticamente na variável process.env.PORT
+  const port = process.env.PORT || 10000;
+  // É CRUCIAL usar '0.0.0.0' para que o Render consiga acessar o container
+  await app.listen(port, '0.0.0.0');
+  console.log(`Application is running on: ${await app.getUrl()}`);
 
   console.log('');
   console.log('='.repeat(70));
