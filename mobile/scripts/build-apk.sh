@@ -270,8 +270,17 @@ chmod +x ./gradlew
 # Limpar build anterior
 ./gradlew clean
 
-# Compilar release APK
-./gradlew assembleRelease
+
+# Parar daemons Gradle antes do build para evitar conflitos de memória
+print_step "Parando daemons Gradle antigos..."
+./gradlew --stop
+sleep 2
+
+# Aviso sobre uso de memória
+print_warning "Certifique-se de ter pelo menos 4GB de RAM livre para o build. O processo pode demorar e consumir muita memória."
+
+# Compilar release APK com logs detalhados
+./gradlew :app:assembleRelease --info --stacktrace
 
 # ============================================================================
 # RESULTADO FINAL

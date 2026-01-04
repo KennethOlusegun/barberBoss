@@ -1,3 +1,5 @@
+# Backup Android (não versionar)
+android-backup/network_security_config.xml
 # Logs
 logs
 *.log

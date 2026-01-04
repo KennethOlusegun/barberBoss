@@ -62,43 +62,27 @@ export class AppointmentController {
   @ApiResponse({ status: 401, description: 'Não autorizado' })
   create(
     @Body() createAppointmentDto: CreateAppointmentDto,
+    // CORREÇÃO 1: Removido "| undefined" redundante
     @CurrentUser() user?: { id: string; role: string },
   ) {
     console.log('--- [DEBUG] AppointmentController.create ---');
     console.log('DTO recebido:', JSON.stringify(createAppointmentDto, null, 2));
 
-    // 🔥 CORREÇÃO DEFINITIVA: Verifica se clientName TEM CONTEÚDO
-    const hasClientName =
-      createAppointmentDto.clientName &&
-      createAppointmentDto.clientName.trim().length > 0;
-
-    // Só adiciona userId automaticamente se:
-    // 1. Usuário está logado
-    // 2. Não foi fornecido userId explicitamente
-    // 3. NÃO foi fornecido clientName com conteúdo
-    if (user?.id && !createAppointmentDto.userId && !hasClientName) {
-      console.log('✅ Adicionando userId automaticamente:', user.id);
+    if (
+      user?.id &&
+      !createAppointmentDto.userId &&
+      (!createAppointmentDto.clientName ||
+        createAppointmentDto.clientName.trim() === '')
+    ) {
       createAppointmentDto.userId = user.id;
-    } else if (hasClientName) {
-      console.log('✅ ClientName fornecido, NÃO adiciona userId');
-      // Garante que userId está undefined quando clientName é usado
-      delete createAppointmentDto.userId;
     }
-
-    console.log(
-      '📤 Payload final:',
-      JSON.stringify(createAppointmentDto, null, 2),
-    );
 
     const timezone = createAppointmentDto.timezone || 'America/Sao_Paulo';
 
-    return this.appointmentService.create(
-      {
-        ...createAppointmentDto,
-        timezone,
-      },
-      user,
-    );
+    return this.appointmentService.create({
+      ...createAppointmentDto,
+      timezone,
+    });
   }
 
   @Get()
@@ -116,6 +100,7 @@ export class AppointmentController {
     @Query() filter: AppointmentFilterDto,
     @CurrentUser() user: { id: string; role: string },
   ) {
+    // Novo: passar todos os filtros para o service
     return this.appointmentService.findAllWithFilters(filter, user);
   }
 

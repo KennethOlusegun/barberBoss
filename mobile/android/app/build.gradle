@@ -130,6 +130,12 @@ android {
     androidResources {
         ignoreAssetsPattern '!.svn:!.git:!.ds_store:!*.scc:!CVS:!thumbs.db:!picasa.ini:!*~'
     }
+
+    // Aumenta o heap máximo do processo dex para evitar OutOfMemoryError em builds grandes
+    // dexOptions está deprecated em versões recentes, mas ainda é aceito para builds legacy
+    dexOptions {
+        javaMaxHeapSize "4g"
+    }
 }
 
 // Apply static values from `gradle.properties` to the `android.packagingOptions`

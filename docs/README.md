@@ -1,3 +1,70 @@
+# 🛠️ Troubleshooting - Build APK
+
+### Requisitos de Sistema
+- **RAM:** 4GB+ (recomendado 8GB)
+- **Espaço em disco:** 5GB+ livre
+- **Java:** versão 11 ou 17
+- **Android Studio** instalado
+
+### Problema Comum: Build trava em 82%
+Esse erro geralmente está relacionado à falta de memória para o Gradle ou processos travados.
+
+### Soluções Rápidas
+```bash
+# Corrigir memória do Gradle e matar processos travados
+./scripts/fix-gradle-memory.sh
+
+# Validar ambiente de build
+./scripts/validate-build-setup.sh
+
+# Diagnosticar problemas detalhados
+./scripts/debug-build.sh
+
+# Build otimizado
+./scripts/build-apk.sh
+```
+
+### Como aumentar memória do Gradle
+Verifique se estes parâmetros estão em `android/gradle.properties` e `~/.gradle/gradle.properties`:
+```properties
+org.gradle.jvmargs=-Xmx4096m -XX:MaxPermSize=512m -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8
+org.gradle.daemon=true
+org.gradle.configureondemand=true
+org.gradle.caching=true
+org.gradle.parallel=true
+```
+
+### Como limpar cache do Gradle
+```bash
+rm -rf ~/.gradle/caches
+```
+
+### Como verificar logs detalhados
+```bash
+./android/gradlew :app:assembleRelease --info --stacktrace
+```
+
+### Quando usar EAS Build
+Se seu PC não tem memória suficiente ou o build local falha repetidamente, use [EAS Build](https://docs.expo.dev/build/introduction/).
+
+### Links úteis
+- [Documentação oficial Gradle](https://docs.gradle.org/current/userguide/build_environment.html)
+- [Expo Build Troubleshooting](https://docs.expo.dev/build-reference/troubleshooting/)
+- [React Native Build Docs](https://reactnative.dev/docs/signed-apk-android)
+
+### Comandos úteis de debug
+```bash
+# Verificar status dos daemons
+./android/gradlew --status
+# Parar todos os daemons
+./android/gradlew --stop
+# Limpar build
+./android/gradlew clean
+# Build detalhado
+./android/gradlew :app:assembleRelease --info --stacktrace
+```
+
+> 💡 **Dica:** Use os scripts em `scripts/` para automatizar correções e diagnósticos.
 # BarberBoss - Documentação
 
 ## 📋 Visão Geral
